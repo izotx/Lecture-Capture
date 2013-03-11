@@ -16,4 +16,7 @@
 @property(nonatomic,assign) id <ScreenShotDelegate>delegate;
 @property(nonatomic,retain) UIImage * image;
 @property(nonatomic,assign) int screen_id;
+
+
+
 @end

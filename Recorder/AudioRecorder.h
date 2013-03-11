@@ -14,8 +14,8 @@
     NSString *  recorderFilePath;
 }
 @property(nonatomic, retain) NSString *  recorderFilePath;
+@property BOOL ready;
 - (void) startRecording;
 - (void) stopRecording;
-
 
 @end

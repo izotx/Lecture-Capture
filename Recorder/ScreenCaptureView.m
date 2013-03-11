@@ -1,8 +1,8 @@
 #import "ScreenCaptureView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MobileCoreServices/UTCoreTypes.h>
-#import <AssetsLibrary/AssetsLibrary.h>
-
+#import "VideoPreview.h"
+#import "UIImageAddition.h"
 @interface ScreenCaptureView(Private)
 - (void) writeVideoFrameAtTime:(CMTime)time;
 @end
@@ -12,11 +12,22 @@
 @synthesize currentScreen, frameRate, delegate;
 @synthesize paintView;
 @synthesize outputPath;
+@synthesize vi;
+@synthesize imgView;
+@synthesize panGesture;
+@synthesize csm;
+@synthesize videoPreviewFrame;
+@synthesize fullScreen;
+@synthesize rotatePreview;
+
 BOOL paused;
+//VideoPreview * videoPreview;
+#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
 - (void) initialize {
     self.paintView = [[PaintView alloc]initWithFrame:self.bounds];
     [self addSubview:self.paintView];
+    paintView.backgroundColor = [UIColor blackColor];
 	
     self.clearsContextBeforeDrawing = YES;
 	self.currentScreen = nil;
@@ -27,13 +38,23 @@ BOOL paused;
 	avAdaptor = nil;
 	startedAt = nil;
 	bitmapData = NULL;
+    self.userInteractionEnabled = YES;
     
+    csm = [[CaptureSessionManager alloc]init];
+    csm.target = self;
+   
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pauseAction:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activeAction:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 -(void)pauseAction:(NSNotification * )notification{
-    [delegate recordingInterrupted];
+    if(_recording){
+    if(  [[csm captureSession]isRunning]){
+        [[csm captureSession] stopRunning];
+     }
+        [delegate recordingInterrupted];
+
+    }
 }
 
 -(void)activeAction:(NSNotification * )notification{
@@ -80,7 +101,7 @@ BOOL paused;
 	}
 	bitmapData = malloc( bitmapByteCount );
 	if (bitmapData == NULL) {
-		fprintf (stderr, "Memory not allocated!");
+	//	fprintf (stderr, "Memory not allocated!");
 		return NULL;
 	}
 	
@@ -98,12 +119,12 @@ BOOL paused;
 		fprintf (stderr, "Context not created!");
 		return NULL;
 	}
-	CGColorSpaceRelease( colorSpace );
+	CGColorSpaceRelease(colorSpace);
 	
 	return context;
 }
 
-//static int frameCount = 0;            //debugging
+
 - (void) drawRect:(CGRect)rect {
 
     NSDate* start = [NSDate date];
@@ -111,11 +132,74 @@ BOOL paused;
   
 	float delayRemaining=0;
 	//not sure why this is necessary...image renders upside-down and mirrored
+    
+    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
+    CGContextConcatCTM(context, flipVertical);
+    UIImage* background =   paintView.image;
+    //Adding Preview to the background.
+    self.currentScreen = background;
+    if([csm.captureSession isRunning]){
+                
+        UIGraphicsBeginImageContext(self.frame.size);
+
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        [background drawInRect:self.frame];
+        CGRect tframe;
+        CGRect videoPreviewBackgroundFrame;
+        if(fullScreen){
+            tframe = self.frame;
+        }
+        else{
+            tframe = videoPreviewFrame;
+        }
         
-        CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
-        CGContextConcatCTM(context, flipVertical);
-        UIImage* background =   paintView.image;
-        self.currentScreen = background;
+        
+        float h = videoPreviewFrame.size.height;
+        float w = videoPreviewFrame.size.width;
+        
+        float ow = self.frame.size.width;
+        float oh = self.frame.size.height;
+        float dx,dy;
+        if(fullScreen){
+           dx = (ow - w)/2.0;
+           dy = (oh - h)/2.0;
+            
+        }
+        else{
+            dx= videoPreviewFrame.origin.x;
+            dy= videoPreviewFrame.origin.y;
+        }
+        
+        CGRect tempRect = CGRectMake(dx, dy, w, h);
+      //  CGRect fullTempRect = CGRectMake(dx, dy+11, w, h);
+
+        float x = tempRect.origin.x;
+        float y = tempRect.origin.y;
+
+        x = x-(0.1*w)/2.0;
+        y = y-(0.1*h)/2.0;
+        w = 1.1 * w;
+        h = 1.1 * h;
+
+        videoPreviewBackgroundFrame = CGRectMake(x,y,w,h);
+                
+        CGContextSetFillColorWithColor(ctx, [[UIColor grayColor]CGColor]);
+        CGContextFillRect(ctx, tframe);
+        
+        CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
+        CGContextFillRect(ctx, videoPreviewBackgroundFrame);
+        
+        if(!fullScreen){
+            [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
+        }
+        else{
+            [vi drawInRect:videoPreviewBackgroundFrame blendMode:kCGBlendModeNormal alpha:1];
+        }
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        self.currentScreen = newImage;
+      }
+       
+    
         if (_recording) {
             float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
               [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
@@ -128,35 +212,31 @@ BOOL paused;
 
 
 - (void) cleanupWriter {
-	[avAdaptor release];
+
 	avAdaptor = nil;
-	
-	[videoWriterInput release];
 	videoWriterInput = nil;
-	
-	[videoWriter release];
-	videoWriter = nil;
-	
-	[startedAt release];
+    videoWriter = nil;
 	startedAt = nil;
+    
+    [[csm captureSession]stopRunning];
 	
 	if (bitmapData != NULL) {
 		free(bitmapData);
 		bitmapData = NULL;
 	}
+    [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationWillResignActiveNotification object:nil];
+    NSLog(@"Clean Up Writer");
 }
 
 - (void)dealloc {
 	[self cleanupWriter];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationDidBecomeActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationWillResignActiveNotification object:nil];
-
-    
-    [super dealloc];
+   
 }
 
 - (NSURL*) tempFileURL {
-	self.outputPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], @"output.mp4"];
+    int ran = arc4random()%100* arc4random();
+	self.outputPath = [[NSString alloc] initWithFormat:@"%@/temp_piece%d.mp4", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0],ran];
 	NSURL* outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	if ([fileManager fileExistsAtPath:outputPath]) {
@@ -166,10 +246,11 @@ BOOL paused;
 		}
 	}
 	
-	return [outputURL autorelease];
+	return outputURL;
 }
 
 -(BOOL) setUpWriter {
+    NSLog(@"Set Up Writer");
 	NSError* error = nil;
 	videoWriter = [[AVAssetWriter alloc] initWithURL:[self tempFileURL] fileType:AVFileTypeQuickTimeMovie error:&error];
 	NSParameterAssert(videoWriter);
@@ -186,32 +267,85 @@ BOOL paused;
 								   videoCompressionProps, AVVideoCompressionPropertiesKey,
 								   nil];
 	
-	videoWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings] retain];
+	videoWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
 	
 	NSParameterAssert(videoWriterInput);
 	videoWriterInput.expectsMediaDataInRealTime = YES;
 	NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
 									  [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];
 	
-	avAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
+	avAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes];
 	
 	//add input
 	[videoWriter addInput:videoWriterInput];
 	[videoWriter startWriting];
 	[videoWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
-	
+	[delegate recordingStartedNotification];
 	return YES;
 }
 
 - (void) completeRecordingSession {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	
+    @autoreleasepool {
+        
+ 
+
+	@try {
+        [videoWriterInput markAsFinished];
+    }
+    @catch (NSException *exception) {
+        NSLog(@" Mark as Finished Failed: %@",[exception debugDescription]);
+    }
+    @finally {
+        
+    }
+	
+	
+	// Wait for the video
+	int status = videoWriter.status;
+	while (status == AVAssetWriterStatusUnknown) {
+		[NSThread sleepForTimeInterval:0.5f];
+		status = videoWriter.status;
+	}
+
+		[videoWriter finishWritingWithCompletionHandler:^{
+        [self cleanupWriter];
+        id delegateObj = self.delegate;
+//        int ran = arc4random()%100* arc4random();
+//   
+//        self.outputPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], self.outputPath];
+//            DebugLog(@" OUTPUT PATH %@  ",self.outputPath);
+//            
+//        NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
+//   
+//            
+            
+            BOOL success = true;
+        
+             if(videoWriter.status == AVAssetWriterStatusFailed)
+             {
+                 success = false;
+             }
+            
+            if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
+                [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:nil waitUntilDone:YES];
+            }
+        
+        }];
+	}
+}
+
+
+- (void) legacyCompleteRecordingSession {
+    @autoreleasepool {
+        
+    
 	
 	[videoWriterInput markAsFinished];
 	
 	// Wait for the video
 	int status = videoWriter.status;
 	while (status == AVAssetWriterStatusUnknown) {
-		NSLog(@"Waiting...");
 		[NSThread sleepForTimeInterval:0.5f];
 		status = videoWriter.status;
 	}
@@ -232,12 +366,11 @@ BOOL paused;
 		if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
 			[delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:(success ? outputURL : nil) waitUntilDone:YES];
 		}
-		
-		[outputURL release];
-	}
-	
-	[pool drain];
+      }
+   }
 }
+
+
 
 - (bool) startRecording {
  
@@ -245,12 +378,10 @@ BOOL paused;
 	@synchronized(self) {
 		if (! _recording) {
 			result = [self setUpWriter];
-			startedAt = [[NSDate date] retain];
+			startedAt = [NSDate date];
 			_recording = true;
-            NSLog(@"Started Recording");
 		}
 	}
-	
 	return result;
 }
 
@@ -258,8 +389,13 @@ BOOL paused;
 	@synchronized(self) {
 		if (_recording) {
 			_recording = false;
-			[self completeRecordingSession];
-		}
+            if([videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
+                [self completeRecordingSession];
+            }
+            else if([videoWriter respondsToSelector:@selector(finishWriting)]){
+                [self legacyCompleteRecordingSession];
+            }
+        }
 	}
 }
 
@@ -272,9 +408,8 @@ BOOL paused;
 	}
 	else {
 		@synchronized (self) {
-			UIImage* newFrame = [self.currentScreen retain];
+			UIImage* newFrame = self.currentScreen;
 			CVPixelBufferRef pixelBuffer = NULL;
-                  
 			CGImageRef cgImage = CGImageCreateCopy([newFrame CGImage]);
 			CFDataRef image = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
 			
@@ -294,7 +429,6 @@ BOOL paused;
                         NSLog(@"Warning:  Unable to write buffer to video");
             }
 			//clean up
-			[newFrame release];
 			CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
 			CVPixelBufferRelease( pixelBuffer );
 			CFRelease(image);
@@ -302,5 +436,90 @@ BOOL paused;
 		}		
 	}	
 }
+
+//Handling Video Preview
+-(void)addVideoPreview{
+    if(![[csm captureSession]isRunning])
+    {
+        [csm addVideoInputFrontCamera:YES];
+        [csm addVideoOutput];
+        [[csm captureSession] startRunning];
+
+    }
+}
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
+{
+    // Create a UIImage from the sample buffer data
+    UIImage * im = [self imageFromSampleBuffer:sampleBuffer];
+    if(self.rotatePreview)
+    {
+        im = [im imageRotatedByDegrees:180.0];
+    }
+    self.vi = im;
+    [delegate previewUpdated:vi]
+    ;}
+
+
+- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer
+{
+      // Get a CMSampleBuffer's Core Video image buffer for the media data
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    // Lock the base address of the pixel buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    // Get the number of bytes per row for the pixel buffer
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    // Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    // Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    //NSLog(@"%zu %zu %zu",width,height,bytesPerRow);
+    
+    
+    // Create a device-dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
+    CGContextConcatCTM(context, flipVertical);
+    
+    //videoPreviewImage = quartzImage;
+    //CGImageRelease(quartzImage);
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    
+    
+    // Create an image object from the Quartz image
+    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    
+    // Release the Quartz image
+    CGImageRelease(quartzImage);
+    
+    return (image);
+}
+
+-(void)switchCamera{
+    [csm addVideoInputFrontCamera:!csm.front];
+}
+
+-(void)removeVideoPreview{
+    [[csm captureSession] stopRunning];
+}
+
+
+
 
 @end

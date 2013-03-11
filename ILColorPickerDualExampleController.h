@@ -9,11 +9,23 @@
 #import <UIKit/UIKit.h>
 #import "ILSaturationBrightnessPickerView.h"
 #import "ILHuePickerView.h"
+@protocol ColorDelegate
+-(void) colorPicked: (UIColor *) color forView: (int) viewIndex;
+
+
+@end
 
 @interface ILColorPickerDualExampleController : UIViewController<ILSaturationBrightnessPickerViewDelegate> {
     IBOutlet UIView *colorChip;
     IBOutlet ILSaturationBrightnessPickerView *colorPicker;
     IBOutlet ILHuePickerView *huePicker;
 }
+
+@property(nonatomic,assign)id <ColorDelegate> delegate;
+@property(assign) int operationType;
+
+- (IBAction)setColorByTapping:(id)sender;
+
+
 
 @end

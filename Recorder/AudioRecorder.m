@@ -16,7 +16,8 @@ NSMutableDictionary * recordSetting;
 AVAudioRecorder * recorder;
 
 - (void) startRecording{
-    
+    self.ready = NO;
+    NSLog(@"Audio Session Started ");
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     NSError *err = nil;
     [audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
@@ -30,22 +31,29 @@ AVAudioRecorder * recorder;
         NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
         return;
     }
-    
+    // Different Settings for Recording
     recordSetting = [[NSMutableDictionary alloc] init];
     
-    [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
-    //[recordSetting setValue :[NSNumber numberWithInt:kAudioFormat forKey:AVFormatIDKey];
-
-    [recordSetting setValue:[NSNumber numberWithFloat:16000.0] forKey:AVSampleRateKey]; 
+//    [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
+//    [recordSetting setValue:[NSNumber numberWithFloat:16000.0] forKey:AVSampleRateKey]; 
+//    [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
+//    
+//    [recordSetting setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
+//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
+    [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+    [recordSetting setValue:[NSNumber numberWithFloat:32000.0] forKey:AVSampleRateKey];
     [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
     
-    [recordSetting setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
-    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
+//    [recordSetting setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
+//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
     
-     self.recorderFilePath = [NSString stringWithFormat:@"%@/%@.caf", DOCUMENTS_FOLDER, @"caldate"];
+    //File Path
+    int random = arc4random()%100 * arc4random();
+    self.recorderFilePath = [NSString stringWithFormat:@"%@/%@%d.caf", DOCUMENTS_FOLDER,@"audio_piece",random];
     
-    NSURL *url = [NSURL fileURLWithPath:recorderFilePath];
+    NSURL *url = [NSURL fileURLWithPath:self.recorderFilePath];
     err = nil;
     recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
     if(!recorder){
@@ -65,7 +73,17 @@ AVAudioRecorder * recorder;
     [recorder prepareToRecord];
     recorder.meteringEnabled = YES;
     
-    BOOL audioHWAvailable = audioSession.inputIsAvailable;
+    
+    BOOL audioHWAvailable = false;// = audioSession.inputAvailable;
+    if([audioSession respondsToSelector:@selector(inputAvailable)])
+    {
+        audioHWAvailable = audioSession.inputAvailable;
+    }
+    else if([audioSession respondsToSelector:@selector(inputIsAvailable)])
+    {
+        audioHWAvailable = audioSession.inputIsAvailable;
+    }
+
     if (! audioHWAvailable) {
         UIAlertView *cantRecordAlert =
         [[UIAlertView alloc] initWithTitle: @"Warning"
@@ -85,35 +103,20 @@ AVAudioRecorder * recorder;
     
     [recorder stop];
     
-    NSLog(@"Recorder stop path %@",recorderFilePath);
-    
-    NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
+    NSURL *url = [NSURL fileURLWithPath: self.recorderFilePath];
     NSError *err = nil;
     NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
+    
     if(!audioData)
         NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-   // [editedObject setValue:[NSData dataWithContentsOfURL:url] forKey:editedFieldKey];   
-    
-    //[recorder deleteRecording];
-    
-    
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    err = nil;
-    [fm removeItemAtPath:[url path] error:&err];
-    if(err)
-        NSLog(@"File Manager: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-    
-    
-
-    
 }
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag
 {
- 
-    NSLog (@"audioRecorderDidFinishRecording:successfully:");
-    // your actions here
+    
+    NSLog (@"audioRecorderDidFinishRecording:successfully: %d",flag);
+
+    self.ready = YES;
     
 }
 

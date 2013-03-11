@@ -12,6 +12,8 @@
 @synthesize delegate;
 @synthesize image;
 @synthesize screen_id;
+
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];

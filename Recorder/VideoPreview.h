@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface VideoPreview : NSObject
+@interface VideoPreview : UIView
+@property BOOL fullScreen;
+
+@property(nonatomic,strong) UIImageView * previewImageView;
+@property  (nonatomic,assign)  id  target;
+@property int width;
+@property int height;
+
+-(CGRect )adjustToFullScreen:(BOOL)_fullScreen;
 
 @end

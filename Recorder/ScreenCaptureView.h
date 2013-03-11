@@ -10,9 +10,11 @@
  * of nil if the recording failed/could not be saved.
  */
 @protocol ScreenCaptureViewDelegate <NSObject>
-- (void) recordingFinished:(NSString*)outputPathOrNil;
--(void) recordingInterrupted;
-
+- (void) recordingFinished:(BOOL)success;
+- (void) recordingInterrupted;
+- (void) recordingStartedNotification;
+@optional
+-(void)previewUpdated:(UIImage *)img;
 @end
 
 /**
@@ -37,8 +39,8 @@
  *  - QuartzCore
  *
  */
-
-@interface ScreenCaptureView : UIView {
+#import "CaptureSessionManager.h"
+@interface ScreenCaptureView : UIView<AVCaptureVideoDataOutputSampleBufferDelegate, UIGestureRecognizerDelegate> {
 	//video writing
 	AVAssetWriter *videoWriter;
 	AVAssetWriterInput *videoWriterInput;
@@ -49,12 +51,16 @@
 	NSDate* startedAt;
 	void* bitmapData;
     NSString *outputPath;
- 
 }
 
 //for recording video
 - (bool) startRecording;
 - (void) stopRecording;
+
+//
+-(void)addVideoPreview;
+-(void)removeVideoPreview;
+-(void)switchCamera;
 
 //for accessing the current screen and adjusting the capture rate, etc.
 @property(retain) UIImage* currentScreen;
@@ -62,5 +68,13 @@
 @property(nonatomic, assign) id<ScreenCaptureViewDelegate> delegate;
 @property(nonatomic,retain) NSString *outputPath;
 @property(nonatomic,strong) PaintView * paintView;
+@property(nonatomic,strong) UIImage * vi;
+@property(nonatomic,strong) UIImageView * imgView;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+@property(nonatomic,strong) CaptureSessionManager * csm;
+@property CGRect  videoPreviewFrame;
+@property BOOL fullScreen;
+@property BOOL rotatePreview;
+
 
 @end

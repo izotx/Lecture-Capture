@@ -5,15 +5,78 @@
 //  Created by Janusz Chudzynski on 4/27/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
+/*
+    P L A N
+
+    1. When Start - create a part + randomName
+    2. Store it in movieNameArray
+    3. Pause -> save a part
+    4. Create a new part
+    5 End - Combine all movies sounds
+ 
+ 
+*/
+
+CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 #import "RecorderViewController.h"
 #import "AppDelegate.h"
-#import "UIImageAddition.h"
+
 #import "Utilities.h"
 #import "UIImage+Resize.h"
+#import "VideoPreview.h"
+
 
 #define FRAME_RATE 10
+
+@interface UIImage (Extras)
+- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
+@end;
+@implementation UIImage (Extras)
+- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
+{
+    // calculate the size of the rotated view's containing box for our drawing space
+    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
+    CGAffineTransform t = CGAffineTransformMakeRotation(DegreesToRadians(degrees));
+    rotatedViewBox.transform = t;
+    CGSize rotatedSize = rotatedViewBox.frame.size;
     
+    
+    // Create the bitmap context
+    UIGraphicsBeginImageContext(rotatedSize);
+    CGContextRef bitmap = UIGraphicsGetCurrentContext();
+    
+    // Move the origin to the middle of the image so we will rotate and scale around the center.
+    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+    
+    //   // Rotate the image context
+    CGContextRotateCTM(bitmap, DegreesToRadians(degrees));
+    
+    // Now, draw the rotated/scaled image into the context
+    CGContextScaleCTM(bitmap, 1.0, -1.0);
+    CGContextDrawImage(bitmap, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
+    
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+    
+}
+@end
+
+@interface NonRotatingUIImagePickerController : UIImagePickerController
+
+@end
+
+@implementation NonRotatingUIImagePickerController
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+@end
+
+
 @interface RecorderViewController ()
 {
     CMTime frameDuration;
@@ -28,23 +91,36 @@
     
     NSTimer * recordFramesTimer;
     NSTimer * durationTimer;
-    
-  //  PaintView * paintView;
+
+    UIImageView * preview;
     AudioRecorder * ar;
     BOOL interrupted;
+    BOOL recordingStarted;
+    BOOL paused;
+    BOOL ready;
+    
     int frameCounter;
     __weak IBOutlet UILabel *durationLabel;
     NSMutableArray * scrollViewScreenshots;
+    NSMutableArray * moviePieces;
+    NSMutableArray * audioPieces;
+    
+
     ILColorPickerDualExampleController * cp;
+    VideoPreview * vp;
+    
     
 }
+@property (strong, nonatomic) IBOutlet UILabel *informationLabel;
 
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
 - (IBAction)makeScreenShot:(id)sender;
 -(NSString* ) timeConverter:(int)durationInSeconds;
--(void)putTogether;
-- (IBAction)startOrPauseRecording:(id)sender;
+-(IBAction)finishRecording:(id)sender;
+- (IBAction)addVideoPreview:(id)sender;
+-(void)putFilesTogether;
+    
 
 @property(nonatomic, assign) BOOL bannerIsVisible;
 
@@ -55,7 +131,9 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize bannerView;
 @synthesize bannerIsVisible;
-
+@synthesize eraseMode;
+@synthesize toolbar;
+@synthesize colorBarButton;
 #pragma mark helper
 -(NSString* ) timeConverter:(int)durationInSeconds{
     Utilities * u = [[Utilities alloc]init];
@@ -64,23 +142,64 @@
 
 
 #pragma mark delegate
-- (void) recordingFinished:(NSString*)outputPathOrNil{
-    if(outputPathOrNil)
-    {
-          [self putTogether];
-    }
+- (void) recordingFinished:(BOOL)success{
+       ready = YES;
 }
 
 -(void)recordingInterrupted{
-    DebugLog(@"Recording Interreptuded ");
-    [recordingScreenView performSelector:@selector(stopRecording)];
-    [ar performSelector:@selector(stopRecording)];
+//    [recordingScreenView performSelector:@selector(stopRecording)];
+//    [ar performSelector:@selector(stopRecording)];
+//    
+//    interrupted = YES;
+//    ready = NO;
+//    
+//    if([durationTimer isValid])
+//    {
+//        [durationTimer invalidate];
+//    }
+//
+//    [recordingScreenView removeVideoPreview];
+//    [self dismiss];
     interrupted = YES;
-    if([durationTimer isValid])
-    {
-        [durationTimer invalidate];
-    }
+    [self pauseRecording:nil];
 
+}
+
+- (void) recordingStartedNotification{
+    DebugLog(@"Recording Started ");
+    
+    if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
+        NSString * lastObject;
+        lastObject = [audioPieces lastObject];
+        
+        if([ar.recorderFilePath isEqualToString:lastObject])
+        {
+          
+            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
+        }
+        else{
+            [audioPieces addObject:ar.recorderFilePath];
+        }
+        
+         lastObject = [moviePieces lastObject];
+        if([recordingScreenView.outputPath isEqualToString:lastObject])
+        {
+          //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
+        }
+        else{
+             [moviePieces addObject:recordingScreenView.outputPath];
+        }
+        if(![durationTimer isValid]){
+            durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
+        
+            NSRunLoop *runner = [NSRunLoop currentRunLoop];
+            [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
+            [self.informationLabel removeFromSuperview];
+        }
+    }
+    else{
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
+    }
 }
 
 - (void)viewDidLoad
@@ -90,17 +209,20 @@
     frameCounter =0;
     documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     scrollViewScreenshots =[[NSMutableArray alloc]initWithCapacity:0];
-    
     recordingScreenView.delegate=self;
+    recordingStarted = NO;
     
     [scrollView setContentSize:scrollView.frame.size];
     ar = [[AudioRecorder alloc]init];
-    [self startOrPauseRecording:nil];  
-
     bannerIsVisible = NO;
-    
+    vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
-        cp.delegate = self;    
+        cp.delegate = self;
+
+    moviePieces = [[NSMutableArray alloc]initWithCapacity:0];
+    audioPieces=  [[NSMutableArray alloc]initWithCapacity:0];
+    ready = YES;
+    paused = NO;
 }
 
 - (void)viewDidUnload
@@ -109,62 +231,154 @@
     durationLabel = nil;
     recordingScreenView = nil;
     scrollView = nil;
-    stopOrRecordButton = nil;
      activityIndicator = nil;
     [self setBannerView:nil];
     backgroundView = nil;
+    [self setToolbar:nil];
+    [self setColorBarButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
-	
+-(void)viewDidAppear:(BOOL)animated{
+    [self manageOrientationChanges];
+//    NSMutableArray * a = [NSMutableArray arrayWithCapacity:0];
+//    [a addObject:@"1_output.mov"];
+//    [a addObject:@"2_output.mov"];
+//    
+//    
+//   [self putFilesTogether:a];
+    
 }
 
 
-- (IBAction)startOrPauseRecording:(id)sender {
-    if([[stopOrRecordButton titleForState:UIControlStateNormal]isEqualToString:@"Record"]||sender==nil)
-    {
-        [stopOrRecordButton setTitle:@"Done" forState:UIControlStateNormal];
-           
-       [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:1.0];
-       [ar performSelector:@selector(startRecording) withObject:nil afterDelay:1.0];
-        durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    //We need to rotate the preview:
+    
+    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
+}
 
-        NSRunLoop *runner = [NSRunLoop currentRunLoop];
-        [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
-    }    
+- (NSUInteger) supportedInterfaceOrientations
+{
+    //Because your app is only landscape, your view controller for the view in your
+    // popover needs to support only landscape
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
+    [self manageOrientationChanges];
+}
+
+
+-(void)manageOrientationChanges{
+      UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
+        switch (orientation) {
+        case UIDeviceOrientationLandscapeLeft:
+            {
+                if(recordingScreenView.csm.front==NO){
+                  recordingScreenView.rotatePreview = NO;
+                }
+                else
+                {
+                   recordingScreenView.rotatePreview = YES; 
+                }
+               
+                break;}
+        case UIDeviceOrientationLandscapeRight:
+            {
+                if(recordingScreenView.csm.front==NO){
+                    recordingScreenView.rotatePreview = YES;
+                }
+                else{
+                    recordingScreenView.rotatePreview = NO;
+                }
+                
+                
+                 break;
+            }
+            default:
+            break;
+    }
+}
+
+
+-(IBAction)finishRecording:(id)sender
+{
+    if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
+    UIView  * v = [[UIView alloc]initWithFrame:self.view.bounds];
+    v.backgroundColor = [UIColor grayColor];
+    [self.view addSubview:v];
+    [v addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
+    if([durationTimer isValid]){
+        [durationTimer invalidate];
+        durationTimer =NULL;
+    }
+    [recordingScreenView performSelector:@selector(stopRecording)];
+    [ar performSelector:@selector(stopRecording)];
+
+    if(ready==NO){
+        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
+        NSLog(@"Not Ready");
+    }
     else{
-        [stopOrRecordButton setTitle:@"Record" forState:UIControlStateNormal]; 
-        if([durationTimer isValid]){
-            [durationTimer invalidate];
-            durationTimer =NULL;
+        NSLog(@"Ready");
+        [self putFilesTogether];
+       // [self mergeAllselectedVideos];
+      }
+    }
+    else{
+        [self dismissMe:nil];
+    }
+}
+
+-(IBAction)startRecording:(id)sender
+{
+    if(paused==YES||recordingStarted==NO){
+     if(!ready)
+      {
+        self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
+          NSLog(@"Not ready yet");
+      }
+     else
+        {
+        [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:1.0];
+        [ar performSelector:@selector(startRecording) withObject:nil afterDelay:1.0];
+        recordingStarted = YES;
+        paused = NO;
+        ready = NO; // because we need to wait for it to finish 
         }
+     }
+}
+
+-(IBAction)pauseRecording:(id)sender
+{
+    if(recordingStarted){
+    if(!paused){
         [recordingScreenView performSelector:@selector(stopRecording)];
         [ar performSelector:@selector(stopRecording)];
-        //Adding View 
-        UIView  * v = [[UIView alloc]initWithFrame:self.view.bounds];
-        v.backgroundColor = [UIColor grayColor];
-        [self.view addSubview:v];
-        [v addSubview:activityIndicator];
-        [activityIndicator startAnimating]; 
+        [self.view addSubview:self.informationLabel];
+        self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+        paused = YES;
+        if([durationTimer isValid]){
+            [durationTimer invalidate];
+            durationLabel.text = @"Recording Paused";
+        }
+        [self dismiss];//remmoving preview
     }
-    
-    
-    
+    }
 }
 
 -(void) durationTimerCallback{
     frameCounter++;
    
     NSString * time =  [self timeConverter:frameCounter];
-    
     durationLabel.text=[NSString stringWithFormat:@"Duration: %@",time];
 }
-
-
 
 - (IBAction)eraseRecording:(id)sender {
         [imageFrames removeAllObjects];
@@ -173,13 +387,12 @@
 }
 
 - (IBAction)clearBoard:(id)sender {
+    [recordingScreenView.paintView removeBackgroundPhoto];
     [recordingScreenView.paintView eraseContext];
-    
 }
 
 - (IBAction)makeScreenShot:(id)sender {
 
-//Little Calculations
     int count =  scrollViewScreenshots.count;
 
     float lastx;
@@ -221,160 +434,203 @@
     {
         scrollView.contentSize = CGSizeMake(totalWidth, scrollHeight);
     }
-    if(recordingScreenView.currentScreen)
-    {
-        NSLog(@"It Exists");
-    }
-    else {
-        NSLog(@"It doesn't exist");
-    }
+  
     testImageView.image=recordingScreenView.currentScreen;
-    
     [scrollViewScreenshots addObject:s];
-    
 }
 
-
-
-
--(void)putTogether
-{
-  
-    AVMutableComposition *mixComposition = [AVMutableComposition composition];
+//Put Together
+-(void)putFilesTogether{
+    AVMutableComposition *mixComposition = [AVMutableComposition composition]; 
     
-    NSString *audioPath = [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"caldate.caf"];
     
-    NSURL *audioUrl = [NSURL fileURLWithPath:audioPath];
-    //AVURLAsset *audioasset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
-    AVURLAsset *audioasset = [[AVURLAsset alloc]initWithURL:audioUrl options:nil];
+    AVMutableCompositionTrack *videoCompositionTrack =[[AVMutableCompositionTrack alloc]init];
+    AVMutableCompositionTrack *audioCompositionTrack =[[AVMutableCompositionTrack alloc]init];
+    videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     
-    NSString * videoPath = [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"output.mp4"];
-    
-    NSURL *videoUrl = [NSURL fileURLWithPath:videoPath];
-    AVURLAsset *videoasset = [[AVURLAsset alloc]initWithURL:videoUrl options:nil];
-    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSString *caldate = [now description];
-    NSString * pathToSave = [NSString stringWithFormat:@"%@_output.mov",caldate];
-    
-    moviepath =  [DOCUMENTS_FOLDER stringByAppendingPathComponent:pathToSave];
-    
-    NSURL *movieUrl = [NSURL fileURLWithPath:moviepath];
-    
-    if([[NSFileManager defaultManager] fileExistsAtPath:moviepath])
+    audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+        
+    NSError * error;
+    for(int i=0;i<moviePieces.count;i++)
     {
-        [[NSFileManager defaultManager] removeItemAtPath:moviepath error:nil];
+        NSFileManager * fm = [NSFileManager defaultManager];
+        NSString * movieFilePath;
+        NSString * audioFilePath;
+        movieFilePath = [moviePieces objectAtIndex:i];
+        audioFilePath = [audioPieces objectAtIndex:i];
+
+        
+        if(![fm fileExistsAtPath:movieFilePath]){
+            NSLog(@"Movie doesn't exist %@ ",movieFilePath);
+        }
+        else{
+            NSLog(@"Movie exist %@ ",movieFilePath);
+        }
+        
+        if(![fm fileExistsAtPath:audioFilePath]){
+            NSLog(@"Audio doesn't exist %@ ",audioFilePath);
+        }
+        else{
+            NSLog(@"Audio exists %@ ",audioFilePath);
+        }
+        
+        
+       NSURL *videoUrl = [NSURL fileURLWithPath:movieFilePath];
+       NSURL *audioUrl = [NSURL fileURLWithPath:audioFilePath];
+        
+        
+        AVURLAsset *videoasset = [[AVURLAsset alloc]initWithURL:videoUrl options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey]];
+        AVAssetTrack *videoAssetTrack= [[videoasset tracksWithMediaType:AVMediaTypeVideo] lastObject];
+
+        AVURLAsset *audioasset = [[AVURLAsset alloc]initWithURL:audioUrl options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey]];
+        AVAssetTrack *audioAssetTrack= [[audioasset tracksWithMediaType:AVMediaTypeAudio] lastObject];
+
+        
+        
+        CMTime tempDuration = mixComposition.duration;
+        
+        
+        [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioasset.duration) ofTrack:audioAssetTrack atTime:tempDuration error:&error];
+      
+        [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoasset.duration) ofTrack:videoAssetTrack atTime:tempDuration error:&error];
+        
+        if(error)
+        {
+            NSLog(@"Ups. Something went wrong! %@", [error debugDescription]);
+        }
     }
     
-    AVMutableCompositionTrack *compositionTrackB = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVAssetTrack *clipVideoTrackB = [[videoasset tracksWithMediaType:AVMediaTypeVideo] lastObject];
-    [compositionTrackB insertTimeRange:CMTimeRangeMake( kCMTimeZero, videoasset.duration)  ofTrack:clipVideoTrackB atTime:kCMTimeZero error:nil];
     
-    CMTime d =    videoasset.duration;
-       CMTimeValue val = videoasset.duration.value;
- 
-    
-    
-    
-    AVMutableCompositionTrack *compositionTrackA = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVAssetTrack *clipAudioTrackA = [[audioasset tracksWithMediaType:AVMediaTypeAudio] lastObject];
-    [compositionTrackA insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioasset.duration)  ofTrack:clipAudioTrackA atTime:kCMTimeZero error:nil];
-    
+    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSString *caldate = [now description];
 
+    float ran = arc4random()%100;
+    NSString * pathToSave = [NSString stringWithFormat:@"Output_Date:%@_%f.mov",caldate,ran];
+    pathToSave =[DOCUMENTS_FOLDER stringByAppendingPathComponent:pathToSave];
+    NSURL *movieUrl = [NSURL fileURLWithPath:pathToSave];
+    
     AVAssetExportSession *exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetPassthrough];
-    //AVAssetExportSession *exporter =[AVAssetExportSession exportSessionWithAsset:mixComposition presetName:AVAssetExportPresetLowQuality];
-    NSParameterAssert(exporter!=nil);
+   // exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+   //exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
     exporter.outputFileType=AVFileTypeQuickTimeMovie;
     exporter.outputURL=movieUrl;
     exporter.shouldOptimizeForNetworkUse=YES;
-CMTime start=CMTimeMake(0, 600);
-CMTime duration=CMTimeMake(val, 600);
-CMTimeRange range=CMTimeRangeMake(start, duration);
-exporter.timeRange=range;
-
-[exporter exportAsynchronouslyWithCompletionHandler:^{ 
-    switch ([exporter status]) {
-        case AVAssetExportSessionStatusFailed:{
-            NSLog(@"Export failed: %@", [[exporter error] localizedDescription]);
-            NSString * message = @"Movie wasn't created. Try again later.";
-            [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
-            break;}
-        case AVAssetExportSessionStatusCancelled:{ NSLog(@"Export canceled");
-            NSString * message1 = @"Movie wasn't created. Try again later.";
-            [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message1 waitUntilDone:NO];
-            break;}
-        case AVAssetExportSessionStatusCompleted: 
-        {
-            NSLog(@"MOV Video Successefully Exported!");
-            //Save to core data
-            
-            
-            
-            if(!self.managedObjectContext)
+   
+    CMTimeValue val = mixComposition.duration.value;
+    
+    CMTime start=CMTimeMake(0, 600);
+    CMTime duration=CMTimeMake(val, 600);
+    CMTimeRange range=CMTimeRangeMake(start, duration);
+    exporter.timeRange=range;
+    
+//    AVPlayerItem * item = [[AVPlayerItem alloc] initWithAsset:mixComposition];
+//    AVPlayer * player = [AVPlayer playerWithPlayerItem:item];
+//    AVPlayerLayer * layer = [AVPlayerLayer playerLayerWithPlayer:player];
+//    
+//    [layer setFrame:recordingScreenView.bounds];
+//    [[recordingScreenView layer] addSublayer:layer];
+//    [player play];
+    
+    
+    
+    
+    [exporter exportAsynchronouslyWithCompletionHandler:^{
+        switch ([exporter status]) {
+            case AVAssetExportSessionStatusFailed:{
+                NSLog(@"Export failed: %@ %@", [[exporter error] localizedDescription],[[exporter error]debugDescription]);
+                NSString * message = @"Movie wasn't created. Try again later.";
+                [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
+                break;}
+            case AVAssetExportSessionStatusCancelled:{ NSLog(@"Export canceled");
+                NSString * message1 = @"Movie wasn't created. Try again later.";
+                [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message1 waitUntilDone:NO];
+                break;}
+            case AVAssetExportSessionStatusCompleted:
             {
-                NSLog(@"Managed Object COntext doesnt exist");
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                self.managedObjectContext=appDelegate.managedObjectContext;
+                NSString * message = @"Movie was successfully created.";
+                CMTime duration = mixComposition.duration;
                 
+                [self saveData:duration ofPath:pathToSave];
+                [self cleanFiles];
+                [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
             }
-            int durationInSeconds = CMTimeGetSeconds(d);
-            NSString* time =    [self timeConverter:durationInSeconds];
-            //Calculating size 
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:moviepath error:nil];
-            NSString *fileSize;
-            if(fileAttributes != nil)
-            {
-             fileSize = [fileAttributes objectForKey:NSFileSize];
-                float fileSizeMB = [fileSize intValue]/1024.0/1024.0;
-                NSLog(@"File Size is: %@ %f",fileSize,fileSizeMB);
-                fileSize=[NSString stringWithFormat:@"%.1f MB",fileSizeMB];
-            }
-            else{
-            fileSize=@"";
-            }
-            
-            
-            Video * videoObject= [NSEntityDescription insertNewObjectForEntityForName:@"Video" inManagedObjectContext:self.managedObjectContext];
-            videoObject.video_path= pathToSave;
-            videoObject.title=self.movie_title;
-            videoObject.duration =time;
-            videoObject.video_size=fileSize;
-
-            NSError * error=nil;
-            [self.managedObjectContext save:&error];
-            if(error==nil)
-            {
-                NSLog(@"Data Saved");
-            }
-            else{
-                NSLog(@"Error %@",[error debugDescription]);
-            }
-             NSString * message = @"Processing the recording. It will appear in the list on your left soon.";
-             [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
-
-            break;
-        }
-
-        default:
-            break;
-    } 
-}];   
+        }}];
 }
 
+//self clean files
+-(void)cleanFiles{
+    NSFileManager * fm = [NSFileManager  defaultManager];
+    NSError * error = nil;
+    for(NSString * path in moviePieces){
+       [fm removeItemAtPath:path error:&error];
+    }
+    for(NSString * path in audioPieces){
+        [fm removeItemAtPath:path error:&error];
+    }
+    if(error){
+        NSLog(@"Error While deleting file pieces: %@",[error debugDescription]);
+    }
+    
+}
 
-
+//Save to Core Data
+-(BOOL)saveData:(CMTime)d ofPath:(NSString * )pathToSave{
+    if(!self.managedObjectContext)
+    {
+        NSLog(@"Managed Object Context doesnt exist");
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        self.managedObjectContext=appDelegate.managedObjectContext;
+    }
+    int durationInSeconds = CMTimeGetSeconds(d);
+    NSString* time =    [self timeConverter:durationInSeconds];
+    //Calculating size
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:pathToSave error:nil];
+    NSString *fileSize;
+    if(fileAttributes != nil)
+    {
+        fileSize = [fileAttributes objectForKey:NSFileSize];
+        float fileSizeMB = [fileSize intValue]/1024.0/1024.0;
+        NSLog(@"File Size is: %@ %f",fileSize,fileSizeMB);
+        fileSize=[NSString stringWithFormat:@"%.1f MB",fileSizeMB];
+    }
+    else{
+        fileSize=@"";
+    }
+    
+    
+    Video * videoObject= [NSEntityDescription insertNewObjectForEntityForName:@"Video" inManagedObjectContext:self.managedObjectContext];
+    videoObject.video_path= pathToSave;
+    videoObject.title=self.movie_title;
+    videoObject.duration =time;
+    videoObject.video_size=fileSize;
+    
+    
+    
+    NSError * error=nil;
+    [self.managedObjectContext save:&error];
+    if(error==nil)
+    {
+        NSLog(@"Data Saved");
+        return YES;
+    }
+    else{
+        NSLog(@"Error %@",[error debugDescription]);
+        return NO;
+    }
+}
 
 -(void)dismissMe:(NSString *) message{
     [activityIndicator stopAnimating];
-     
+    if(message){
     UIAlertView * alert= [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alert show];
-    
+    }
     if(interrupted){
-        [self dismissModalViewControllerAnimated:NO];
+        [self dismissViewControllerAnimated:NO completion:nil];
     }
     else{
-        [self dismissModalViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 #pragma  mark iAD
@@ -389,6 +645,7 @@ exporter.timeRange=range;
         self.bannerIsVisible = YES;
 
     }
+
 }
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
@@ -403,34 +660,21 @@ exporter.timeRange=range;
     }
 }
 
-
-
 #pragma mark screen shot delegate
-
 - (void) screenshotTapTwice:(UIImage *)im{
     [recordingScreenView.paintView eraseContext];
     [recordingScreenView.paintView setBackgroundPhotoImage:im];
-    
 }
             
-
-
-- (IBAction)cancelExporting:(id)sender {
-}
-
 - (IBAction)changeBrushSize:(id)sender {
     float val = [(UISlider *)sender value];
-  
     [recordingScreenView.paintView setSizeOfBrush:val];
-    
 }
 
 #pragma mark COLOR 
 
 - (IBAction)pickColorFor:(id)sender {
     int tag = [sender tag];
-    
-    NSLog(@"Change tag to %d",tag);
     cp.operationType= tag;
 
     if(!colorPopover){
@@ -440,10 +684,11 @@ exporter.timeRange=range;
     
     if(cp.operationType ==10)
     {
-        [colorPopover presentPopoverFromRect:cameraBarButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+        [colorPopover presentPopoverFromBarButtonItem:colorBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
     }
     else{
-    [colorPopover presentPopoverFromRect:[sender frame] inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+       [colorPopover presentPopoverFromBarButtonItem:colorBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
   }
 
@@ -465,9 +710,8 @@ exporter.timeRange=range;
 #pragma mark adding image
 - (void) imagePickerControllerDidCancel: (UIImagePickerController *) picker {
     
-    NSLog(@"Cancel ");
-    [[picker parentViewController] dismissModalViewControllerAnimated: YES];
-    [picker dismissModalViewControllerAnimated:YES];
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    [[picker parentViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark camera
@@ -481,7 +725,7 @@ exporter.timeRange=range;
         return NO;
     }
     
-    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+    UIImagePickerController *cameraUI = [[NonRotatingUIImagePickerController alloc] init];
     cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
     
     // Displays a control that allows the user to choose picture or
@@ -495,9 +739,10 @@ exporter.timeRange=range;
     cameraUI.allowsEditing = YES;
     cameraUI.delegate = self;
     if(!cameraPopover.isPopoverVisible){
-            cameraPopover=[[UIPopoverController alloc]initWithContentViewController:cameraUI];
-        [cameraPopover presentPopoverFromRect:cameraBarButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];    
-        }
+        cameraPopover=[[UIPopoverController alloc]initWithContentViewController:cameraUI];
+        [cameraPopover presentPopoverFromBarButtonItem:cameraBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        
+    }
     return YES;
 }
 
@@ -511,7 +756,7 @@ exporter.timeRange=range;
         [alert show];   
         return NO;
     }
-    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+    UIImagePickerController *cameraUI = [[NonRotatingUIImagePickerController alloc] init];
     cameraUI.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
     // Displays a control that allows the user to choose picture or
@@ -525,7 +770,7 @@ exporter.timeRange=range;
     cameraUI.delegate = self;
     if(!cameraPopover.isPopoverVisible){
         cameraPopover=[[UIPopoverController alloc]initWithContentViewController:cameraUI];
-        [cameraPopover presentPopoverFromRect:cameraBarButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+       [cameraPopover presentPopoverFromBarButtonItem:cameraBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         
         
         }
@@ -556,10 +801,9 @@ exporter.timeRange=range;
         }
         
     }
-    NSLog(@"picker did finish");
     [self performSelectorInBackground:@selector(useImage:) withObject:imageToSave];  
 
-    [picker dismissModalViewControllerAnimated:YES];
+    [picker dismissViewControllerAnimated:YES completion:nil];
     [cameraPopover dismissPopoverAnimated:YES];
 }
 
@@ -568,7 +812,7 @@ exporter.timeRange=range;
 -(void)useImage:(UIImage *)image
     {
         CGSize size = CGSizeMake(recordingScreenView.paintView.frame.size.width, recordingScreenView.paintView.frame.size.height);
-        UIImage * im = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:size interpolationQuality:kCGInterpolationHigh];
+        UIImage * im = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:size interpolationQuality:kCGInterpolationLow];
         
         [self performSelectorOnMainThread:@selector(updateViewWithImage:) withObject:im waitUntilDone:NO];
     }
@@ -578,9 +822,44 @@ exporter.timeRange=range;
 }
      
 
-- (IBAction)takePhoto:(id)sender {
-    photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"New Photo", @"Photo Library", @"Background Color",@"Remove Background Photo", nil];
+- (IBAction)changeBackground:(id)sender {
+    photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"New Photo", @"Photo Library", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
     [photoAction showInView:self.view];
+}
+
+- (IBAction)eraserOnOff:(id)sender {
+  
+    eraseMode = !recordingScreenView.paintView.eraseMode;
+    recordingScreenView.paintView.eraseMode = eraseMode;
+//Very Error Prone. Change the Bar Button Item based on it's index.
+
+    //Record Flex Erase
+    //
+    
+    NSMutableArray * buttons =[[NSMutableArray alloc]initWithArray:toolbar.items ];
+   
+    UIBarButtonItem * stopErasing =  [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"delete_24.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(eraserOnOff:)];
+     UIBarButtonItem * erase =  [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"delete_24.png"] style:UIBarButtonItemStylePlain target:self action:@selector(eraserOnOff:)];
+   
+    int index = buttons.count -3;
+    [buttons removeObjectAtIndex:index];
+    if(eraseMode){
+       [buttons insertObject:stopErasing atIndex:index];
+        
+    }
+    else{
+        [buttons insertObject:erase atIndex:index];
+    }
+    [toolbar setItems:buttons animated:YES];
+}
+
+- (IBAction)redoAction:(id)sender {
+   // [recordingScreenView.paintView redo];
+    
+}
+
+- (IBAction)undoAction:(id)sender {
+        [recordingScreenView.paintView undo];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -601,19 +880,79 @@ exporter.timeRange=range;
             b.tag=10;
             [self pickColorFor:b];
         }
-        else if(buttonIndex==4) // Remove Photo
+        else if(buttonIndex==4)
+        {
+            [recordingScreenView.paintView setBackgroundPhotoImage:[UIImage imageNamed:@"linepaper"]];
+        }
+        else if(buttonIndex==5)
+        {
+            [recordingScreenView.paintView setBackgroundPhotoImage:[UIImage imageNamed:@"graphpaper"]];        }
+        else if(buttonIndex==6) // Remove Photo
         {
             [recordingScreenView.paintView removeBackgroundPhoto];
         }
     }
 }
 
+
+
 - (void)didReceiveMemoryWarning{
   
     NSLog(@"Memory Managements");
-      [super didReceiveMemoryWarning];
+    [super didReceiveMemoryWarning];
     
 }
+
+#pragma mark preview
+-(void)dismiss{
+    NSLog(@" Dismiss Me Recorder ");
+    [vp removeFromSuperview];
+    //stop session and etc.
+    [recordingScreenView removeVideoPreview];
+    
+}
+-(void)switchCamera
+{
+    [recordingScreenView switchCamera];
+}
+
+/* Resizing the Screen */
+-(void)resizeMe{
+    vp.fullScreen = !vp.fullScreen;
+    [vp adjustToFullScreen:vp.fullScreen];
+    recordingScreenView.fullScreen =vp.fullScreen;
+    recordingScreenView.videoPreviewFrame =  vp.previewImageView.frame;
+}
+
+- (IBAction)addVideoPreview:(id)sender {
+    
+    if(! [recordingScreenView.csm.captureSession isRunning]){
+        vp.backgroundColor = [UIColor grayColor];
+        vp.target = self;
+        vp.width = recordingScreenView.frame.size.width;
+        vp.height = recordingScreenView.frame.size.height;
+        [vp adjustToFullScreen:NO];
+        [recordingScreenView addVideoPreview];
+        recordingScreenView.fullScreen =NO;
+        [self.view addSubview:vp];
+      }
+}
+
+-(void)previewUpdated:(UIImage *)img{
+    [self performSelectorOnMainThread:@selector(updatePreviewWithImage:) withObject:img waitUntilDone:NO];
+
+}
+
+
+-(void)updatePreviewWithImage:(UIImage *)img{
+    recordingScreenView.videoPreviewFrame =  vp.previewImageView.frame;
+    vp.previewImageView.image = img;
+
+   // recordingScreenView.paintView.backgroundImage  =img;
+    [self manageOrientationChanges];
+}
+
+
 
 
 @end

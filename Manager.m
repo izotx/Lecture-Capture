@@ -3,8 +3,8 @@
 //  PhysicsPreparationApp
 //
 #pragma mark URL Section
-#define LOGIN_URL @"http://djmobilesoftware.com/remediator/login.php"
-#define REGISTER_URL @"http://djmobilesoftware.com/remediator/register.php"
+#define LOGIN_URL @"http://djmobilesoftware.com/screencapture/login.php"
+#define REGISTER_URL @"http://djmobilesoftware.com/screencapture/register.php"
 
 #import "Manager.h"
 @implementation Manager
@@ -12,6 +12,7 @@
 @synthesize userName;
 @synthesize loginDelegate;
 @synthesize registerDelegate;
+@synthesize logoutDelegate;
 @synthesize userId;
 static Manager* _sharedManager = nil;
 
@@ -73,8 +74,6 @@ static Manager* _sharedManager = nil;
     } else {
         // Inform the user that the connection failed.
     }
-    
-
 }
 
 
@@ -94,16 +93,22 @@ static Manager* _sharedManager = nil;
         // Create the NSMutableData to hold the received data.
         // receivedData is an instance variable declared elsewhere.
         receivedData = [NSMutableData data];
+        [loginConnection start];
     } 
     else {
         // Inform the user that the connection failed.
+        NSLog(@"Connection wasn't established");
+        
     }
+    self.loginName=login;
+    self.loginPassword=pass;
 }
 
 -(void) logOut{
     //
     self.userId =nil;
-    
+    [logoutDelegate logoutUser];
+       
 }
 
 #pragma mark request
@@ -145,6 +150,8 @@ static Manager* _sharedManager = nil;
                               JSONObjectWithData:receivedData
                               options:NSJSONReadingMutableLeaves
                               error:&error];
+        NSLog(@"Register Connection Finished %@",receivedMessage);
+       
        if(!error){
            NSNumber *successNumber = [receivedMessage  objectForKey:@"success"];
 
@@ -195,43 +202,5 @@ static Manager* _sharedManager = nil;
        }
    }    
 }
-
--(NSURLRequest *)postRequestWithURL: (NSString *)url
-
-                               data: (NSData *)data   
-                           fileName: (NSString*)fileName
-{
-    
-    // from http://www.cocoadev.com/index.pl?HTTPFileUpload
-    
-    //NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
-    
-    NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
-    [urlRequest setURL:[NSURL URLWithString:url]];
-    //[urlRequest setURL:url];
-    
-    [urlRequest setHTTPMethod:@"POST"];
-    
-    NSString *myboundary = [NSString stringWithString:@"---------------------------14737809831466499882746641449"];
-    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",myboundary];
-    [urlRequest addValue:contentType forHTTPHeaderField: @"Content-Type"];
-    
-    
-    //[urlRequest addValue: [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundry] forHTTPHeaderField:@"Content-Type"];
-    
-    NSMutableData *postData = [NSMutableData data]; //[NSMutableData dataWithCapacity:[data length] + 512];
-    [postData appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", myboundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"%@\"\r\n", fileName]dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:[[NSString stringWithString:@"Content-Type: application/octet-stream\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:[NSData dataWithData:data]];
-    [postData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", myboundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    [urlRequest setHTTPBody:postData];
-    return urlRequest;
-}
-
-
-
-
 
 @end

@@ -39,6 +39,8 @@
 
 @property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
 @property(nonatomic, assign) BOOL bannerIsVisible;
+@property(nonatomic,strong) MPMoviePlayerController *globalMoviePlayerController;
+
 @end
 
 
@@ -54,33 +56,21 @@
 @synthesize uploadingVideoLabel = _uploadingVideoLabel;
 @synthesize bannerIsVisible;
 
-#pragma mark changing view properties
-
-
-
-
-
-
-
-
 #pragma  mark iAD
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-  //  NSLog(@"Loaded");
     if (!self.bannerIsVisible)
     {
         [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
         // Assumes the banner view is just off the bottom of the screen.
         banner.frame = CGRectOffset(banner.frame, 0, +banner.frame.size.height);
         [UIView commitAnimations];
-        self.bannerIsVisible = YES;
-        
+        self.bannerIsVisible = YES;        
     }
 }
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-   // NSLog(@"Not Loaded %@", [error debugDescription]);
     if (self.bannerIsVisible)
     {
         [UIView beginAnimations:@"animateAdBannerOff" context:NULL];
@@ -129,12 +119,14 @@ if(manager.userId){
             else{
                 [request setPostValue:@"" forKey:@"Title"];
             }                
+            
+            
             //Setting  password and login
             [request setPostValue:manager.loginName forKey:@"email"];
             [request setPostValue:manager.loginPassword forKey:@"password"];
            
-           // NSLog(@"Pass %@ Login %@",manager.loginName, manager.loginPassword);
             
+            NSLog(@" Name and Password is: %@ %@ ",manager.loginName, manager.loginPassword);
             
            [request setFile:videoPath forKey:@"userfile"];
            [request setCompletionBlock:^{
@@ -308,8 +300,7 @@ if(manager.userId){
     
     webView.opaque = NO;
     webView.backgroundColor = [UIColor clearColor];
-    [webView loadHTMLString:videoHTML baseURL:nil]; 
-
+    [webView loadHTMLString:videoHTML baseURL:nil];
 }
 
 
@@ -387,19 +378,19 @@ if(manager.userId){
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [tableView beginUpdates];
-    DebugLog(@" Will Change");
+   // DebugLog(@" Will Change");
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
  
-       DebugLog(@" Did Change ");
+     //  DebugLog(@" Did Change ");
       
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-             NSLog(@"Insert Rows");
+           //  NSLog(@"Insert Rows");
            
             [tableView reloadData];
             break;
@@ -461,18 +452,28 @@ if(manager.userId){
     else{
         NSLog(@"File %@ deleted",path);
     }
-
-    
-    
 }
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
    Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
-   videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], v.video_path];
-	NSURL* outputURL = [[NSURL alloc] initFileURLWithPath:videoPath];
+
+
+    NSFileManager * fileManager = [NSFileManager defaultManager];
+    if([fileManager fileExistsAtPath:v.video_path])
+    {
+        videoPath =v.video_path;
+    }
+    else{
+        videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], v.video_path];
+    }
     
-    NSLog(@"URL is: %@ video path: %@  title: %@",outputURL,v.video_path,v.title);
+ 	NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
+    
+    
+    NSLog(@"Video Path: %@", outputURL);
+    
+   // NSLog(@"URL is: %@ video path: %@  title: %@",outputURL,v.video_path,v.title);
     videoTitleLabel.text= v.title;
    [self loadVideoWithURL:outputURL];
     currentVideo=v;
@@ -484,7 +485,63 @@ if(manager.userId){
         self.movie_url_label.text = @"Tap on the Upload Recording button to upload recording to the server.";
         self.copyURLButton.enabled=NO;
     }
+   
+//    AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:outputURL];
+//        AVPlayer * player = [AVPlayer playerWithPlayerItem:item];
+//        AVPlayerLayer * layer = [AVPlayerLayer playerLayerWithPlayer:player];
+//    
+//        [layer setFrame:self.view.bounds];
+//        [[self.view layer] addSublayer:layer];
+//        [player play];
+
+//    MPMoviePlayerController *moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:outputURL];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(moviePlaybackComplete:)
+//                                                 name:MPMoviePlayerPlaybackDidFinishNotification
+//                                               object:moviePlayerController];
+//
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(moviePlaybackChange:)
+//                                                 name:MPMoviePlayerPlaybackStateDidChangeNotification
+//                                               object:moviePlayerController];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(doneButtonClick:)
+//                                                 name:MPMoviePlayerWillExitFullscreenNotification
+//                                               object:nil];
+//    
+//
+//    
+//    moviePlayerController.view.frame = self.view.bounds;
+//     moviePlayerController.controlStyle = MPMovieControlStyleDefault;
+//    moviePlayerController.movieSourceType= MPMovieSourceTypeFile;
+//    [moviePlayerController prepareToPlay];
+//    moviePlayerController.fullscreen = NO;
+//    self.globalMoviePlayerController = moviePlayerController;
+//    
+//    [self.view addSubview:self.globalMoviePlayerController.view];
+//    [self.globalMoviePlayerController play];
 }
+
+-(void)doneButtonClick:(NSNotification*)aNotification{
+    
+}
+
+
+- (void)moviePlaybackChange:(NSNotification *)notification
+{
+  //  MPMoviePlayerController *moviePlayerController = [notification object];
+}
+
+- (void)moviePlaybackComplete:(NSNotification *)notification
+{
+     MPMoviePlayerController *moviePlayerController = [notification object];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:MPMoviePlayerPlaybackDidFinishNotification
+                                                  object:moviePlayerController];
+    [moviePlayerController.view removeFromSuperview];
+ 
+}
+
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
@@ -551,11 +608,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)video:(NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
     NSString * message;
     if(error)
-    { NSLog(@"didFinishSavingWithError: %@", error);
+    {
+        NSLog(@"didFinishSavingWithError: %@", error);
         message= [NSString stringWithFormat: @"Error. %@",[error localizedDescription]];
     }
     else{
-        message=@"We are still working on your recording. Once ready, it will appear in a table on the left in a moment. Thank you for patience.";
+        message=@"Movie was successfully saved. It can be accessed from Photos App.";
     }
         UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [al show];
@@ -613,6 +671,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (IBAction)shareURL:(id)sender {
+    NSLog(@"Share URL");
 NSString * url= [[UIPasteboard generalPasteboard]string];
 if([url length]==0)
 {
@@ -623,9 +682,11 @@ if([url length]==0)
                                           otherButtonTitles: nil];
     [alert show];
    
-}    
+   
+}
 else if([MFMailComposeViewController canSendMail])
 {
+ 
     MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
     
     mailer.mailComposeDelegate = self;
@@ -643,12 +704,14 @@ else if([MFMailComposeViewController canSendMail])
     [mailer setMessageBody:body isHTML:YES];
 
     // only for iPad
-     mailer.modalPresentationStyle = UIModalPresentationPageSheet;    
-    [self presentModalViewController:mailer animated:YES];    
+     mailer.modalPresentationStyle = UIModalPresentationPageSheet;
+    [self presentViewController:mailer animated:YES completion:nil];
+
  }
 else
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message" 
+       NSLog(@"Share URL 3");
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message"
                                                     message:@"Your device doesn't support the composer sheet" 
                                                    delegate:nil 
                                           cancelButtonTitle:@"OK" 
@@ -660,7 +723,7 @@ else
 - (IBAction)logInOrOut:(id)sender {
     UIStoryboard* sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]; 
     
-    if([self.loginBarButton title]==@"Logout")
+    if([[self.loginBarButton title] isEqualToString: @"Logout"])
     {
         NSLog(@"Logout ");
         [self.loginBarButton setTitle:@"Login"];
@@ -690,9 +753,20 @@ else
         else{
             [self.loginPopOver presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
         }
-        
     }
 }
+
+- (IBAction)editTable:(id)sender {
+    if(tableView.editing){
+        tableView.editing = NO;
+        [sender setTitle:@"Edit"];
+    }
+    else{
+        tableView.editing = YES;
+        [sender setTitle:@"Done Editing"];        
+    }
+}
+
 
 -(void)logoutUser{
     [self.loginBarButton setTitle:@"Login"];
@@ -722,8 +796,7 @@ else
 			NSLog(@"Mail not sent");
 			break;
 	}
-    
-	[self dismissModalViewControllerAnimated:YES];
+	  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark popover delegate

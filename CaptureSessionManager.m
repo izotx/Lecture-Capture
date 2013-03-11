@@ -8,21 +8,18 @@
 @synthesize stillImageOutput;
 @synthesize stillImage;
 @synthesize videoDataOutput;
+@synthesize target;
 #pragma mark Capture Session Configuration
 
 - (id)init {
 	if ((self = [super init])) {
 //		[self setCaptureSession:[[AVCaptureSession alloc] init]];//
         captureSession = [[AVCaptureSession alloc]init];
+        captureSession.sessionPreset = AVCaptureSessionPresetHigh;
 	}
 	return self;
 }
 
-- (void)addVideoPreviewLayer {
-	[self setPreviewLayer:[[[AVCaptureVideoPreviewLayer alloc] initWithSession:[self captureSession]] autorelease]];
-	[[self previewLayer] setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-  
-}
 
 - (void)addVideoInputFrontCamera:(BOOL)front {
     NSArray *devices = [AVCaptureDevice devices];
@@ -46,13 +43,24 @@
         }
     }
     
+    NSArray * array =  [captureSession inputs];
+    for (int i = 0; i<array.count; i++) {
+        if([[array objectAtIndex:i] isKindOfClass:[AVCaptureDeviceInput class]])
+        {
+            [captureSession removeInput:[array objectAtIndex:i]];
+        }
+    }
+    
     NSError *error = nil;
     
     if (front) {
         AVCaptureDeviceInput *frontFacingCameraDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:frontCamera error:&error];
+ ;
         if (!error) {
+            
             if ([[self captureSession] canAddInput:frontFacingCameraDeviceInput]) {
                 [[self captureSession] addInput:frontFacingCameraDeviceInput];
+                self.front = front;
             } else {
                 NSLog(@"Couldn't add front facing video input");
             }
@@ -62,6 +70,7 @@
         if (!error) {
             if ([[self captureSession] canAddInput:backFacingCameraDeviceInput]) {
                 [[self captureSession] addInput:backFacingCameraDeviceInput];
+                 self.front = front;
             } else {
                 NSLog(@"Couldn't add back facing video input");
             }
@@ -69,59 +78,7 @@
     }
 }
 
-- (void)addStillImageOutput 
-{
-  [self setStillImageOutput:[[[AVCaptureStillImageOutput alloc] init] autorelease]];
-  NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG,AVVideoCodecKey,nil];
-  [[self stillImageOutput] setOutputSettings:outputSettings];
-  
-  AVCaptureConnection *videoConnection = nil;
-  for (AVCaptureConnection *connection in [[self stillImageOutput] connections]) {
-    for (AVCaptureInputPort *port in [connection inputPorts]) {
-      if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
-        videoConnection = connection;
-        break;
-      }
-    }
-    if (videoConnection) { 
-      break; 
-    }
-  }
-  
-  [[self captureSession] addOutput:[self stillImageOutput]];
-}
 
-- (void)captureStillImage
-{  
-	AVCaptureConnection *videoConnection = nil;
-	for (AVCaptureConnection *connection in [[self stillImageOutput] connections]) {
-		for (AVCaptureInputPort *port in [connection inputPorts]) {
-			if ([[port mediaType] isEqual:AVMediaTypeVideo]) {
-				videoConnection = connection;
-				break;
-			}
-		}
-		if (videoConnection) { 
-      break; 
-    }
-	}
-  
-	NSLog(@"about to request a capture from: %@", [self stillImageOutput]);
-	[[self stillImageOutput] captureStillImageAsynchronouslyFromConnection:videoConnection 
-                                                       completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) { 
-                                                         CFDictionaryRef exifAttachments = CMGetAttachment(imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
-                                                         if (exifAttachments) {
-                                                           NSLog(@"attachements: %@", exifAttachments);
-                                                         } else { 
-                                                           NSLog(@"no attachments");
-                                                         }
-                                                         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];    
-                                                         UIImage *image = [[UIImage alloc] initWithData:imageData];
-                                                         [self setStillImage:image];
-                                                         [image release];
-                                                         [[NSNotificationCenter defaultCenter] postNotificationName:kImageCapturedSuccessfully object:nil];
-                                                       }];
-}
 
 -(void)addVideoOutput{
 videoDataOutput = [AVCaptureVideoDataOutput new];
@@ -136,39 +93,12 @@ NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
 // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
 // see the header doc for setSampleBufferDelegate:queue: for more information
 videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
-[videoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
+[videoDataOutput setSampleBufferDelegate:self.target queue:videoDataOutputQueue];
 
 if ( [captureSession canAddOutput:videoDataOutput] )
     [captureSession addOutput:videoDataOutput];
 }
 
 
-- (void)captureOutput:(AVCaptureOutput *)captureOutput
-didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
-       fromConnection:(AVCaptureConnection *)connection
-{
-    
-    NSLog(@"no VIdeo :((( ");
-    // CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    // Create a UIImage from the sample buffer data
-    //    UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
-    //    NSLog(@"Video Output is flowing here : - ) ");
-    //    [self performSelectorOnMainThread:@selector(image:) withObject:nil waitUntilDone:NO];
-    
-}
-
-
-
-- (void)dealloc {
-
-	[[self captureSession] stopRunning];
-
-	[previewLayer release], previewLayer = nil;
-	[captureSession release], captureSession = nil;
-    [stillImageOutput release], stillImageOutput = nil;
-    [stillImage release], stillImage = nil;
-
-	[super dealloc];
-}
 
 @end

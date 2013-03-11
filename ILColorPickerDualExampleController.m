@@ -9,6 +9,9 @@
 #import "ILColorPickerDualExampleController.h"
 
 @implementation ILColorPickerDualExampleController
+@synthesize delegate;
+@synthesize operationType;
+
 
 #pragma mark - View lifecycle
 
@@ -35,4 +38,7 @@
     colorChip.backgroundColor=newColor;
 }
 
+- (IBAction)setColorByTapping:(id)sender {
+    [delegate colorPicked: colorChip.backgroundColor forView:self.operationType];
+}
 @end

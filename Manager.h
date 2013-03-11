@@ -15,7 +15,10 @@
 - (void)registerSuccess;
 - (void)registerFailed:(NSString *) message;;
 @end
-
+@protocol LogoutDelegate <NSObject>
+@required
+- (void)logoutUser;
+@end
 
 
 @interface Manager : NSObject {
@@ -33,8 +36,8 @@
 
 @property(nonatomic, assign) id <LoginDelegate> loginDelegate;
 @property(nonatomic, assign) id <RegisterDelegate> registerDelegate;
-@property(weak) NSNumber * userId;
-
+@property(nonatomic, assign) id <LogoutDelegate> logoutDelegate;
+@property(strong) NSNumber * userId;
 
 
 +(Manager*)sharedManager;

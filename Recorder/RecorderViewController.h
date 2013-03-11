@@ -15,27 +15,39 @@
 #import <iAd/iAd.h>
 #import "ILColorPickerDualExampleController.h"
 
+
+
 @interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ScreenShotDelegate,ADBannerViewDelegate, ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate>
 {
     IBOutlet UIImageView *backgroundView;
     
 __weak IBOutlet ScreenCaptureView *recordingScreenView;
 __weak IBOutlet UIScrollView *scrollView;
-__weak IBOutlet UIButton *stopOrRecordButton;
 __weak IBOutlet UIActivityIndicatorView *activityIndicator;
     UIPopoverController * colorPopover;
     UIPopoverController * cameraPopover;
-    IBOutlet UIButton *cameraBarButton;
+    IBOutlet UIBarButtonItem *cameraBarButton;
     UIActionSheet * photoAction;
     IBOutlet UIImageView * testImageView;
-    
 }
+@property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *colorBarButton;
+
+
 @property(nonatomic,retain)NSString * movie_title;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet ADBannerView *bannerView;
-- (IBAction)cancelExporting:(id)sender;
+
+@property BOOL eraseMode;
+
 - (IBAction)changeBrushSize:(id)sender;
 - (IBAction)pickColorFor:(id)sender;
-- (IBAction)takePhoto:(id)sender;
+- (IBAction)changeBackground:(id)sender;
+- (IBAction)eraserOnOff:(id)sender;
+
+- (IBAction)redoAction:(id)sender;
+- (IBAction)undoAction:(id)sender;
+
+-(void)putFilesTogether;
 
 @end

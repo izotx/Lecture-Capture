@@ -11,6 +11,11 @@
 @implementation AVCaptureHelper
 @synthesize captureSession;
 @synthesize videoInput;
+@synthesize avOutput;
+@synthesize videoDataOutput;
+@synthesize target;
+
+
 
 -(id)init{
     if(self = [super init])
@@ -23,18 +28,132 @@
 
 -(void)setUpSession{
     captureSession = [[AVCaptureSession alloc] init];
-    //AVCaptureDevice *videoCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backFacingCamera] error:nil];
-    videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontFacingCamera] error:nil];
 
+    videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backFacingCamera] error:nil];
+   // videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontFacingCamera] error:nil];
+   // avOutput = [[AVCaptureVideoDataOutput alloc]init];
+     
+//    avOutput.alwaysDiscardsLateVideoFrames = YES;
+//    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
+//    [avOutput setSampleBufferDelegate:self queue:queue];
+//    
+//    avOutput.videoSettings =
+//    [NSDictionary dictionaryWithObject:
+//     [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+//                                forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+//
+//    
+    
     if(videoInput)
     {
         [captureSession addInput:videoInput];
-        NSLog(@"Added Video Input");
     }
-
+//    if ([captureSession canAddOutput:avOutput])
+//    {
+//       [captureSession addOutput:avOutput];
+//    }
+//    else
+//    {
+//        NSLog(@"Couldn't add video output");
+//    }
+    
+    [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
 }
 
+-(void)addVideoOutput{
+    videoDataOutput = [AVCaptureVideoDataOutput new];
+    
+    // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
+    NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
+                                       [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    [videoDataOutput setVideoSettings:rgbOutputSettings];
+    [videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked (as we process the still image)
+    
+    // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
+    // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
+    // see the header doc for setSampleBufferDelegate:queue: for more information
+    videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
+    [videoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
+    
+    if ( [captureSession canAddOutput:videoDataOutput] )
+    {
+        [captureSession addOutput:videoDataOutput];
+        NSLog(@"We just added video data output ");
+    }
+}
+
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
+{
+    
+    NSLog(@"no VIdeo :((( ");
+    // CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    // Create a UIImage from the sample buffer data
+    //    UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+    //    NSLog(@"Video Output is flowing here : - ) ");
+    //    [self performSelectorOnMainThread:@selector(image:) withObject:nil waitUntilDone:NO];
+    
+}
+
+
+
+
+-(void)start{
+    if(captureSession){
+    [self.captureSession startRunning];
+    
+        NSLog(@"Start");
+    }
+    
+}
+
+-(void)stop{
+    [captureSession stopRunning];
+}
+
+
+
+- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer
+{
+    // Get a CMSampleBuffer's Core Video image buffer for the media data
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    // Lock the base address of the pixel buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    // Get the number of bytes per row for the pixel buffer
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    // Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    // Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    // Create a device-dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8,
+                                                 bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Create an image object from the Quartz image
+    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    
+    // Release the Quartz image
+    CGImageRelease(quartzImage);
+    
+    return (image);
+}
 
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "Lecture_Capture_Test.h"
+#import "RecorderViewController.h"
 
 @implementation Lecture_Capture_Test
 
@@ -24,9 +25,16 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testComposition
 {
-    STFail(@"Unit tests are not implemented yet in Lecture Capture Test");
+    RecorderViewController * r = [[RecorderViewController alloc]init];
+    
+    NSMutableArray * a = [NSMutableArray arrayWithCapacity:0];
+    [a addObject:@"1_output.mov"];
+    [a addObject:@"2_output.mov"];
+    
+    [r putFilesTogether:a];
+    
 }
 
 @end

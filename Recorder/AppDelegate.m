@@ -145,6 +145,13 @@
     return __persistentStoreCoordinator;
 }
 
+/*
+- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
+{
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+*/
+
 #pragma mark - Application's Documents directory
 
 // Returns the URL to the application's Documents directory.
