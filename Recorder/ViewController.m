@@ -7,28 +7,738 @@
 //
 
 #import "ViewController.h"
+#import "ASIFormDataRequest.h"
 
 @interface ViewController ()
+{
+   NSMutableArray * videosArray;
+    __weak IBOutlet UITableView *tableView;
+    __weak IBOutlet UIImageView *videoScreenshotImageView;
+    __weak IBOutlet UILabel *videoTitleLabel;
+    __weak IBOutlet UITextView *videoDescriptionTextView;
+    __weak IBOutlet UITextField *editTitleTextField;
+    __weak IBOutlet UITextView *editDescriptionTextView;
+    __weak IBOutlet UIView *informationAboutRecordingView;
+    __weak IBOutlet UIWebView *webView;
+    
+    CGRect recordingViewFrame;
+    NSFetchedResultsController * fetchedResultsController;
+    NSString* videoPath;
+    NSString* titleText;
+    Video * currentVideo;
+    UIAlertView * uploadAlert;
+    Manager *manager;
+    
+}
+- (IBAction)saveToLibrary:(id)sender;
+- (IBAction)deleteVideo:(id)sender;
+- (IBAction)cancelAndDismissRecordingView:(id)sender;
+- (IBAction)createNewRecording:(id)sender;
+-(void) loadVideoWithURL:(NSURL *) url;
+-(void)postMovie:(NSString * )filePath;
 
+@property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
+@property(nonatomic, assign) BOOL bannerIsVisible;
 @end
 
+
 @implementation ViewController
+@synthesize bannerView = _bannerView;
+@synthesize uploadingVideoActivityIndicator = _uploadingVideoActivityIndicator;
+@synthesize managedObjectContext = _managedObjectContext;
+@synthesize movie_url_label = _movie_url_label;
+@synthesize copyURLButton;
+@synthesize loginBarButton = _loginBarButton;
+@synthesize fetchedResultsController=_fetchedResultsController;
+@synthesize loginPopOver;
+@synthesize uploadingVideoLabel = _uploadingVideoLabel;
+@synthesize bannerIsVisible;
+
+#pragma mark changing view properties
+
+
+
+
+
+
+
+
+#pragma  mark iAD
+- (void)bannerViewDidLoadAd:(ADBannerView *)banner
+{
+  //  NSLog(@"Loaded");
+    if (!self.bannerIsVisible)
+    {
+        [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
+        // Assumes the banner view is just off the bottom of the screen.
+        banner.frame = CGRectOffset(banner.frame, 0, +banner.frame.size.height);
+        [UIView commitAnimations];
+        self.bannerIsVisible = YES;
+        
+    }
+}
+
+- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+   // NSLog(@"Not Loaded %@", [error debugDescription]);
+    if (self.bannerIsVisible)
+    {
+        [UIView beginAnimations:@"animateAdBannerOff" context:NULL];
+        // Assumes the banner view is placed at the bottom of the screen.
+        banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
+        [UIView commitAnimations];
+        self.bannerIsVisible = NO;
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if(alertView==uploadAlert)
+    {
+        if(buttonIndex==0)
+        {
+            //NO?
+          
+        }
+        else{
+            [self postMovie:videoPath];
+        }
+    }
+}
+
+//UPLOADING FILES
+-(void)postMovie:(NSString * )filePath{
+if(manager.userId){
+    if(filePath.length==0)
+    {
+        UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to select the video first." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [a show];
+    }
+    else{
+        NSLog(@"Video Size %f",[currentVideo.video_size floatValue]);
+        if([currentVideo.video_size floatValue] > 100 )
+        {
+            UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Unfortunately, the selected recording is too large to uplaod it to the server. Currently the file size limit it 100 MB." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [a show];
+        }
+        else{
+        NSURL * url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
+            __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+            if(videoTitleLabel.text.length>0){
+                [request setPostValue:videoTitleLabel.text forKey:@"Title"];
+            }
+            else{
+                [request setPostValue:@"" forKey:@"Title"];
+            }                
+            //Setting  password and login
+            [request setPostValue:manager.loginName forKey:@"email"];
+            [request setPostValue:manager.loginPassword forKey:@"password"];
+           
+           // NSLog(@"Pass %@ Login %@",manager.loginName, manager.loginPassword);
+            
+            
+           [request setFile:videoPath forKey:@"userfile"];
+           [request setCompletionBlock:^{
+          
+          NSLog(@"Data %@", [request responseString]);
+          NSString * response = [request responseString];
+          //Check with regular expression       
+               NSString * ext = [[response pathExtension]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+               NSString * acext=@"mov";
+               NSLog(@"%@ and %@" ,ext,acext);
+            if(![ext isEqualToString:acext])
+            {
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; 
+                UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Error. Your recording couldn't be uploaded at this time. Try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [a show];
+            }
+            else{              
+                currentVideo.video_url=response;
+                self.movie_url_label.text=response;
+                   
+                NSError * error=nil;
+                [self.managedObjectContext save:&error];
+                if(error==nil)
+                {
+                    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                    pasteboard.string = response;
+                    UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Your recording was successfully uploaded to a server and the URL was copied to the clipboard. You can paste the URL in email or text message to share your recording with others." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [a show];
+                    copyURLButton.enabled=YES;
+                }
+                else{
+                    NSLog(@"Error %@",[error debugDescription]);
+                }
+                
+            }
+                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                 self.uploadingVideoLabel.hidden=YES;
+                 self.uploadingVideoActivityIndicator.hidden=YES;
+                 [self.uploadingVideoActivityIndicator stopAnimating];
+
+            }];
+            // END OF COMPLETION BLACK
+            
+            [request setFailedBlock:^{
+                NSLog(@"Failed, %@",[request error]);
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                self.uploadingVideoLabel.hidden=YES;
+                self.uploadingVideoActivityIndicator.hidden=YES;
+                [self.uploadingVideoActivityIndicator stopAnimating];
+
+                UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Error. Your recording couldn't be uploaded at this time. Try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [a show];
+            }]; 
+            
+            request.delegate=self;
+            [request setTimeOutSeconds:-1];
+            [request startAsynchronous];
+            
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            self.uploadingVideoLabel.hidden=NO;
+            self.uploadingVideoActivityIndicator.hidden=NO;
+            [self.uploadingVideoActivityIndicator startAnimating];
+        }   
+    }
+}
+    else{
+      
+        
+        UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to log in in order to upload recordings to the server." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [a show];
+    }
+}
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"Modal"]) {
+        RecorderViewController *r = [segue destinationViewController];
+        
+        informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);    
+        [self textFieldShouldReturn:editTitleTextField];
+        
+        if(editTitleTextField.text.length>0)
+        {
+            r.movie_title=editTitleTextField.text;
+            NSLog(@"Movie title is %@",r.movie_title);
+        }
+        else{
+            r.movie_title=@"Untitled";
+        } 
+        r.managedObjectContext=self.managedObjectContext;
+        [self loadVideoWithURL:nil];
+    }
+     if ([segue.identifier isEqualToString:@"Popover"]) {
+         LoginRegisterViewController * r =[segue destinationViewController];
+         r.loginBarButton=self.loginBarButton;
+       
+     }
+}
+
+#pragma mark Fetching
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Video" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"title" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    
+    
+     NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
+                                                   cacheName:@"Root"];
+    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController.delegate = self;
+    
+    NSError *error;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
+
+    
+    return _fetchedResultsController;
+    
+}
+
+
+
+#pragma mark uitextfield delegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.uploadingVideoLabel.hidden=YES;
+    self.uploadingVideoActivityIndicator.hidden=YES;
+    manager= [Manager sharedManager];
+    manager.logoutDelegate =self;
+     videoTitleLabel.text=@"";
+    self.movie_url_label.text=@"";
+  
+    self.bannerIsVisible=NO;
+    self.copyURLButton.enabled=NO;
 	// Do any additional setup after loading the view, typically from a nib.
+    recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
+    informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
+    [self fetchedResultsController];
+    //Debugging
+    [self loadVideoWithURL:nil];
 }
+
+-(void) loadVideoWithURL:(NSURL *) url{
+       //url = outputURL;
+    
+    NSString *videoHTML = [NSString stringWithFormat: @"<html><head><style></style></head><body><video id='video_with_controls' height='%f' width='%f' controls autobuffer autoplay='false'><source src='%@' title='' poster='icon2.png' type='video/mp4' durationHint='durationofvideo'/></video><ul></body></html>",webView.frame.size.height,webView.frame.size.width, url];
+    
+    webView.opaque = NO;
+    webView.backgroundColor = [UIColor clearColor];
+    [webView loadHTMLString:videoHTML baseURL:nil]; 
+
+}
+
+
+
 
 - (void)viewDidUnload
 {
+    tableView = nil;
+    videoScreenshotImageView = nil;
+    videoTitleLabel = nil;
+    videoDescriptionTextView = nil;
+
+    editTitleTextField = nil;
+    editDescriptionTextView = nil;
+    informationAboutRecordingView = nil;
+    webView = nil;
+    [self setMovie_url_label:nil];
+    [self setCopyURLButton:nil];
+    [self setLoginBarButton:nil];
+    [self setBannerView:nil];
+    [self setUploadingVideoLabel:nil];
+    [self setUploadingVideoActivityIndicator:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
+}
+
+
+
+#pragma mark table view
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
+    UILabel * titleLabel =  (UILabel *)[cell viewWithTag:10];
+    UILabel * durationLabel =  (UILabel *)[cell viewWithTag:20];
+    UILabel * fileSizeLabel =  (UILabel *)[cell viewWithTag:30];
+    titleLabel.text=info.title;
+    durationLabel.text=[NSString stringWithFormat:@"Duration: %@",info.duration];
+    fileSizeLabel.text=info.video_size;
+       
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *MyIdentifier = @"prototype";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] ;
+    }
+    [self configureCell:cell atIndexPath:indexPath];
+    
+    return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    id  sectionInfo =
+    [[_fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    return @"Recordings";
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
+    [tableView beginUpdates];
+    DebugLog(@" Will Change");
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+ 
+       DebugLog(@" Did Change ");
+      
+    switch(type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+             NSLog(@"Insert Rows");
+           
+            [tableView reloadData];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+         
+         
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                      
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [tableView reloadData];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray
+                                               arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray
+                                               arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+    switch(type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
+    [tableView endUpdates];
+   // [tableView reloadData];
+}
+
+-(void)deleteFileAtPath:(NSString *)path{
+    NSFileManager * fm = [NSFileManager defaultManager];
+    NSError * error;
+    if( [fm fileExistsAtPath:path])
+    {
+        [fm removeItemAtPath:path error:&error];
+    }
+    if(error)
+    {
+        NSLog(@"Error %@ ",[error debugDescription]);
+    }
+    else{
+        NSLog(@"File %@ deleted",path);
+    }
+
+    
+    
+}
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+   Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
+   videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], v.video_path];
+	NSURL* outputURL = [[NSURL alloc] initFileURLWithPath:videoPath];
+    
+    NSLog(@"URL is: %@ video path: %@  title: %@",outputURL,v.video_path,v.title);
+    videoTitleLabel.text= v.title;
+   [self loadVideoWithURL:outputURL];
+    currentVideo=v;
+    if(v.video_url.length>0){
+        self.movie_url_label.text= v.video_url;
+        self.copyURLButton.enabled=YES;
+    }
+    else{
+        self.movie_url_label.text = @"Tap on the Upload Recording button to upload recording to the server.";
+        self.copyURLButton.enabled=NO;
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
+}
+
+
+
+- (void)tableView:(UITableView *)aTableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+
+forRowAtIndexPath:(NSIndexPath *)indexPath
+
+{
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        
+    {
+        Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
+        NSManagedObjectContext *context = [_fetchedResultsController managedObjectContext];
+        [context deleteObject:v];
+        if(context)
+        {
+        
+        }
+        else{
+            NSLog(@"Context doesn't exist on delete???");
+        
+        }
+        
+        [tableView setEditing:NO animated:YES];
+        NSError * error;
+        [self deleteFileAtPath:v.video_path];
+        [context save:&error];
+        
+        if(error)
+        {
+            NSLog(@"%@",[error description]);
+        }
+        
+        [tableView reloadData];
+       
+    } 
+}
+
+
+
+- (IBAction)saveToLibrary:(id)sender {
+  
+    if(videoPath.length>0)
+    {
+        UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+
+    }
+    else
+    {
+        NSString * message=@"You need to select a movie from the list.";
+        UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [al show];
+
+    }
+  
+}
+
+
+- (void)video:(NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
+    NSString * message;
+    if(error)
+    { NSLog(@"didFinishSavingWithError: %@", error);
+        message= [NSString stringWithFormat: @"Error. %@",[error localizedDescription]];
+    }
+    else{
+        message=@"We are still working on your recording. Once ready, it will appear in a table on the left in a moment. Thank you for patience.";
+    }
+        UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [al show];
+  
+}
+
+
+
+- (IBAction)deleteVideo:(id)sender {
+    [tableView setEditing:YES animated:YES];
+    
+     
+}
+
+
+- (IBAction)cancelAndDismissRecordingView:(id)sender {
+     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
+
+    [self textFieldShouldReturn:editTitleTextField];
+}
+
+- (IBAction)createNewRecording:(id)sender {
+
+    [UIView beginAnimations:@"" context:nil];
+    [UIView setAnimationDuration:1];
+  
+    informationAboutRecordingView.frame=recordingViewFrame;
+  
+    [UIView commitAnimations];
+
+    [self.view bringSubviewToFront:informationAboutRecordingView];  
+    NSArray * subviews =informationAboutRecordingView.subviews;
+    for (UIView * v in subviews)
+    {
+        [informationAboutRecordingView bringSubviewToFront:v];
+         
+    }
+}
+
+- (IBAction)shareMovie:(id)sender {
+    uploadAlert =[[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"You are about to upload video to the remote server in order to obtain a link that you can share with other people. It might be time consuming operation. It's recommended to perform the operation whenever your device is connected to WiFi network. Are you sure that you want to continue?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    [uploadAlert show];
+}
+
+
+- (IBAction)copyURL:(id)sender {
+      
+    //tableView.selectedRow;
+    
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = self.movie_url_label.text;
+    UIAlertView * a =[[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"The url of your recording was copied to a clipboard." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+    [a show];
+
+}
+
+- (IBAction)shareURL:(id)sender {
+NSString * url= [[UIPasteboard generalPasteboard]string];
+if([url length]==0)
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message" 
+                                                    message:@"Select a recording and tap on Copy To ClipBoard first!" 
+                                                   delegate:nil 
+                                          cancelButtonTitle:@"OK" 
+                                          otherButtonTitles: nil];
+    [alert show];
+   
+}    
+else if([MFMailComposeViewController canSendMail])
+{
+    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+    
+    mailer.mailComposeDelegate = self;
+    [mailer setSubject:@"Look at this!"];
+    url=[NSString stringWithFormat:@"<a href=\%@\">%@</a><br>\n",url,url];
+   
+    
+    NSMutableString *body = [NSMutableString string];
+    // add HTML before the link here with line breaks (\n)
+    [body appendString:@"<h5>Check this out!</h5>\n"];
+    [body appendString:@"Watch a recording using URL given below:<br>\n"];
+    [body appendString:url];
+    [body appendString:@"Thanks much! <br> \n"];
+    [body appendString:@"<a href=\"http://itunes.apple.com/us/app/lecture-capture/id552262316?ls=1&mt=8\">Download a Lecture Capture App</a>\n"];    
+    [mailer setMessageBody:body isHTML:YES];
+
+    // only for iPad
+     mailer.modalPresentationStyle = UIModalPresentationPageSheet;    
+    [self presentModalViewController:mailer animated:YES];    
+ }
+else
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message" 
+                                                    message:@"Your device doesn't support the composer sheet" 
+                                                   delegate:nil 
+                                          cancelButtonTitle:@"OK" 
+                                          otherButtonTitles: nil];
+    [alert show];
+    }
+}
+#pragma mark login and login delegate
+- (IBAction)logInOrOut:(id)sender {
+    UIStoryboard* sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]; 
+    
+    if([self.loginBarButton title]==@"Logout")
+    {
+        NSLog(@"Logout ");
+        [self.loginBarButton setTitle:@"Login"];
+        manager.userId=nil;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message" 
+                                                        message:@"You were successfully logged out. Tap on the login button to log in again." 
+                                                       delegate:nil 
+                                              cancelButtonTitle:@"OK" 
+                                              otherButtonTitles: nil];
+        [alert show];
+
+    }
+    else{
+        if( self.loginPopOver ==nil)
+        {
+                            NSLog(@"Nil ");
+            LoginRegisterViewController * c=[sb instantiateViewControllerWithIdentifier:@"LoginPopover"];
+            c.delegate=self;
+            c.loginBarButton=self.loginBarButton;
+            self.loginPopOver=[[UIPopoverController alloc]initWithContentViewController:c];
+        
+        }    
+        if([self.loginPopOver isPopoverVisible])    
+        {
+            [self.loginPopOver dismissPopoverAnimated:YES];
+        }
+        else{
+            [self.loginPopOver presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+        }
+        
+    }
+}
+
+-(void)logoutUser{
+    [self.loginBarButton setTitle:@"Login"];
+}
+
+
+#pragma mark - MFMailComposeController delegate
+
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error 
+{	
+	switch (result)
+	{
+		case MFMailComposeResultCancelled:
+			NSLog(@"Mail cancelled: you cancelled the operation and no email message was queued");
+			break;
+		case MFMailComposeResultSaved:
+			NSLog(@"Mail saved: you saved the email message in the Drafts folder");
+			break;
+		case MFMailComposeResultSent:
+			NSLog(@"Mail send: the email message is queued in the outbox. It is ready to send the next time the user connects to email");
+			break;
+		case MFMailComposeResultFailed:
+			NSLog(@"Mail failed: the email message was nog saved or queued, possibly due to an error");
+			break;
+		default:
+			NSLog(@"Mail not sent");
+			break;
+	}
+    
+	[self dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark popover delegate
+-(void)dissmissPopover{
+    if(loginPopOver.isPopoverVisible)
+    {
+        [loginPopOver dismissPopoverAnimated:YES];
+    }
+}
+
+
+- (void)didReceiveMemoryWarning{
+    [super didReceiveMemoryWarning];
+    NSLog(@"Memory Management s");
+
 }
 
 @end
