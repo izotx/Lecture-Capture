@@ -202,6 +202,8 @@ if(manager.userId){
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    //Executed when NExt button is clicked.
+    
     if ([segue.identifier isEqualToString:@"Modal"]) {
         RecorderViewController *r = [segue destinationViewController];
         
@@ -470,10 +472,6 @@ if(manager.userId){
     
  	NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
     
-    
-    NSLog(@"Video Path: %@", outputURL);
-    
-   // NSLog(@"URL is: %@ video path: %@  title: %@",outputURL,v.video_path,v.title);
     videoTitleLabel.text= v.title;
    [self loadVideoWithURL:outputURL];
     currentVideo=v;
@@ -486,40 +484,7 @@ if(manager.userId){
         self.copyURLButton.enabled=NO;
     }
    
-//    AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:outputURL];
-//        AVPlayer * player = [AVPlayer playerWithPlayerItem:item];
-//        AVPlayerLayer * layer = [AVPlayerLayer playerLayerWithPlayer:player];
-//    
-//        [layer setFrame:self.view.bounds];
-//        [[self.view layer] addSublayer:layer];
-//        [player play];
 
-//    MPMoviePlayerController *moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:outputURL];
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(moviePlaybackComplete:)
-//                                                 name:MPMoviePlayerPlaybackDidFinishNotification
-//                                               object:moviePlayerController];
-//
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(moviePlaybackChange:)
-//                                                 name:MPMoviePlayerPlaybackStateDidChangeNotification
-//                                               object:moviePlayerController];
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(doneButtonClick:)
-//                                                 name:MPMoviePlayerWillExitFullscreenNotification
-//                                               object:nil];
-//    
-//
-//    
-//    moviePlayerController.view.frame = self.view.bounds;
-//     moviePlayerController.controlStyle = MPMovieControlStyleDefault;
-//    moviePlayerController.movieSourceType= MPMovieSourceTypeFile;
-//    [moviePlayerController prepareToPlay];
-//    moviePlayerController.fullscreen = NO;
-//    self.globalMoviePlayerController = moviePlayerController;
-//    
-//    [self.view addSubview:self.globalMoviePlayerController.view];
-//    [self.globalMoviePlayerController play];
 }
 
 -(void)doneButtonClick:(NSNotification*)aNotification{
@@ -635,6 +600,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self textFieldShouldReturn:editTitleTextField];
 }
 
+//Shows the new recording view
 - (IBAction)createNewRecording:(id)sender {
 
     [UIView beginAnimations:@"" context:nil];

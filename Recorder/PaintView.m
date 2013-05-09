@@ -170,6 +170,8 @@ NSMutableDictionary * redo;
         CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
         CGRect frame = [self calculateFrameForImage:backgroundImage];
+        NSLog(@" ");
+        
         CGContextDrawImage(context, frame, self.backgroundImage.CGImage);
        
         CGContextStrokePath(context);
@@ -302,7 +304,14 @@ NSMutableDictionary * redo;
         CGContextSaveGState(context);
         CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
+        CGRect  rect = [self calculateFrameForImage:backgroundImage];
+        
+        NSLog(@" %f %f %f %f ",rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
+        
+        
         CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
+        
+        
         CGContextRestoreGState(context);
     }
     if(eraseMode == YES)
@@ -356,6 +365,7 @@ NSMutableDictionary * redo;
     self.brushSize =_brushSize;
 }
 
+//called when user updates background of the recording
 -(void) setBackgroundPhotoImage:(UIImage *)image{
     translation =CGPointZero;
     scale =1;

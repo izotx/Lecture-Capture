@@ -126,7 +126,8 @@ BOOL paused;
 
 
 - (void) drawRect:(CGRect)rect {
-
+#pragma warning add operation queue
+    
     NSDate* start = [NSDate date];
 	CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
   
@@ -136,7 +137,7 @@ BOOL paused;
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
     CGContextConcatCTM(context, flipVertical);
     UIImage* background =   paintView.image;
-    //Adding Preview to the background.
+    
     self.currentScreen = background;
     if([csm.captureSession isRunning]){
                 
@@ -144,6 +145,9 @@ BOOL paused;
 
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [background drawInRect:self.frame];
+        
+        
+        
         CGRect tframe;
         CGRect videoPreviewBackgroundFrame;
         if(fullScreen){

@@ -305,6 +305,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 }
 
 
+#warning HERE User Tapped on the Finish Button
 -(IBAction)finishRecording:(id)sender
 {
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
@@ -439,6 +440,9 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     [scrollViewScreenshots addObject:s];
 }
 
+
+
+#pragma mark COMBINING FILES
 //Put Together
 -(void)putFilesTogether{
     AVMutableComposition *mixComposition = [AVMutableComposition composition]; 
@@ -791,6 +795,8 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
         
         originalImage = (UIImage *) [info objectForKey:
                                      UIImagePickerControllerOriginalImage];
+        editedImage = (UIImage *) [info objectForKey:
+                                   UIImagePickerControllerEditedImage];
         
         if (editedImage) {
             imageToSave = editedImage;

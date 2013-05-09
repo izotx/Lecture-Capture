@@ -812,7 +812,7 @@ If you have any questions about our policy or the security of Screen Capture app
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="62e-Zn-dbx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3123" y="152"/>
+            <point key="canvasLocation" x="-2879" y="-68"/>
         </scene>
     </scenes>
     <resources>
@@ -832,7 +832,6 @@ If you have any questions about our policy or the security of Screen Capture app
         <class className="InfoViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/InfoViewController.h"/>
             <relationships>
-                <relationship kind="action" name="dimissMe:"/>
                 <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
         </class>
@@ -863,7 +862,6 @@ If you have any questions about our policy or the security of Screen Capture app
                 <relationship kind="action" name="eraserOnOff:"/>
                 <relationship kind="action" name="finishRecording:"/>
                 <relationship kind="action" name="makeScreenShot:"/>
-                <relationship kind="action" name="pauseRecording:"/>
                 <relationship kind="action" name="pickColorFor:"/>
                 <relationship kind="action" name="redoAction:"/>
                 <relationship kind="action" name="undoAction:"/>
@@ -893,7 +891,6 @@ If you have any questions about our policy or the security of Screen Capture app
                 <relationship kind="action" name="editTable:"/>
                 <relationship kind="action" name="logInOrOut:"/>
                 <relationship kind="action" name="saveToLibrary:"/>
-                <relationship kind="action" name="shareMovie:"/>
                 <relationship kind="action" name="shareURL:"/>
                 <relationship kind="outlet" name="bannerView" candidateClass="ADBannerView"/>
                 <relationship kind="outlet" name="copyURLButton" candidateClass="UIButton"/>
