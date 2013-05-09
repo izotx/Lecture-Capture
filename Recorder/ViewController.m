@@ -234,12 +234,13 @@ if(manager.userId){
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
-    
+  
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription
                                    entityForName:@"Video" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
+  
     NSSortDescriptor *sort = [[NSSortDescriptor alloc]
                               initWithKey:@"title" ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
@@ -259,6 +260,27 @@ if(manager.userId){
 		exit(-1);  // Fail
 	}
 
+//get sections
+//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//    NSEntityDescription *entity = [NSEntityDescription
+//                                   entityForName:@"Project" inManagedObjectContext:self.managedObjectContext];
+//    [fetchRequest setEntity:entity];
+//    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+//                              initWithKey:@"title" ascending:YES];
+//    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+//    
+//    
+//    
+//    NSFetchedResultsController *theFetchedResultsController =
+//    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+//                                        managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
+//                                                   cacheName:@"Root"];
+//    self.fetchedResultsController = theFetchedResultsController;
+//    _fetchedResultsController.delegate = self;
+//
+//    fetchedResultsController.sec
+//    
+    
     
     return _fetchedResultsController;
     
@@ -294,6 +316,16 @@ if(manager.userId){
     //Debugging
     [self loadVideoWithURL:nil];
 }
+
+-(void)refactorCoreData{
+    //get all videos.
+    
+    //see if they are assigned to projects.
+    
+    //
+
+}
+
 
 -(void) loadVideoWithURL:(NSURL *) url{
        //url = outputURL;

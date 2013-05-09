@@ -63,6 +63,7 @@
 		4F0FED5A169CD86800C04ADC /* pauseButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F0FED59169CD86800C04ADC /* pauseButton.png */; };
 		4F0FED5C169CD95200C04ADC /* doneButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F0FED5B169CD95200C04ADC /* doneButton.png */; };
 		4F0FED66169DB02200C04ADC /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F0FED65169DB02200C04ADC /* MediaPlayer.framework */; };
+		4F18C640173C232C009FD464 /* NewModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */; };
 		4F1D995215640872002D8F6C /* Manager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA727D91563EC5C002A2F1D /* Manager.m */; };
 		4F1D995415647BBA002D8F6C /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F1D995315647BBA002D8F6C /* iAd.framework */; };
 		4F2C34E0166FFF1500EC0A88 /* graphpaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F2C34DE166FFF1500EC0A88 /* graphpaper.png */; };
@@ -104,7 +105,6 @@
 		4FD48DA6154AC95D007880C2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48DA5154AC95D007880C2 /* CoreGraphics.framework */; };
 		4FD48DAE154AC95D007880C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD48DAD154AC95D007880C2 /* main.m */; };
 		4FD48DD6154AF0A8007880C2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48DD5154AF0A8007880C2 /* CoreData.framework */; };
-		4FD48E0D154AF83A007880C2 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4FD48E0B154AF83A007880C2 /* Model.xcdatamodeld */; };
 		4FD48E2B154B2228007880C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E2A154B2228007880C2 /* MobileCoreServices.framework */; };
 		4FD48E2D154B22AF007880C2 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E2C154B22AF007880C2 /* AssetsLibrary.framework */; };
 		4FD48E2F154B22B5007880C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E2E154B22B5007880C2 /* AVFoundation.framework */; };
@@ -166,6 +166,8 @@
 		4F0FED59169CD86800C04ADC /* pauseButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauseButton.png; sourceTree = "<group>"; };
 		4F0FED5B169CD95200C04ADC /* doneButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doneButton.png; sourceTree = "<group>"; };
 		4F0FED65169DB02200C04ADC /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		4F18C63E173C232C009FD464 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		4F18C63F173C232C009FD464 /* NewModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "NewModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		4F1D995315647BBA002D8F6C /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		4F2C34DE166FFF1500EC0A88 /* graphpaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graphpaper.png; sourceTree = "<group>"; };
 		4F2C34DF166FFF1500EC0A88 /* linepaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = linepaper.png; sourceTree = "<group>"; };
@@ -238,7 +240,6 @@
 		4FD48DAD154AC95D007880C2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4FD48DAF154AC95D007880C2 /* Lecture Capture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Lecture Capture-Prefix.pch"; sourceTree = "<group>"; };
 		4FD48DD5154AF0A8007880C2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		4FD48E0C154AF83A007880C2 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		4FD48E2A154B2228007880C2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		4FD48E2C154B22AF007880C2 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		4FD48E2E154B22B5007880C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -422,6 +423,7 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */,
 				826B688D1682EB9400C1ADD2 /* ASIDataCompressor.h */,
 				826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */,
 				826B688F1682EB9500C1ADD2 /* ASIDataDecompressor.h */,
@@ -448,7 +450,6 @@
 				4FA72764155B0273002A2F1D /* KeyChain */,
 				4FA727A3155B4FF0002A2F1D /* Video.h */,
 				4FA727A4155B4FF0002A2F1D /* Video.m */,
-				4FD48E0B154AF83A007880C2 /* Model.xcdatamodeld */,
 				4FD48DC8154ACC7A007880C2 /* Utilities */,
 				4FD48DA7154AC95D007880C2 /* Recorder */,
 				4F0FED0D169B6FA700C04ADC /* Lecture Capture Test */,
@@ -771,7 +772,6 @@
 				4F8ADEBE15D2E73D00C1E8B6 /* UIImage+Resize.m in Sources */,
 				4F1D995215640872002D8F6C /* Manager.m in Sources */,
 				4FD48DAE154AC95D007880C2 /* main.m in Sources */,
-				4FD48E0D154AF83A007880C2 /* Model.xcdatamodeld in Sources */,
 				4FA7276F155B04E8002A2F1D /* NSString+MD5Addition.m in Sources */,
 				4FA72770155B04E8002A2F1D /* UIDevice+IdentifierAddition.m in Sources */,
 				4FA72777155B0834002A2F1D /* InfoViewController.m in Sources */,
@@ -803,6 +803,7 @@
 				82EE2721164360F7008F99AE /* VideoPreview.m in Sources */,
 				826B68911682EB9500C1ADD2 /* ASIDataCompressor.m in Sources */,
 				826B68921682EB9500C1ADD2 /* ASIDataDecompressor.m in Sources */,
+				4F18C640173C232C009FD464 /* NewModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1014,13 +1015,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		4FD48E0B154AF83A007880C2 /* Model.xcdatamodeld */ = {
+		4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				4FD48E0C154AF83A007880C2 /* Model.xcdatamodel */,
+				4F18C63E173C232C009FD464 /* Model.xcdatamodel */,
+				4F18C63F173C232C009FD464 /* NewModel 2.xcdatamodel */,
 			);
-			currentVersion = 4FD48E0C154AF83A007880C2 /* Model.xcdatamodel */;
-			path = Model.xcdatamodeld;
+			currentVersion = 4F18C63E173C232C009FD464 /* Model.xcdatamodel */;
+			path = NewModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
