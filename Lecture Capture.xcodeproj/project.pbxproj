@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F08148A173DEC90007092C4 /* CameraPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F081489173DEC90007092C4 /* CameraPicker.m */; };
+		4F08148B173DEC90007092C4 /* CameraPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F081489173DEC90007092C4 /* CameraPicker.m */; };
 		4F0FED0A169B6FA700C04ADC /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F0FED09169B6FA700C04ADC /* SenTestingKit.framework */; };
 		4F0FED0B169B6FA700C04ADC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48DA1154AC95D007880C2 /* UIKit.framework */; };
 		4F0FED0C169B6FA700C04ADC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48DA3154AC95D007880C2 /* Foundation.framework */; };
@@ -154,6 +156,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F081488173DEC90007092C4 /* CameraPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraPicker.h; sourceTree = "<group>"; };
+		4F081489173DEC90007092C4 /* CameraPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraPicker.m; sourceTree = "<group>"; };
 		4F0FED08169B6FA700C04ADC /* Lecture Capture Test.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Lecture Capture Test.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F0FED09169B6FA700C04ADC /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4F0FED0F169B6FA700C04ADC /* Lecture Capture Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Lecture Capture Test-Info.plist"; sourceTree = "<group>"; };
@@ -166,8 +170,8 @@
 		4F0FED59169CD86800C04ADC /* pauseButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauseButton.png; sourceTree = "<group>"; };
 		4F0FED5B169CD95200C04ADC /* doneButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doneButton.png; sourceTree = "<group>"; };
 		4F0FED65169DB02200C04ADC /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		4F18C63E173C232C009FD464 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		4F18C63F173C232C009FD464 /* NewModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "NewModel 2.xcdatamodel"; sourceTree = "<group>"; };
+		4F18C63E173C232C009FD464 /* NewModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NewModel.xcdatamodel; sourceTree = "<group>"; };
+		4F18C63F173C232C009FD464 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		4F1D995315647BBA002D8F6C /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		4F2C34DE166FFF1500EC0A88 /* graphpaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graphpaper.png; sourceTree = "<group>"; };
 		4F2C34DF166FFF1500EC0A88 /* linepaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = linepaper.png; sourceTree = "<group>"; };
@@ -423,6 +427,8 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				4F081488173DEC90007092C4 /* CameraPicker.h */,
+				4F081489173DEC90007092C4 /* CameraPicker.m */,
 				4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */,
 				826B688D1682EB9400C1ADD2 /* ASIDataCompressor.h */,
 				826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */,
@@ -761,6 +767,7 @@
 				4F0FED47169B722200C04ADC /* ASIFormDataRequest.m in Sources */,
 				4F0FED48169B722500C04ADC /* ASIHTTPRequest.m in Sources */,
 				4F0FED49169B728700C04ADC /* ASIInputStream.m in Sources */,
+				4F08148B173DEC90007092C4 /* CameraPicker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -804,6 +811,7 @@
 				826B68911682EB9500C1ADD2 /* ASIDataCompressor.m in Sources */,
 				826B68921682EB9500C1ADD2 /* ASIDataDecompressor.m in Sources */,
 				4F18C640173C232C009FD464 /* NewModel.xcdatamodeld in Sources */,
+				4F08148A173DEC90007092C4 /* CameraPicker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1018,10 +1026,10 @@
 		4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				4F18C63E173C232C009FD464 /* Model.xcdatamodel */,
-				4F18C63F173C232C009FD464 /* NewModel 2.xcdatamodel */,
+				4F18C63E173C232C009FD464 /* NewModel.xcdatamodel */,
+				4F18C63F173C232C009FD464 /* Model.xcdatamodel */,
 			);
-			currentVersion = 4F18C63E173C232C009FD464 /* Model.xcdatamodel */;
+			currentVersion = 4F18C63E173C232C009FD464 /* NewModel.xcdatamodel */;
 			path = NewModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

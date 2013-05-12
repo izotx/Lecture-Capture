@@ -282,6 +282,10 @@ if(manager.userId){
 //    
     
     
+    
+    
+    
+    
     return _fetchedResultsController;
     
 }
@@ -312,6 +316,8 @@ if(manager.userId){
 	// Do any additional setup after loading the view, typically from a nib.
     recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
+    [self refactorCoreData];
+    
     [self fetchedResultsController];
     //Debugging
     [self loadVideoWithURL:nil];
