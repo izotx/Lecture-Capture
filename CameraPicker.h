@@ -15,3 +15,7 @@
                                    usingDelegate: (id <UIImagePickerControllerDelegate,
                                                    UINavigationControllerDelegate>) delegate from:(UIView *)view  picker:(BOOL)picker andPopover:(UIPopoverController *)cameraPopoverController;
 @end
+http://stackoverflow.com/questions/8906004/thumbnail-image-of-video
+
+http://www.sitepoint.com/wicked-ios-range-slider-part-one/
+

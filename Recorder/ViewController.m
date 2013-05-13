@@ -27,15 +27,20 @@
     NSString* titleText;
     Video * currentVideo;
     UIAlertView * uploadAlert;
+    UIAlertView * createNewAlert;
     Manager *manager;
     
 }
 - (IBAction)saveToLibrary:(id)sender;
 - (IBAction)deleteVideo:(id)sender;
 - (IBAction)cancelAndDismissRecordingView:(id)sender;
-- (IBAction)createNewRecording:(id)sender;
--(void) loadVideoWithURL:(NSURL *) url;
--(void)postMovie:(NSString * )filePath;
+
+- (IBAction)createNewRecording;
+- (IBAction)createNewProject;
+
+
+- (void)loadVideoWithURL:(NSURL *) url;
+- (void)postMovie:(NSString * )filePath;
 
 @property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
 @property(nonatomic, assign) BOOL bannerIsVisible;
@@ -636,6 +641,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
      informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
 
     [self textFieldShouldReturn:editTitleTextField];
+}
+
+- (IBAction)createNew{
+    createNewAlert = [UIAlertView alloc]initWithTitle:@"Create" message:<#(NSString *)#> delegate:<#(id)#> cancelButtonTitle:<#(NSString *)#> otherButtonTitles:<#(NSString *), ...#>, nil
+
 }
 
 //Shows the new recording view
