@@ -112,6 +112,8 @@
 		4FD48E2F154B22B5007880C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E2E154B22B5007880C2 /* AVFoundation.framework */; };
 		4FD48E31154B22E3007880C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E30154B22E3007880C2 /* CoreMedia.framework */; };
 		4FD48E33154B22EE007880C2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E32154B22EE007880C2 /* CoreVideo.framework */; };
+		4FD724FB174D6CC10005D782 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FD724FA174D6CC10005D782 /* plus.png */; };
+		4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD724FD174D6E870005D782 /* NetworkHelper.m */; };
 		4FDAC3D815A1FFB5003D1B16 /* ILColorPickerDualExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDAC3D615A1FFB5003D1B16 /* ILColorPickerDualExampleController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4FDAC3D915A1FFB5003D1B16 /* ILColorPickerDualExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4FDAC3D715A1FFB5003D1B16 /* ILColorPickerDualExampleController.xib */; };
 		4FDAC3E215A20020003D1B16 /* ILView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDAC3DB15A20020003D1B16 /* ILView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -249,6 +251,9 @@
 		4FD48E2E154B22B5007880C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		4FD48E30154B22E3007880C2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		4FD48E32154B22EE007880C2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		4FD724FA174D6CC10005D782 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		4FD724FC174D6E870005D782 /* NetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkHelper.h; sourceTree = "<group>"; };
+		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkHelper.m; sourceTree = "<group>"; };
 		4FDAC3D515A1FFB5003D1B16 /* ILColorPickerDualExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILColorPickerDualExampleController.h; sourceTree = "<group>"; };
 		4FDAC3D615A1FFB5003D1B16 /* ILColorPickerDualExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILColorPickerDualExampleController.m; sourceTree = "<group>"; };
 		4FDAC3D715A1FFB5003D1B16 /* ILColorPickerDualExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ILColorPickerDualExampleController.xib; sourceTree = "<group>"; };
@@ -446,6 +451,7 @@
 				820FE6251651115B004B484E /* font_24.png */,
 				4F0FED59169CD86800C04ADC /* pauseButton.png */,
 				4F0FED5B169CD95200C04ADC /* doneButton.png */,
+				4FD724FA174D6CC10005D782 /* plus.png */,
 				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
 				4FFF477415D553EE0047ED11 /* LectureCapturePDF.pdf */,
 				4FC62A9F164199F0001C2B39 /* VideoPreview */,
@@ -517,6 +523,8 @@
 				4F45455D1635F1790091F335 /* AudioRecorder.m */,
 				4F45454D1635F12B0091F335 /* ViewController.h */,
 				4F45454E1635F12B0091F335 /* ViewController.m */,
+				4FD724FC174D6E870005D782 /* NetworkHelper.h */,
+				4FD724FD174D6E870005D782 /* NetworkHelper.m */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -707,6 +715,7 @@
 				4F0FED58169CD50500C04ADC /* recordButton.png in Resources */,
 				4F0FED5A169CD86800C04ADC /* pauseButton.png in Resources */,
 				4F0FED5C169CD95200C04ADC /* doneButton.png in Resources */,
+				4FD724FB174D6CC10005D782 /* plus.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -812,6 +821,7 @@
 				826B68921682EB9500C1ADD2 /* ASIDataDecompressor.m in Sources */,
 				4F18C640173C232C009FD464 /* NewModel.xcdatamodeld in Sources */,
 				4F08148A173DEC90007092C4 /* CameraPicker.m in Sources */,
+				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -29,8 +29,7 @@
 - (IBAction)shareURL:(id)sender;
 - (IBAction)logInOrOut:(id)sender;
 - (IBAction)editTable:(id)sender;
-
-
+- (IBAction)addToSmallTable:(id)sender;
 
 
 

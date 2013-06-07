@@ -8,11 +8,13 @@
 
 #import "ViewController.h"
 #import "ASIFormDataRequest.h"
+#import "NetworkHelper.h"
 
 @interface ViewController ()
 {
-   NSMutableArray * videosArray;
+   NSMutableArray * compileVideoListArray;
     __weak IBOutlet UITableView *tableView;
+    IBOutlet UITableView *compileTableView;
     __weak IBOutlet UIImageView *videoScreenshotImageView;
     __weak IBOutlet UILabel *videoTitleLabel;
     __weak IBOutlet UITextView *videoDescriptionTextView;
@@ -28,6 +30,7 @@
     Video * currentVideo;
     UIAlertView * uploadAlert;
     UIAlertView * createNewAlert;
+   
     Manager *manager;
     
 }
@@ -35,8 +38,8 @@
 - (IBAction)deleteVideo:(id)sender;
 - (IBAction)cancelAndDismissRecordingView:(id)sender;
 
-- (IBAction)createNewRecording;
-- (IBAction)createNewProject;
+//- (IBAction)createNewRecording;
+//- (IBAction)createNewProject;
 
 
 - (void)loadVideoWithURL:(NSURL *) url;
@@ -50,6 +53,9 @@
 
 
 @implementation ViewController
+
+
+
 @synthesize bannerView = _bannerView;
 @synthesize uploadingVideoActivityIndicator = _uploadingVideoActivityIndicator;
 @synthesize managedObjectContext = _managedObjectContext;
@@ -100,7 +106,27 @@
     }
 }
 
-//UPLOADING FILES
+#pragma mark files operations
+
+
+
+-(void)deleteFileAtPath:(NSString *)path{
+    NSFileManager * fm = [NSFileManager defaultManager];
+    NSError * error;
+    if( [fm fileExistsAtPath:path])
+    {
+        [fm removeItemAtPath:path error:&error];
+    }
+    if(error)
+    {
+        NSLog(@"Error %@ ",[error debugDescription]);
+    }
+    else{
+        NSLog(@"File %@ deleted",path);
+    }
+}
+
+
 -(void)postMovie:(NSString * )filePath{
 if(manager.userId){
     if(filePath.length==0)
@@ -309,6 +335,10 @@ if(manager.userId){
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    //Array that is storing vidoes
+    compileVideoListArray =[[NSMutableArray alloc]initWithCapacity:0];
+    
     self.uploadingVideoLabel.hidden=YES;
     self.uploadingVideoActivityIndicator.hidden=YES;
     manager= [Manager sharedManager];
@@ -321,10 +351,10 @@ if(manager.userId){
 	// Do any additional setup after loading the view, typically from a nib.
     recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
-    [self refactorCoreData];
+    compileTableView.dataSource = self;
+    compileTableView.delegate = self;
     
     [self fetchedResultsController];
-    //Debugging
     [self loadVideoWithURL:nil];
 }
 
@@ -337,6 +367,30 @@ if(manager.userId){
 
 }
 
+#pragma mark notifications and Loading video
+- (void)video:(NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
+    NSString * message;
+    if(error)
+    {
+        NSLog(@"didFinishSavingWithError: %@", error);
+        message= [NSString stringWithFormat: @"Error. %@",[error localizedDescription]];
+    }
+    else{
+        message=@"Movie was successfully saved. It can be accessed from Photos App.";
+    }
+    UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [al show];
+    
+}
+
+
+
+- (IBAction)deleteVideo:(id)sender {
+    [tableView setEditing:YES animated:YES];
+    
+    
+}
+
 
 -(void) loadVideoWithURL:(NSURL *) url{
        //url = outputURL;
@@ -346,6 +400,26 @@ if(manager.userId){
     webView.opaque = NO;
     webView.backgroundColor = [UIColor clearColor];
     [webView loadHTMLString:videoHTML baseURL:nil];
+}
+
+-(void)doneButtonClick:(NSNotification*)aNotification{
+    
+}
+
+
+- (void)moviePlaybackChange:(NSNotification *)notification
+{
+    //  MPMoviePlayerController *moviePlayerController = [notification object];
+}
+
+- (void)moviePlaybackComplete:(NSNotification *)notification
+{
+    MPMoviePlayerController *moviePlayerController = [notification object];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:MPMoviePlayerPlaybackDidFinishNotification
+                                                  object:moviePlayerController];
+    [moviePlayerController.view removeFromSuperview];
+    
 }
 
 
@@ -368,6 +442,7 @@ if(manager.userId){
     [self setBannerView:nil];
     [self setUploadingVideoLabel:nil];
     [self setUploadingVideoActivityIndicator:nil];
+    compileTableView = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -394,6 +469,7 @@ if(manager.userId){
 
 
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+   
     static NSString *MyIdentifier = @"prototype";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     if (cell == nil) {
@@ -404,15 +480,28 @@ if(manager.userId){
     return cell;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)_tableView numberOfRowsInSection:(NSInteger)section
 {
+    if([_tableView isEqual:tableView]){
     id  sectionInfo =
     [[_fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
-}
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    return @"Recordings";
+    }
+    if([_tableView isEqual:compileTableView]){
+        return compileVideoListArray.count;
+    }
+    return 0;
+}
+    
+- (NSString *)tableView:(UITableView *)_tableView titleForHeaderInSection:(NSInteger)section{
+    if([_tableView isEqual:tableView]){
+        return @"Recordings";
+    }
+    if([_tableView isEqual:compileTableView]){
+        return @"Compile Video";
+    }
+        return @"";
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -480,28 +569,12 @@ if(manager.userId){
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [tableView endUpdates];
-   // [tableView reloadData];
-}
-
--(void)deleteFileAtPath:(NSString *)path{
-    NSFileManager * fm = [NSFileManager defaultManager];
-    NSError * error;
-    if( [fm fileExistsAtPath:path])
-    {
-        [fm removeItemAtPath:path error:&error];
-    }
-    if(error)
-    {
-        NSLog(@"Error %@ ",[error debugDescription]);
-    }
-    else{
-        NSLog(@"File %@ deleted",path);
-    }
 }
 
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-   Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
+-(void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([_tableView isEqual:tableView]){
+    Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
 
 
     NSFileManager * fileManager = [NSFileManager defaultManager];
@@ -526,30 +599,9 @@ if(manager.userId){
         self.movie_url_label.text = @"Tap on the Upload Recording button to upload recording to the server.";
         self.copyURLButton.enabled=NO;
     }
-   
+    }
 
 }
-
--(void)doneButtonClick:(NSNotification*)aNotification{
-    
-}
-
-
-- (void)moviePlaybackChange:(NSNotification *)notification
-{
-  //  MPMoviePlayerController *moviePlayerController = [notification object];
-}
-
-- (void)moviePlaybackComplete:(NSNotification *)notification
-{
-     MPMoviePlayerController *moviePlayerController = [notification object];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:MPMoviePlayerPlaybackDidFinishNotification
-                                                  object:moviePlayerController];
-    [moviePlayerController.view removeFromSuperview];
- 
-}
-
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
@@ -563,6 +615,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 {
     
+    if([aTableView isEqual:tableView]){
     if (editingStyle == UITableViewCellEditingStyleDelete)
         
     {
@@ -590,9 +643,27 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         
         [tableView reloadData];
        
-    } 
+    }
+   }
 }
 
+- (IBAction)editTable:(id)sender {
+    if(tableView.editing){
+        tableView.editing = NO;
+        [sender setTitle:@"Edit"];
+    }
+    else{
+        tableView.editing = YES;
+        [sender setTitle:@"Done Editing"];
+    }
+}
+
+#pragma  mark Compiling Video
+- (IBAction)addToSmallTable:(id)sender {
+    [compileVideoListArray addObject: [currentVideo copy]];
+    [compileTableView reloadData];
+    
+}
 
 
 - (IBAction)saveToLibrary:(id)sender {
@@ -613,28 +684,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
-- (void)video:(NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
-    NSString * message;
-    if(error)
-    {
-        NSLog(@"didFinishSavingWithError: %@", error);
-        message= [NSString stringWithFormat: @"Error. %@",[error localizedDescription]];
-    }
-    else{
-        message=@"Movie was successfully saved. It can be accessed from Photos App.";
-    }
-        UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [al show];
-  
-}
-
-
-
-- (IBAction)deleteVideo:(id)sender {
-    [tableView setEditing:YES animated:YES];
-    
-     
-}
 
 
 - (IBAction)cancelAndDismissRecordingView:(id)sender {
@@ -644,7 +693,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (IBAction)createNew{
-    createNewAlert = [UIAlertView alloc]initWithTitle:@"Create" message:<#(NSString *)#> delegate:<#(id)#> cancelButtonTitle:<#(NSString *)#> otherButtonTitles:<#(NSString *), ...#>, nil
 
 }
 
@@ -770,17 +818,8 @@ else
     }
 }
 
-- (IBAction)editTable:(id)sender {
-    if(tableView.editing){
-        tableView.editing = NO;
-        [sender setTitle:@"Edit"];
-    }
-    else{
-        tableView.editing = YES;
-        [sender setTitle:@"Done Editing"];        
-    }
-}
 
+#pragma mark user management
 
 -(void)logoutUser{
     [self.loginBarButton setTitle:@"Login"];
@@ -820,7 +859,6 @@ else
         [loginPopOver dismissPopoverAnimated:YES];
     }
 }
-
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
