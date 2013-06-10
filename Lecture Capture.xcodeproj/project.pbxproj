@@ -141,6 +141,7 @@
 		82498DC11644C78A00265D0E /* buttonBackRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 82498DC01644C78A00265D0E /* buttonBackRed.png */; };
 		826B68911682EB9500C1ADD2 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		826B68921682EB9500C1ADD2 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 826B68901682EB9500C1ADD2 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82EE270A16421275008F99AE /* CaptureSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE270916421275008F99AE /* CaptureSessionManager.m */; };
 		82EE271D16435DF0008F99AE /* resizeBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 82EE271C16435DF0008F99AE /* resizeBtn.png */; };
@@ -291,6 +292,8 @@
 		826B68901682EB9500C1ADD2 /* ASIDataDecompressor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIDataDecompressor.m; sourceTree = "<group>"; };
 		826B68931682ED6100C1ADD2 /* UIImageAddition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIImageAddition.h; sourceTree = "<group>"; };
 		826B68941682ED6100C1ADD2 /* UIImageAddition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIImageAddition.m; sourceTree = "<group>"; };
+		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableButton.h; sourceTree = "<group>"; };
+		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableButton.m; sourceTree = "<group>"; };
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82EE270816421275008F99AE /* CaptureSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureSessionManager.h; sourceTree = "<group>"; };
 		82EE270916421275008F99AE /* CaptureSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptureSessionManager.m; sourceTree = "<group>"; };
@@ -518,6 +521,8 @@
 				4F4545591635F16D0091F335 /* PaintView.h */,
 				4F45455A1635F16D0091F335 /* PaintView.m */,
 				4F4545651635F2580091F335 /* MainStoryboard.storyboard */,
+				8282D683176673BB00F82722 /* CustomTableButton.h */,
+				8282D684176673BB00F82722 /* CustomTableButton.m */,
 				4FD48DA8154AC95D007880C2 /* Supporting Files */,
 				4F45455C1635F1790091F335 /* AudioRecorder.h */,
 				4F45455D1635F1790091F335 /* AudioRecorder.m */,
@@ -822,6 +827,7 @@
 				4F18C640173C232C009FD464 /* NewModel.xcdatamodeld in Sources */,
 				4F08148A173DEC90007092C4 /* CameraPicker.m in Sources */,
 				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,
+				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

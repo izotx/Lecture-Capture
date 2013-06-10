@@ -14,7 +14,6 @@
 #import <iAd/iAd.h>
 
 
-
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate, PopoverDismissDelegate, LogoutDelegate, ADBannerViewDelegate>
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UILabel *movie_url_label;
@@ -30,7 +29,5 @@
 - (IBAction)logInOrOut:(id)sender;
 - (IBAction)editTable:(id)sender;
 - (IBAction)addToSmallTable:(id)sender;
-
-
 
 @end

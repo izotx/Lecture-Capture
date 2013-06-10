@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "ASIFormDataRequest.h"
 #import "NetworkHelper.h"
+#import "CustomTableButton.h"
+
 
 @interface ViewController ()
 {
@@ -30,6 +32,7 @@
     Video * currentVideo;
     UIAlertView * uploadAlert;
     UIAlertView * createNewAlert;
+    NetworkHelper * networkHelper;
    
     Manager *manager;
     
@@ -142,85 +145,9 @@ if(manager.userId){
             [a show];
         }
         else{
-        NSURL * url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
-            __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-            if(videoTitleLabel.text.length>0){
-                [request setPostValue:videoTitleLabel.text forKey:@"Title"];
-            }
-            else{
-                [request setPostValue:@"" forKey:@"Title"];
-            }                
-            
-            
-            //Setting  password and login
-            [request setPostValue:manager.loginName forKey:@"email"];
-            [request setPostValue:manager.loginPassword forKey:@"password"];
-           
-            
-            NSLog(@" Name and Password is: %@ %@ ",manager.loginName, manager.loginPassword);
-            
-           [request setFile:videoPath forKey:@"userfile"];
-           [request setCompletionBlock:^{
-          
-          NSLog(@"Data %@", [request responseString]);
-          NSString * response = [request responseString];
-          //Check with regular expression       
-               NSString * ext = [[response pathExtension]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-               NSString * acext=@"mov";
-               NSLog(@"%@ and %@" ,ext,acext);
-            if(![ext isEqualToString:acext])
-            {
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; 
-                UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Error. Your recording couldn't be uploaded at this time. Try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [a show];
-            }
-            else{              
-                currentVideo.video_url=response;
-                self.movie_url_label.text=response;
-                   
-                NSError * error=nil;
-                [self.managedObjectContext save:&error];
-                if(error==nil)
-                {
-                    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                    pasteboard.string = response;
-                    UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Your recording was successfully uploaded to a server and the URL was copied to the clipboard. You can paste the URL in email or text message to share your recording with others." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [a show];
-                    copyURLButton.enabled=YES;
-                }
-                else{
-                    NSLog(@"Error %@",[error debugDescription]);
-                }
-                
-            }
-                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                 self.uploadingVideoLabel.hidden=YES;
-                 self.uploadingVideoActivityIndicator.hidden=YES;
-                 [self.uploadingVideoActivityIndicator stopAnimating];
-
-            }];
-            // END OF COMPLETION BLACK
-            
-            [request setFailedBlock:^{
-                NSLog(@"Failed, %@",[request error]);
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                self.uploadingVideoLabel.hidden=YES;
-                self.uploadingVideoActivityIndicator.hidden=YES;
-                [self.uploadingVideoActivityIndicator stopAnimating];
-
-                UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Error. Your recording couldn't be uploaded at this time. Try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [a show];
-            }]; 
-            
-            request.delegate=self;
-            [request setTimeOutSeconds:-1];
-            [request startAsynchronous];
-            
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            self.uploadingVideoLabel.hidden=NO;
-            self.uploadingVideoActivityIndicator.hidden=NO;
-            [self.uploadingVideoActivityIndicator startAnimating];
-        }   
+        // upload video here
+        [networkHelper uploadVideo:currentVideo andManager:manager andVideoPath:filePath];
+        }
     }
 }
     else{
@@ -290,32 +217,6 @@ if(manager.userId){
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		exit(-1);  // Fail
 	}
-
-//get sections
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-//    NSEntityDescription *entity = [NSEntityDescription
-//                                   entityForName:@"Project" inManagedObjectContext:self.managedObjectContext];
-//    [fetchRequest setEntity:entity];
-//    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-//                              initWithKey:@"title" ascending:YES];
-//    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-//    
-//    
-//    
-//    NSFetchedResultsController *theFetchedResultsController =
-//    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-//                                        managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
-//                                                   cacheName:@"Root"];
-//    self.fetchedResultsController = theFetchedResultsController;
-//    _fetchedResultsController.delegate = self;
-//
-//    fetchedResultsController.sec
-//    
-    
-    
-    
-    
-    
     
     return _fetchedResultsController;
     
@@ -338,6 +239,7 @@ if(manager.userId){
 
     //Array that is storing vidoes
     compileVideoListArray =[[NSMutableArray alloc]initWithCapacity:0];
+    networkHelper = [[NetworkHelper alloc]init];
     
     self.uploadingVideoLabel.hidden=YES;
     self.uploadingVideoActivityIndicator.hidden=YES;
@@ -469,14 +371,20 @@ if(manager.userId){
 
 
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-   
+    UITableViewCell *cell;
+    if([_tableView isEqual:tableView]){
     static NSString *MyIdentifier = @"prototype";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] ;
+     }
+      // Configure the cell button
+        
+     CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:100];
+     ctb.indexPath = indexPath;
+     [self configureCell:cell atIndexPath:indexPath];
     }
-    [self configureCell:cell atIndexPath:indexPath];
-    
+   
     return cell;
 }
 
@@ -518,7 +426,7 @@ if(manager.userId){
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
  
-     //  DebugLog(@" Did Change ");
+    
       
     switch(type) {
             
@@ -660,8 +568,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma  mark Compiling Video
 - (IBAction)addToSmallTable:(id)sender {
+    
     [compileVideoListArray addObject: [currentVideo copy]];
     [compileTableView reloadData];
+    NSLog(@" Adding video inside a small table...");
+    
+    
     
 }
 
@@ -706,7 +618,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
   
     [UIView commitAnimations];
 
-    [self.view bringSubviewToFront:informationAboutRecordingView];  
+    [self.view addSubview:informationAboutRecordingView];
+    
+    [self.view bringSubviewToFront:informationAboutRecordingView];
+    
+    
     NSArray * subviews =informationAboutRecordingView.subviews;
     for (UIView * v in subviews)
     {
@@ -817,9 +733,6 @@ else
         }
     }
 }
-
-
-#pragma mark user management
 
 -(void)logoutUser{
     [self.loginBarButton setTitle:@"Login"];
