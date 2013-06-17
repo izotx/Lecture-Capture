@@ -142,11 +142,9 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 	return context;
 }
 
-//how can we move it to background, ha?
--(void)drawInBackground{
-    
-    [myQueue addOperationWithBlock:^{
-    
+
+- (void) drawRect:(CGRect)rect {
+#pragma warning add operation queue
     NSDate* start = [NSDate date];
 	//CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
     
@@ -164,7 +162,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [background drawInRect:self.frame];
-       
+        
         CGRect tframe;
         CGRect videoPreviewBackgroundFrame;
         if(fullScreen){
@@ -227,30 +225,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     }
     float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
     delayRemaining = (1.0 / self.frameRate) - processingSeconds;
-        [[NSOperationQueue mainQueue]addOperationWithBlock:^{
-             [self performSelectorOnMainThread:@selector(refreshImage) withObject:nil waitUntilDone:NO];
-        }];
- 
-    }];
-}
-    
-
--(void)refreshImage{
-  //[self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
     [self setNeedsDisplay];
-}
-
-
-
-- (void) drawRect:(CGRect)rect {
-#pragma warning add operation queue
-    if(layerReady){
-        CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), rect, destLayer);
-    }
-    else{
-       // [self performSelectorInBackground:@selector(drawInBackground) withObject:nil];
-        [self drawInBackground];
-    }
 }
 
 
@@ -355,7 +330,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 		[NSThread sleepForTimeInterval:0.5f];
 		 status = videoWriter.status;
 	}
-        [videoWriter endSessionAtSourceTime:currentCMTime];
+       // [videoWriter endSessionAtSourceTime:currentCMTime];
 		[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
