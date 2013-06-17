@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Janusz Chudzynski. All rights reserved.
 //
 //#import "AVCaptureHelper.h"
+#import <QuartzCore/QuartzCore.h>
 #import "PaintView.h"
 
 @implementation PaintView
@@ -31,6 +32,9 @@ float scale;
 CGPoint translation;
 
 NSMutableDictionary * redo;
+CGLayerRef destLayer;
+CGContextRef destContext;
+BOOL layerReady;
 
 
 - (id)initWithFrame:(CGRect)frame
@@ -51,7 +55,8 @@ NSMutableDictionary * redo;
     if (self) {
         // Initialization code
 
-        UIGraphicsBeginImageContext(self.frame.size);
+         UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+        
         self.image = UIGraphicsGetImageFromCurrentImageContext();
         startImage =self.image;
         UIGraphicsEndImageContext();
@@ -87,6 +92,16 @@ NSMutableDictionary * redo;
         [panGesture setDelegate:self];
         [self addGestureRecognizer:panGesture];
         scale =1;
+        
+        CGFloat contentScale = [[UIScreen mainScreen]scale];
+        CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
+        destLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), layerSize, NULL);
+        destContext = CGLayerGetContext(destLayer);
+        CGContextScaleCTM(destContext, contentScale, contentScale);
+        layerReady = NO;
+
+        
+        
     }
     return self;
 }
@@ -141,8 +156,7 @@ NSMutableDictionary * redo;
 
 -(void)drawImageAndLines{
 
-       
-    UIGraphicsBeginImageContext(self.frame.size);
+    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     if(self.backgroundScreen)
@@ -215,7 +229,7 @@ NSMutableDictionary * redo;
 
 -(void)eraseContext{
     
-    UIGraphicsBeginImageContext(self.frame.size);
+     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     [paths removeAllObjects];
@@ -275,7 +289,7 @@ NSMutableDictionary * redo;
 {
        
     int touchesCount=    [[event allTouches]count];
-    UIGraphicsBeginImageContext(self.frame.size);
+    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
     CGContextRef context = UIGraphicsGetCurrentContext();
     

@@ -46,6 +46,5 @@ __weak IBOutlet UIActivityIndicatorView *activityIndicator;
 - (IBAction)redoAction:(id)sender;
 - (IBAction)undoAction:(id)sender;
 
--(void)putFilesTogether;
 
 @end

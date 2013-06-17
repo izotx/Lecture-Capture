@@ -137,7 +137,13 @@ if(manager.userId){
         }
         else{
         // upload video here
-        [networkHelper uploadVideo:currentVideo andManager:manager andVideoPath:filePath];
+        
+            [networkHelper setCompletionBlocks:^(){
+                
+            } andError:^(){
+            
+            }];
+            [networkHelper uploadVideo:currentVideo andManager:manager andVideoPath:filePath];
         }
     }
 }

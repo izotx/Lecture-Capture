@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="13A476u" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="11G63" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="2">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
@@ -288,7 +288,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="58" sectionHeaderHeight="45" sectionFooterHeight="22" id="zxE-tY-RXK">
-                                <rect key="frame" x="0.0" y="86" width="281" height="618"/>
+                                <rect key="frame" x="0.0" y="44" width="281" height="660"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -328,7 +328,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                                     <rect key="frame" x="233" y="3" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                    <state key="normal" title="Button" image="cloud_download.png">
+                                                    <state key="normal" title="Button" image="cloud_upload.png">
                                                         <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -391,11 +391,14 @@ If you have any questions about our policy or the security of Screen Capture app
                                     </barButtonItem>
                                     <barButtonItem title="Documentation" id="UTP-Mo-5VV">
                                         <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="shareURL:" destination="2" id="Cg1-Jj-KAo"/>
+                                        </connections>
                                     </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Lecture Capture" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="17" id="j75-yj-qoC">
-                                <rect key="frame" x="376" y="0.0" width="223" height="40"/>
+                                <rect key="frame" x="281" y="5" width="553" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -510,7 +513,7 @@ If you have any questions about our policy or the security of Screen Capture app
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-2014" y="-1504"/>
+            <point key="canvasLocation" x="-2010" y="-1498"/>
         </scene>
         <!--Info View Controller-->
         <scene sceneID="PWa-ox-bRb">
@@ -879,7 +882,7 @@ If you have any questions about our policy or the security of Screen Capture app
     </scenes>
     <resources>
         <image name="buttonBack.png" width="200" height="100"/>
-        <image name="cloud_download.png" width="128" height="128"/>
+        <image name="cloud_upload.png" width="128" height="128"/>
         <image name="controlsButtonBack.png" width="529" height="180"/>
         <image name="delete_24.png" width="24" height="24"/>
         <image name="doneButton.png" width="91" height="91"/>
@@ -891,94 +894,6 @@ If you have any questions about our policy or the security of Screen Capture app
         <image name="screen.png" width="25" height="25"/>
         <image name="video.png" width="64" height="64"/>
     </resources>
-    <classes>
-        <class className="CustomTableButton" superclassName="UIButton">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CustomTableButton.h"/>
-        </class>
-        <class className="InfoViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/InfoViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-        <class className="LoginRegisterViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginRegisterViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginUser:"/>
-                <relationship kind="action" name="registerUser:"/>
-                <relationship kind="action" name="showLoginScreen:"/>
-                <relationship kind="action" name="showRegistrationScreen:"/>
-                <relationship kind="outlet" name="confirmPasswordTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="displayNameTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="emailLoginTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="emailTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="passwordLoginTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="passwordTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="registrationView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="RecorderViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RecorderViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addVideoPreview:"/>
-                <relationship kind="action" name="changeBackground:"/>
-                <relationship kind="action" name="changeBrushSize:"/>
-                <relationship kind="action" name="clearBoard:"/>
-                <relationship kind="action" name="eraseRecording:"/>
-                <relationship kind="action" name="eraserOnOff:"/>
-                <relationship kind="action" name="finishRecording:"/>
-                <relationship kind="action" name="makeScreenShot:"/>
-                <relationship kind="action" name="pickColorFor:"/>
-                <relationship kind="action" name="redoAction:"/>
-                <relationship kind="action" name="undoAction:"/>
-                <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="backgroundView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="bannerView" candidateClass="ADBannerView"/>
-                <relationship kind="outlet" name="cameraBarButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="colorBarButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="durationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="informationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="recordingScreenView" candidateClass="ScreenCaptureView"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="testImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
-            </relationships>
-        </class>
-        <class className="ScreenCaptureView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ScreenCaptureView.h"/>
-        </class>
-        <class className="ViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addToSmallTable:"/>
-                <relationship kind="action" name="cancelAndDismissRecordingView:"/>
-                <relationship kind="action" name="contactSupport:"/>
-                <relationship kind="action" name="copyURL:"/>
-                <relationship kind="action" name="createNewRecording:"/>
-                <relationship kind="action" name="deleteVideo:"/>
-                <relationship kind="action" name="editTable:"/>
-                <relationship kind="action" name="logInOrOut:"/>
-                <relationship kind="action" name="saveToLibrary:"/>
-                <relationship kind="action" name="shareMovie:"/>
-                <relationship kind="action" name="shareURL:"/>
-                <relationship kind="outlet" name="bannerView" candidateClass="ADBannerView"/>
-                <relationship kind="outlet" name="compileTableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="copyURLButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="editDescriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="editTitleTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="informationAboutRecordingView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="loginBarButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="movie_url_label" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="uploadingVideoActivityIndicator" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="uploadingVideoLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="videoDescriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="videoScreenshotImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="videoTitleLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation" orientation="landscapeRight"/>

@@ -123,7 +123,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 -(NSString* ) timeConverter:(int)durationInSeconds;
 -(IBAction)finishRecording:(id)sender;
 - (IBAction)addVideoPreview:(id)sender;
--(void)putFilesTogether;
     
 
 @property(nonatomic, assign) BOOL bannerIsVisible;
@@ -189,10 +188,16 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
             [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
             [self.informationLabel removeFromSuperview];
         }
+    // Remove recording screen
+        [recordingStartView removeFromSuperview];
+        [activityIndicator stopAnimating];
+    
     }
     else{
         [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
     }
+
+    
 }
 
 - (void)viewDidLoad
@@ -311,10 +316,10 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
     if(ready==NO){
         [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
-        NSLog(@"Not Ready");
+
     }
     else{
-        NSLog(@"Ready");
+
         if(!ioHelper){
             ioHelper  = [[IOHelper alloc]init];
             
@@ -350,10 +355,24 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
      else
         {
            recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
-           recordingStartView.backgroundColor = [UIColor grayColor];
+           recordingStartView.backgroundColor = [UIColor darkGrayColor];
+            
+           UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(281,10,553,40)];
+
+           [label setFont:[UIFont systemFontOfSize:20]];
+           [label setText:@"Setting up your recording."];
+           label.backgroundColor =  [UIColor darkGrayColor];
+           label.textColor = [UIColor lightGrayColor];
+           label.lineBreakMode = NSLineBreakByWordWrapping;
+           label.numberOfLines = 2;
+ 
+            [recordingStartView addSubview:label];
+
+            
+            
            [self.view addSubview: recordingStartView];
            [recordingStartView addSubview:activityIndicator];
-          [activityIndicator startAnimating];
+           [activityIndicator startAnimating];
             
         [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
         [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];            

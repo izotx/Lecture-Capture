@@ -22,6 +22,12 @@
 
 BOOL paused;
 CMTime currentCMTime;
+CGLayerRef destLayer;
+CGContextRef destContext;
+BOOL layerReady;
+NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
+
+
 
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
@@ -45,6 +51,18 @@ CMTime currentCMTime;
    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pauseAction:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activeAction:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    //Preparing for drawing in background
+    CGFloat contentScale = [[UIScreen mainScreen]scale];
+    CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
+    destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
+    destContext = CGLayerGetContext(destLayer);
+    CGContextScaleCTM(destContext, contentScale, contentScale);
+    layerReady = NO;
+    
+    myQueue = [[NSOperationQueue alloc] init];
+    myQueue.name = @"Download Queue";
+    
 }
 
 -(void)pauseAction:(NSNotification * )notification{
@@ -124,30 +142,29 @@ CMTime currentCMTime;
 	return context;
 }
 
-
-- (void) drawRect:(CGRect)rect {
-#pragma warning add operation queue
+//how can we move it to background, ha?
+-(void)drawInBackground{
+    
+    [myQueue addOperationWithBlock:^{
     
     NSDate* start = [NSDate date];
-	CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
-  
+	//CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
+    
 	float delayRemaining=0;
 	//not sure why this is necessary...image renders upside-down and mirrored
     
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
-    CGContextConcatCTM(context, flipVertical);
+    CGContextConcatCTM(destContext, flipVertical);
     UIImage* background =   paintView.image;
     
     self.currentScreen = background;
     if([csm.captureSession isRunning]){
-                
-        UIGraphicsBeginImageContext(self.frame.size);
-
+        
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
+        
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [background drawInRect:self.frame];
-        
-        
-        
+       
         CGRect tframe;
         CGRect videoPreviewBackgroundFrame;
         if(fullScreen){
@@ -165,8 +182,8 @@ CMTime currentCMTime;
         float oh = self.frame.size.height;
         float dx,dy;
         if(fullScreen){
-           dx = (ow - w)/2.0;
-           dy = (oh - h)/2.0;
+            dx = (ow - w)/2.0;
+            dy = (oh - h)/2.0;
             
         }
         else{
@@ -175,18 +192,18 @@ CMTime currentCMTime;
         }
         
         CGRect tempRect = CGRectMake(dx, dy, w, h);
-      //  CGRect fullTempRect = CGRectMake(dx, dy+11, w, h);
-
+        //  CGRect fullTempRect = CGRectMake(dx, dy+11, w, h);
+        
         float x = tempRect.origin.x;
         float y = tempRect.origin.y;
-
+        
         x = x-(0.1*w)/2.0;
         y = y-(0.1*h)/2.0;
         w = 1.1 * w;
         h = 1.1 * h;
-
+        
         videoPreviewBackgroundFrame = CGRectMake(x,y,w,h);
-                
+        
         CGContextSetFillColorWithColor(ctx, [[UIColor grayColor]CGColor]);
         CGContextFillRect(ctx, tframe);
         
@@ -201,17 +218,39 @@ CMTime currentCMTime;
         }
         UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
         self.currentScreen = newImage;
-      }
-       
+    }
     
-        if (_recording) {
-            float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-              [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-        }
-        float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
-         delayRemaining = (1.0 / self.frameRate) - processingSeconds;
-        CGContextRelease(context);
-        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+    
+    if (_recording) {
+        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+        [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
+    }
+    float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
+    delayRemaining = (1.0 / self.frameRate) - processingSeconds;
+        [[NSOperationQueue mainQueue]addOperationWithBlock:^{
+             [self performSelectorOnMainThread:@selector(refreshImage) withObject:nil waitUntilDone:NO];
+        }];
+ 
+    }];
+}
+    
+
+-(void)refreshImage{
+  //[self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+    [self setNeedsDisplay];
+}
+
+
+
+- (void) drawRect:(CGRect)rect {
+#pragma warning add operation queue
+    if(layerReady){
+        CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), rect, destLayer);
+    }
+    else{
+       // [self performSelectorInBackground:@selector(drawInBackground) withObject:nil];
+        [self drawInBackground];
+    }
 }
 
 
@@ -414,6 +453,7 @@ CMTime currentCMTime;
 			UIImage* newFrame = self.currentScreen;
 			CVPixelBufferRef pixelBuffer = NULL;
 			CGImageRef cgImage = CGImageCreateCopy([newFrame CGImage]);
+            
 			CFDataRef image = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
 			
 			int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, avAdaptor.pixelBufferPool, &pixelBuffer);
@@ -422,7 +462,7 @@ CMTime currentCMTime;
 				NSLog(@"Error creating pixel buffer:  status=%d", status);
 			}
 			// set image data into pixel buffer
-			CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
+			CVPixelBufferLockBaseAddress(pixelBuffer, 0 );
 			uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
 			CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
 			
