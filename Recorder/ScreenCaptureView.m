@@ -143,27 +143,30 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 }
 
 //how can we move it to background, ha?
+NSDate* start;
+float delayRemaining;
 -(void)drawInBackground{
     
+    UIImage* weakbackground =   paintView.image;
+    __block UIImage *newImage = paintView.image;
     [myQueue addOperationWithBlock:^{
     
-    NSDate* start = [NSDate date];
-	//CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
-    
-	float delayRemaining=0;
+    start = [NSDate date];
+	    
+	delayRemaining=0;
 	//not sure why this is necessary...image renders upside-down and mirrored
     
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
     CGContextConcatCTM(destContext, flipVertical);
-    UIImage* background =   paintView.image;
     
-    self.currentScreen = background;
+    
+    
     if([csm.captureSession isRunning]){
         
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
         
         CGContextRef ctx = UIGraphicsGetCurrentContext();
-        [background drawInRect:self.frame];
+        [weakbackground drawInRect:self.frame];
        
         CGRect tframe;
         CGRect videoPreviewBackgroundFrame;
@@ -216,18 +219,12 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         else{
             [vi drawInRect:videoPreviewBackgroundFrame blendMode:kCGBlendModeNormal alpha:1];
         }
-        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-        self.currentScreen = newImage;
+        newImage = UIGraphicsGetImageFromCurrentImageContext();
+        
     }
-    
-    
-    if (_recording) {
-        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-        [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-    }
-    float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
-    delayRemaining = (1.0 / self.frameRate) - processingSeconds;
+
         [[NSOperationQueue mainQueue]addOperationWithBlock:^{
+             self.currentScreen = newImage;
              [self performSelectorOnMainThread:@selector(refreshImage) withObject:nil waitUntilDone:NO];
         }];
  
@@ -237,6 +234,13 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 
 -(void)refreshImage{
   //[self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+    if (_recording) {
+        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+        [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
+    }
+    float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
+    delayRemaining = (1.0 / self.frameRate) - processingSeconds;
+    
     [self setNeedsDisplay];
 }
 
@@ -246,6 +250,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 #pragma warning add operation queue
     if(layerReady){
         CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), rect, destLayer);
+        layerReady = NO;
     }
     else{
        // [self performSelectorInBackground:@selector(drawInBackground) withObject:nil];
