@@ -139,6 +139,10 @@
 		82498DBD16449F8700265D0E /* eraserSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 82498DBC16449F8700265D0E /* eraserSelected.png */; };
 		82498DBF1644A15200265D0E /* buttonBackBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 82498DBE1644A15200265D0E /* buttonBackBlack.png */; };
 		82498DC11644C78A00265D0E /* buttonBackRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 82498DC01644C78A00265D0E /* buttonBackRed.png */; };
+		82622A64176B544000E89194 /* IOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82622A63176B544000E89194 /* IOHelper.m */; };
+		82622A67176B55BB00E89194 /* CoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82622A66176B55BB00E89194 /* CoreDataHelper.m */; };
+		82622A6A176B9CCB00E89194 /* cloud_download.png in Resources */ = {isa = PBXBuildFile; fileRef = 82622A68176B9CCB00E89194 /* cloud_download.png */; };
+		82622A6B176B9CCB00E89194 /* cloud_upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 82622A69176B9CCB00E89194 /* cloud_upload.png */; };
 		826B68911682EB9500C1ADD2 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		826B68921682EB9500C1ADD2 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 826B68901682EB9500C1ADD2 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
@@ -212,8 +216,8 @@
 		4FA7276C155B04E8002A2F1D /* NSString+MD5Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5Addition.m"; sourceTree = "<group>"; };
 		4FA7276D155B04E8002A2F1D /* UIDevice+IdentifierAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+IdentifierAddition.h"; sourceTree = "<group>"; };
 		4FA7276E155B04E8002A2F1D /* UIDevice+IdentifierAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+IdentifierAddition.m"; sourceTree = "<group>"; };
-		4FA72775155B0834002A2F1D /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
-		4FA72776155B0834002A2F1D /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
+		4FA72775155B0834002A2F1D /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InfoViewController.h; path = ../InfoViewController.h; sourceTree = "<group>"; };
+		4FA72776155B0834002A2F1D /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InfoViewController.m; path = ../InfoViewController.m; sourceTree = "<group>"; };
 		4FA7277D155B0D91002A2F1D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		4FA7277E155B0D91002A2F1D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		4FA7277F155B0D91002A2F1D /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
@@ -286,6 +290,12 @@
 		82498DBC16449F8700265D0E /* eraserSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eraserSelected.png; sourceTree = "<group>"; };
 		82498DBE1644A15200265D0E /* buttonBackBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonBackBlack.png; sourceTree = "<group>"; };
 		82498DC01644C78A00265D0E /* buttonBackRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonBackRed.png; path = Recorder/buttonBackRed.png; sourceTree = "<group>"; };
+		82622A62176B544000E89194 /* IOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOHelper.h; path = ../IOHelper.h; sourceTree = "<group>"; };
+		82622A63176B544000E89194 /* IOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOHelper.m; path = ../IOHelper.m; sourceTree = "<group>"; };
+		82622A65176B55BB00E89194 /* CoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataHelper.h; sourceTree = "<group>"; };
+		82622A66176B55BB00E89194 /* CoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataHelper.m; sourceTree = "<group>"; };
+		82622A68176B9CCB00E89194 /* cloud_download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_download.png; sourceTree = "<group>"; };
+		82622A69176B9CCB00E89194 /* cloud_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_upload.png; sourceTree = "<group>"; };
 		826B688D1682EB9400C1ADD2 /* ASIDataCompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIDataCompressor.h; sourceTree = "<group>"; };
 		826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIDataCompressor.m; sourceTree = "<group>"; };
 		826B688F1682EB9500C1ADD2 /* ASIDataDecompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIDataDecompressor.h; sourceTree = "<group>"; };
@@ -386,6 +396,10 @@
 		4FA7277C155B0D7A002A2F1D /* ASIHTTPRequest */ = {
 			isa = PBXGroup;
 			children = (
+				826B688D1682EB9400C1ADD2 /* ASIDataCompressor.h */,
+				826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */,
+				826B688F1682EB9500C1ADD2 /* ASIDataDecompressor.h */,
+				826B68901682EB9500C1ADD2 /* ASIDataDecompressor.m */,
 				826B68931682ED6100C1ADD2 /* UIImageAddition.h */,
 				826B68941682ED6100C1ADD2 /* UIImageAddition.m */,
 				4FA7277D155B0D91002A2F1D /* Reachability.h */,
@@ -438,30 +452,12 @@
 				4F081488173DEC90007092C4 /* CameraPicker.h */,
 				4F081489173DEC90007092C4 /* CameraPicker.m */,
 				4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */,
-				826B688D1682EB9400C1ADD2 /* ASIDataCompressor.h */,
-				826B688E1682EB9500C1ADD2 /* ASIDataCompressor.m */,
-				826B688F1682EB9500C1ADD2 /* ASIDataDecompressor.h */,
-				826B68901682EB9500C1ADD2 /* ASIDataDecompressor.m */,
-				820FE61A165108A4004B484E /* camera.png */,
-				820FE61F16510B4A004B484E /* video_24.png */,
-				820FE62116510C9A004B484E /* man_24.png */,
-				820FE62316510F52004B484E /* cancel_24.png */,
-				4F0FED57169CD50500C04ADC /* recordButton.png */,
-				820FE61D165109A3004B484E /* screen.png */,
-				820FE62716511212004B484E /* illus.png */,
-				820FE629165126EA004B484E /* delete_24.png */,
-				4F0FED51169CD2D300C04ADC /* controlsButtonBack.png */,
-				820FE6251651115B004B484E /* font_24.png */,
-				4F0FED59169CD86800C04ADC /* pauseButton.png */,
-				4F0FED5B169CD95200C04ADC /* doneButton.png */,
-				4FD724FA174D6CC10005D782 /* plus.png */,
+				82536123176A50E7000D8F92 /* Images */,
 				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
 				4FFF477415D553EE0047ED11 /* LectureCapturePDF.pdf */,
 				4FC62A9F164199F0001C2B39 /* VideoPreview */,
 				4FA727D61563EC4F002A2F1D /* Login Management */,
 				4FA7277C155B0D7A002A2F1D /* ASIHTTPRequest */,
-				4FA72775155B0834002A2F1D /* InfoViewController.h */,
-				4FA72776155B0834002A2F1D /* InfoViewController.m */,
 				4FA72764155B0273002A2F1D /* KeyChain */,
 				4FA727A3155B4FF0002A2F1D /* Video.h */,
 				4FA727A4155B4FF0002A2F1D /* Video.m */,
@@ -509,6 +505,14 @@
 		4FD48DA7154AC95D007880C2 /* Recorder */ = {
 			isa = PBXGroup;
 			children = (
+				82622A62176B544000E89194 /* IOHelper.h */,
+				82622A63176B544000E89194 /* IOHelper.m */,
+				4FD724FC174D6E870005D782 /* NetworkHelper.h */,
+				4FD724FD174D6E870005D782 /* NetworkHelper.m */,
+				82622A65176B55BB00E89194 /* CoreDataHelper.h */,
+				82622A66176B55BB00E89194 /* CoreDataHelper.m */,
+				4FA72775155B0834002A2F1D /* InfoViewController.h */,
+				4FA72776155B0834002A2F1D /* InfoViewController.m */,
 				4F4545501635F14D0091F335 /* RecorderViewController.h */,
 				4F4545511635F14D0091F335 /* RecorderViewController.m */,
 				4F4545521635F14D0091F335 /* ScreenCaptureView.h */,
@@ -528,8 +532,6 @@
 				4F45455D1635F1790091F335 /* AudioRecorder.m */,
 				4F45454D1635F12B0091F335 /* ViewController.h */,
 				4F45454E1635F12B0091F335 /* ViewController.m */,
-				4FD724FC174D6E870005D782 /* NetworkHelper.h */,
-				4FD724FD174D6E870005D782 /* NetworkHelper.m */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -609,6 +611,28 @@
 			);
 			name = Images;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		82536123176A50E7000D8F92 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				820FE61A165108A4004B484E /* camera.png */,
+				82622A68176B9CCB00E89194 /* cloud_download.png */,
+				82622A69176B9CCB00E89194 /* cloud_upload.png */,
+				820FE61F16510B4A004B484E /* video_24.png */,
+				820FE62116510C9A004B484E /* man_24.png */,
+				820FE62316510F52004B484E /* cancel_24.png */,
+				4F0FED57169CD50500C04ADC /* recordButton.png */,
+				820FE61D165109A3004B484E /* screen.png */,
+				820FE62716511212004B484E /* illus.png */,
+				820FE629165126EA004B484E /* delete_24.png */,
+				4F0FED51169CD2D300C04ADC /* controlsButtonBack.png */,
+				820FE6251651115B004B484E /* font_24.png */,
+				4F0FED59169CD86800C04ADC /* pauseButton.png */,
+				4F0FED5B169CD95200C04ADC /* doneButton.png */,
+				4FD724FA174D6CC10005D782 /* plus.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -721,6 +745,8 @@
 				4F0FED5A169CD86800C04ADC /* pauseButton.png in Resources */,
 				4F0FED5C169CD95200C04ADC /* doneButton.png in Resources */,
 				4FD724FB174D6CC10005D782 /* plus.png in Resources */,
+				82622A6A176B9CCB00E89194 /* cloud_download.png in Resources */,
+				82622A6B176B9CCB00E89194 /* cloud_upload.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,6 +854,8 @@
 				4F08148A173DEC90007092C4 /* CameraPicker.m in Sources */,
 				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,
 				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,
+				82622A64176B544000E89194 /* IOHelper.m in Sources */,
+				82622A67176B55BB00E89194 /* CoreDataHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,7 +1006,7 @@
 				GCC_PREFIX_HEADER = "Recorder/Lecture Capture-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "Recorder/Lecture Capture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "Lecture Capture";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -998,7 +1026,7 @@
 				GCC_PREFIX_HEADER = "Recorder/Lecture Capture-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "Recorder/Lecture Capture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "Lecture Capture";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

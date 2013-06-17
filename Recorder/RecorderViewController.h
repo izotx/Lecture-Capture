@@ -15,8 +15,6 @@
 #import <iAd/iAd.h>
 #import "ILColorPickerDualExampleController.h"
 
-
-
 @interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ScreenShotDelegate,ADBannerViewDelegate, ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate>
 {
     IBOutlet UIImageView *backgroundView;

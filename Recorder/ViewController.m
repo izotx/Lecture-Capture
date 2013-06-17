@@ -33,18 +33,13 @@
     UIAlertView * uploadAlert;
     UIAlertView * createNewAlert;
     NetworkHelper * networkHelper;
-   
     Manager *manager;
     
 }
 - (IBAction)saveToLibrary:(id)sender;
 - (IBAction)deleteVideo:(id)sender;
 - (IBAction)cancelAndDismissRecordingView:(id)sender;
-
-//- (IBAction)createNewRecording;
-//- (IBAction)createNewProject;
-
-
+- (IBAction)contactSupport:(id)sender;
 - (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
 
@@ -54,10 +49,7 @@
 
 @end
 
-
 @implementation ViewController
-
-
 
 @synthesize bannerView = _bannerView;
 @synthesize uploadingVideoActivityIndicator = _uploadingVideoActivityIndicator;
@@ -112,7 +104,6 @@
 #pragma mark files operations
 
 
-
 -(void)deleteFileAtPath:(NSString *)path{
     NSFileManager * fm = [NSFileManager defaultManager];
     NSError * error;
@@ -151,13 +142,10 @@ if(manager.userId){
     }
 }
     else{
-      
-        
         UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to log in in order to upload recordings to the server." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [a show];
     }
 }
-
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //Executed when NExt button is clicked.
@@ -311,7 +299,7 @@ if(manager.userId){
 
 - (void)moviePlaybackChange:(NSNotification *)notification
 {
-    //  MPMoviePlayerController *moviePlayerController = [notification object];
+
 }
 
 - (void)moviePlaybackComplete:(NSNotification *)notification
@@ -321,37 +309,6 @@ if(manager.userId){
                                                     name:MPMoviePlayerPlaybackDidFinishNotification
                                                   object:moviePlayerController];
     [moviePlayerController.view removeFromSuperview];
-    
-}
-
-
-
-
-- (void)viewDidUnload
-{
-    tableView = nil;
-    videoScreenshotImageView = nil;
-    videoTitleLabel = nil;
-    videoDescriptionTextView = nil;
-
-    editTitleTextField = nil;
-    editDescriptionTextView = nil;
-    informationAboutRecordingView = nil;
-    webView = nil;
-    [self setMovie_url_label:nil];
-    [self setCopyURLButton:nil];
-    [self setLoginBarButton:nil];
-    [self setBannerView:nil];
-    [self setUploadingVideoLabel:nil];
-    [self setUploadingVideoActivityIndicator:nil];
-    compileTableView = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
 }
 
 
@@ -366,25 +323,49 @@ if(manager.userId){
     titleLabel.text=info.title;
     durationLabel.text=[NSString stringWithFormat:@"Duration: %@",info.duration];
     fileSizeLabel.text=info.video_size;
-       
+    CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:80];
+    ctb.indexPath = indexPath;
+    [ctb addTarget:self action:@selector(uploadButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
+
+-(void)uploadButtonPressed:(id)sender{
+   
+    CustomTableButton *cb =   (CustomTableButton *)sender;
+     NSLog(@" %@ ",cb);
+    //   Video * v =
+    NSIndexPath *indexPath = [(CustomTableButton *) sender indexPath];
+    Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
+    videoPath = info.video_path;
+    [self postMovie:videoPath];
+}
+
+
+
+//reordering the table
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
+    NSLog(@"Object Moved ");
+
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(tableView==compileTableView){
+    return YES;
+    }
+    else return NO;
+}
+
 
 
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
-    if([_tableView isEqual:tableView]){
     static NSString *MyIdentifier = @"prototype";
         cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] ;
      }
-      // Configure the cell button
-        
-     CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:100];
-     ctb.indexPath = indexPath;
-     [self configureCell:cell atIndexPath:indexPath];
-    }
-   
+  
+    [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
@@ -481,9 +462,9 @@ if(manager.userId){
 
 
 -(void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"Did Select");
     if([_tableView isEqual:tableView]){
     Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
-
 
     NSFileManager * fileManager = [NSFileManager defaultManager];
     if([fileManager fileExistsAtPath:v.video_path])
@@ -568,13 +549,24 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma  mark Compiling Video
 - (IBAction)addToSmallTable:(id)sender {
+  //Configure table
+    [compileTableView setEditing:YES];
     
-    [compileVideoListArray addObject: [currentVideo copy]];
+    //Get the current video from the big table
+   NSLog(@"%@ ",(CustomTableButton *) sender);
+   NSIndexPath *indexPath = [(CustomTableButton *) sender indexPath];
+   Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
+
+    NSLog(@" Adding video inside a small table... %@ indexPath %@ ",indexPath, _fetchedResultsController);
+    if(info){
+        [compileVideoListArray addObject: info];
+    }
+    
+
+    
     [compileTableView reloadData];
-    NSLog(@" Adding video inside a small table...");
     
-    
-    
+
 }
 
 
@@ -604,9 +596,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self textFieldShouldReturn:editTitleTextField];
 }
 
-- (IBAction)createNew{
 
-}
+
 
 //Shows the new recording view
 - (IBAction)createNewRecording:(id)sender {
@@ -647,6 +638,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [a show];
 
 }
+
+
 
 - (IBAction)shareURL:(id)sender {
     NSLog(@"Share URL");
@@ -697,6 +690,41 @@ else
     [alert show];
     }
 }
+
+- (IBAction)contactSupport:(id)sender {
+    if([MFMailComposeViewController canSendMail])
+    {
+        
+        MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+        
+        mailer.mailComposeDelegate = self;
+        [mailer setSubject:@"Lecture Capture Support"];
+        
+        NSMutableString *body = [NSMutableString string];
+        // add HTML before the link here with line breaks (\n)
+        [body appendString:@"<p>Please decribe a problem that you are having with the app. Do you have any suggestions? We will be happy to assist!.</p>\n"];
+        [mailer setMessageBody:body isHTML:YES];
+        
+        // only for iPad
+        mailer.modalPresentationStyle = UIModalPresentationPageSheet;
+        [self presentViewController:mailer animated:YES completion:nil];
+        
+    }
+    else
+    {
+        NSLog(@"Share URL 3");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message"
+                                                        message:@"Your device doesn't support the composer sheet"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles: nil];
+        [alert show];
+    }
+}
+
+
+
+
 #pragma mark login and login delegate
 - (IBAction)logInOrOut:(id)sender {
     UIStoryboard* sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]; 

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface CustomTableButton : UIButton
-@property(weak, nonatomic) NSIndexPath * indexPath;
+@property(strong, nonatomic) NSIndexPath * indexPath;
 @end

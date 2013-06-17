@@ -13,14 +13,15 @@
 
 
 @interface NetworkHelper : NSObject
-typedef void (^ BlockTest)(int);
+typedef void (^ BlockTest)();
 
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 -(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath;
 
--(void)testTheBlock:(BlockTest) blockTest;
+-(void)setCompletionBlocks:(BlockTest) successBlock andError:
+(BlockTest) errorBlock;
 
 
 

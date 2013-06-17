@@ -21,15 +21,15 @@
 @synthesize rotatePreview;
 
 BOOL paused;
-//VideoPreview * videoPreview;
+CMTime currentCMTime;
+
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
 - (void) initialize {
     self.paintView = [[PaintView alloc]initWithFrame:self.bounds];
     [self addSubview:self.paintView];
     paintView.backgroundColor = [UIColor blackColor];
-	
-    self.clearsContextBeforeDrawing = YES;
+	self.clearsContextBeforeDrawing = YES;
 	self.currentScreen = nil;
 	self.frameRate = 15.0f;     //10 frames per seconds
 	_recording = false;
@@ -291,11 +291,13 @@ BOOL paused;
 - (void) completeRecordingSession {
 	
     @autoreleasepool {
-        
+        NSLog(@"Complete recording session ");
  
 
 	@try {
         [videoWriterInput markAsFinished];
+
+        NSLog(@"Mark recording as finished ");
     }
     @catch (NSException *exception) {
         NSLog(@" Mark as Finished Failed: %@",[exception debugDescription]);
@@ -304,36 +306,31 @@ BOOL paused;
         
     }
 	
-	
-	// Wait for the video
-	int status = videoWriter.status;
-	while (status == AVAssetWriterStatusUnknown) {
-		[NSThread sleepForTimeInterval:0.5f];
-		status = videoWriter.status;
-	}
+    NSLog(@"Before while looop");
 
+//    [videoWriter endSessionAtSourceTime:videoWriterInput.]
+        
+    // Wait for the video
+	int status = videoWriter.status;
+    while (status == AVAssetWriterStatusUnknown) {
+		[NSThread sleepForTimeInterval:0.5f];
+		 status = videoWriter.status;
+	}
+        [videoWriter endSessionAtSourceTime:currentCMTime];
 		[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
-//        int ran = arc4random()%100* arc4random();
-//   
-//        self.outputPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], self.outputPath];
-//            DebugLog(@" OUTPUT PATH %@  ",self.outputPath);
-//            
-//        NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
-//   
-//            
-            
-            BOOL success = true;
+        BOOL success = true;
         
-             if(videoWriter.status == AVAssetWriterStatusFailed)
-             {
-                 success = false;
-             }
+        if(videoWriter.status == AVAssetWriterStatusFailed)
+        {
+            success = false;
+        }
             
-            if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
-                [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:nil waitUntilDone:YES];
-            }
+        if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
+            NSLog(@"Calls the delegate object ");
+            [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:nil waitUntilDone:YES];
+        }
         
         }];
 	}
@@ -394,9 +391,11 @@ BOOL paused;
 		if (_recording) {
 			_recording = false;
             if([videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
+                NSLog(@" Complete Recording session");
                 [self completeRecordingSession];
             }
             else if([videoWriter respondsToSelector:@selector(finishWriting)]){
+                NSLog(@" Complete Legacy Recording session");
                 [self legacyCompleteRecordingSession];
             }
         }
@@ -431,6 +430,7 @@ BOOL paused;
                     BOOL success = [avAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:time];
                     if (!success)
                         NSLog(@"Warning:  Unable to write buffer to video");
+                currentCMTime = time;
             }
 			//clean up
 			CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );

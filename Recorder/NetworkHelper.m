@@ -9,9 +9,16 @@
 #import "NetworkHelper.h"
 
 #define MaxSize 100
+@interface NetworkHelper(){
+    BlockTest  successBlock;
+    BlockTest  errorBlock;
+}
 
+@end
 
 @implementation NetworkHelper
+
+
 -(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath {
     NSURL * url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
 
@@ -60,7 +67,7 @@
             
         }];
         // END OF COMPLETION BLACK
-        
+        successBlock();
         [request setFailedBlock:^{
             NSLog(@"Failed, %@",[request error]);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -72,7 +79,9 @@
         request.delegate=self;
         [request setTimeOutSeconds:-1];
         [request startAsynchronous];
+    
         
+    
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
 }
@@ -84,8 +93,11 @@
 }
 
 
--(void)testTheBlock:(BlockTest) blockTest{
-
+-(void)setCompletionBlocks:(BlockTest) _successBlock andError:
+(BlockTest) _errorBlock{
+    successBlock = _successBlock;
+    errorBlock = _errorBlock;
+    
 }
 
 

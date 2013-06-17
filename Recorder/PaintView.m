@@ -47,8 +47,6 @@ NSMutableDictionary * redo;
     [redo setValue:c forKey:@"colors"];
     [redo setValue:s forKey:@"sizes"];
     
-    
-    
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -209,9 +207,6 @@ NSMutableDictionary * redo;
    float imageHeight = image.size.height;
         
    float selfFrameWidth = self.frame.size.width;
-  // float selfFrameHeight = self.frame.size.height;
-
-   //NSLog(@"Scale:%f %f ABS %f %f  translation %f, scaled x is %f ",scale,  abs(selfFrameHeight-imageHeight)/2.0, imageWidth * scale,(selfFrameWidth - imageWidth*scale)/2.0,(selfFrameWidth - imageWidth*scale)/2.0 + translation.x, ((selfFrameWidth - imageWidth*scale)/2.0 + translation.x)*scale);
 
    CGRect frame = CGRectMake(((selfFrameWidth - imageWidth)/2.0 + translation.x ) / scale, 0-translation.y/ scale, imageWidth, imageHeight);
     

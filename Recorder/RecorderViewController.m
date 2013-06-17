@@ -26,6 +26,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 #import "Utilities.h"
 #import "UIImage+Resize.h"
 #import "VideoPreview.h"
+#import "IOHelper.h"
 
 
 #define FRAME_RATE 10
@@ -93,7 +94,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     NSTimer * durationTimer;
 
     UIImageView * preview;
-    AudioRecorder * ar;
+
     BOOL interrupted;
     BOOL recordingStarted;
     BOOL paused;
@@ -105,9 +106,12 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     NSMutableArray * moviePieces;
     NSMutableArray * audioPieces;
     
-
+    UIView * recordingStartView;
+    
+    AudioRecorder * ar;
     ILColorPickerDualExampleController * cp;
     VideoPreview * vp;
+    IOHelper * ioHelper;
     
     
 }
@@ -147,19 +151,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 }
 
 -(void)recordingInterrupted{
-//    [recordingScreenView performSelector:@selector(stopRecording)];
-//    [ar performSelector:@selector(stopRecording)];
-//    
-//    interrupted = YES;
-//    ready = NO;
-//    
-//    if([durationTimer isValid])
-//    {
-//        [durationTimer invalidate];
-//    }
-//
-//    [recordingScreenView removeVideoPreview];
-//    [self dismiss];
+
     interrupted = YES;
     [self pauseRecording:nil];
 
@@ -188,7 +180,8 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
         }
         else{
              [moviePieces addObject:recordingScreenView.outputPath];
-        }
+        }        
+        
         if(![durationTimer isValid]){
             durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
         
@@ -242,13 +235,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 -(void)viewDidAppear:(BOOL)animated{
     [self manageOrientationChanges];
-//    NSMutableArray * a = [NSMutableArray arrayWithCapacity:0];
-//    [a addObject:@"1_output.mov"];
-//    [a addObject:@"2_output.mov"];
-//    
-//    
-//   [self putFilesTogether:a];
-    
+ 
 }
 
 
@@ -317,19 +304,34 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     
     if([durationTimer isValid]){
         [durationTimer invalidate];
-        durationTimer =NULL;
+         durationTimer =NULL;
     }
     [recordingScreenView performSelector:@selector(stopRecording)];
     [ar performSelector:@selector(stopRecording)];
 
     if(ready==NO){
-        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
         NSLog(@"Not Ready");
     }
     else{
         NSLog(@"Ready");
-        [self putFilesTogether];
-       // [self mergeAllselectedVideos];
+        if(!ioHelper){
+            ioHelper  = [[IOHelper alloc]init];
+            
+        }
+        NSString * path = [ioHelper getRandomFilePath];
+        [ioHelper putTogetherVideo:moviePieces andAudioPieces:audioPieces andCompletionBlock:^(BOOL success,CMTime duration) {
+                NSLog(@"Method returned.");
+            NSString * message;
+            if(success){
+                [self saveData:duration ofPath:path];
+                message = @"Movie successfully saved.";
+            }
+            else{
+                message = @"Movie wasn't successfully saved.";                
+            }
+             [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
+            } saveAtPath:path];
       }
     }
     else{
@@ -347,11 +349,18 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
       }
      else
         {
-        [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:1.0];
-        [ar performSelector:@selector(startRecording) withObject:nil afterDelay:1.0];
+           recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
+           recordingStartView.backgroundColor = [UIColor grayColor];
+           [self.view addSubview: recordingStartView];
+           [recordingStartView addSubview:activityIndicator];
+          [activityIndicator startAnimating];
+            
+        [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
+        [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];            
         recordingStarted = YES;
         paused = NO;
-        ready = NO; // because we need to wait for it to finish 
+        ready = NO;
+            
         }
      }
 }
@@ -442,146 +451,10 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 
 
-#pragma mark COMBINING FILES
-//Put Together
--(void)putFilesTogether{
-    AVMutableComposition *mixComposition = [AVMutableComposition composition]; 
-    
-    
-    AVMutableCompositionTrack *videoCompositionTrack =[[AVMutableCompositionTrack alloc]init];
-    AVMutableCompositionTrack *audioCompositionTrack =[[AVMutableCompositionTrack alloc]init];
-    videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    
-    audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-        
-    NSError * error;
-    for(int i=0;i<moviePieces.count;i++)
-    {
-        NSFileManager * fm = [NSFileManager defaultManager];
-        NSString * movieFilePath;
-        NSString * audioFilePath;
-        movieFilePath = [moviePieces objectAtIndex:i];
-        audioFilePath = [audioPieces objectAtIndex:i];
-
-        
-        if(![fm fileExistsAtPath:movieFilePath]){
-            NSLog(@"Movie doesn't exist %@ ",movieFilePath);
-        }
-        else{
-            NSLog(@"Movie exist %@ ",movieFilePath);
-        }
-        
-        if(![fm fileExistsAtPath:audioFilePath]){
-            NSLog(@"Audio doesn't exist %@ ",audioFilePath);
-        }
-        else{
-            NSLog(@"Audio exists %@ ",audioFilePath);
-        }
-        
-        
-       NSURL *videoUrl = [NSURL fileURLWithPath:movieFilePath];
-       NSURL *audioUrl = [NSURL fileURLWithPath:audioFilePath];
-        
-        
-        AVURLAsset *videoasset = [[AVURLAsset alloc]initWithURL:videoUrl options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey]];
-        AVAssetTrack *videoAssetTrack= [[videoasset tracksWithMediaType:AVMediaTypeVideo] lastObject];
-
-        AVURLAsset *audioasset = [[AVURLAsset alloc]initWithURL:audioUrl options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey]];
-        AVAssetTrack *audioAssetTrack= [[audioasset tracksWithMediaType:AVMediaTypeAudio] lastObject];
-
-        
-        
-        CMTime tempDuration = mixComposition.duration;
-        
-        
-        [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioasset.duration) ofTrack:audioAssetTrack atTime:tempDuration error:&error];
-      
-        [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoasset.duration) ofTrack:videoAssetTrack atTime:tempDuration error:&error];
-        
-        if(error)
-        {
-            NSLog(@"Ups. Something went wrong! %@", [error debugDescription]);
-        }
-    }
-    
-    
-    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSString *caldate = [now description];
-
-    float ran = arc4random()%100;
-    NSString * pathToSave = [NSString stringWithFormat:@"Output_Date:%@_%f.mov",caldate,ran];
-    pathToSave =[DOCUMENTS_FOLDER stringByAppendingPathComponent:pathToSave];
-    NSURL *movieUrl = [NSURL fileURLWithPath:pathToSave];
-    
-    AVAssetExportSession *exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetPassthrough];
-   // exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
-   //exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
-    exporter.outputFileType=AVFileTypeQuickTimeMovie;
-    exporter.outputURL=movieUrl;
-    exporter.shouldOptimizeForNetworkUse=YES;
-   
-    CMTimeValue val = mixComposition.duration.value;
-    
-    CMTime start=CMTimeMake(0, 600);
-    CMTime duration=CMTimeMake(val, 600);
-    CMTimeRange range=CMTimeRangeMake(start, duration);
-    exporter.timeRange=range;
-    
-//    AVPlayerItem * item = [[AVPlayerItem alloc] initWithAsset:mixComposition];
-//    AVPlayer * player = [AVPlayer playerWithPlayerItem:item];
-//    AVPlayerLayer * layer = [AVPlayerLayer playerLayerWithPlayer:player];
-//    
-//    [layer setFrame:recordingScreenView.bounds];
-//    [[recordingScreenView layer] addSublayer:layer];
-//    [player play];
-    
-    
-    
-    
-    [exporter exportAsynchronouslyWithCompletionHandler:^{
-        switch ([exporter status]) {
-            case AVAssetExportSessionStatusFailed:{
-                NSLog(@"Export failed: %@ %@", [[exporter error] localizedDescription],[[exporter error]debugDescription]);
-                NSString * message = @"Movie wasn't created. Try again later.";
-                [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
-                break;}
-            case AVAssetExportSessionStatusCancelled:{ NSLog(@"Export canceled");
-                NSString * message1 = @"Movie wasn't created. Try again later.";
-                [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message1 waitUntilDone:NO];
-                break;}
-            case AVAssetExportSessionStatusCompleted:
-            {
-                NSString * message = @"Movie was successfully created.";
-                CMTime duration = mixComposition.duration;
-                
-                [self saveData:duration ofPath:pathToSave];
-                [self cleanFiles];
-                [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
-            }
-        }}];
-}
-
-//self clean files
--(void)cleanFiles{
-    NSFileManager * fm = [NSFileManager  defaultManager];
-    NSError * error = nil;
-    for(NSString * path in moviePieces){
-       [fm removeItemAtPath:path error:&error];
-    }
-    for(NSString * path in audioPieces){
-        [fm removeItemAtPath:path error:&error];
-    }
-    if(error){
-        NSLog(@"Error While deleting file pieces: %@",[error debugDescription]);
-    }
-    
-}
-
 //Save to Core Data
 -(BOOL)saveData:(CMTime)d ofPath:(NSString * )pathToSave{
     if(!self.managedObjectContext)
     {
-        NSLog(@"Managed Object Context doesnt exist");
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
         self.managedObjectContext=appDelegate.managedObjectContext;
     }
