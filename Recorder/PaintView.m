@@ -35,12 +35,11 @@ NSMutableDictionary * redo;
 CGLayerRef destLayer;
 CGContextRef destContext;
 BOOL layerReady;
-NSOperationQueue * queue;
+
 
 - (id)initWithFrame:(CGRect)frame
 {
     translation = CGPointZero;
-    queue = [[NSOperationQueue alloc]init];
     
     
     NSMutableArray * p = [[NSMutableArray alloc]initWithCapacity:0];
@@ -51,25 +50,16 @@ NSOperationQueue * queue;
     [redo setValue:p forKey:@"paths"];
     [redo setValue:c forKey:@"colors"];
     [redo setValue:s forKey:@"sizes"];
-    layerReady = NO;
     
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
 
-        UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+         UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
         
         self.image = UIGraphicsGetImageFromCurrentImageContext();
         startImage =self.image;
         UIGraphicsEndImageContext();
-
-        CGFloat contentScale = [[UIScreen mainScreen]scale];
-        CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
-
-        destLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), layerSize, NULL);
-        destContext = CGLayerGetContext(destLayer);
-        CGContextScaleCTM(destContext, contentScale, contentScale);
-        layerReady = NO;
 
         self.backgroundColor=[UIColor whiteColor];
         self.userInteractionEnabled=YES;
@@ -103,7 +93,13 @@ NSOperationQueue * queue;
         [self addGestureRecognizer:panGesture];
         scale =1;
         
-            
+        CGFloat contentScale = [[UIScreen mainScreen]scale];
+        CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
+        destLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), layerSize, NULL);
+        destContext = CGLayerGetContext(destLayer);
+        CGContextScaleCTM(destContext, contentScale, contentScale);
+        layerReady = NO;
+
         
         
     }
@@ -160,21 +156,15 @@ NSOperationQueue * queue;
 
 -(void)drawImageAndLines{
 
-    UIImage * weakBackgroundScreen = self.backgroundScreen;
-    UIImage * weakBackgroundImage = self.backgroundImage;
-    
-    [queue addOperationWithBlock:^{
-    
-        
     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(weakBackgroundScreen)
+    if(self.backgroundScreen)
     {
         CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, weakBackgroundScreen.size.height);
+        CGContextTranslateCTM(context, 0.0f, self.backgroundScreen.size.height);
         CGContextScaleCTM(context, scale, -scale);
-        CGContextDrawImage(context, [self calculateFrameForImage:weakBackgroundScreen], weakBackgroundScreen.CGImage);
+        CGContextDrawImage(context, [self calculateFrameForImage:backgroundScreen], self.backgroundScreen.CGImage);
         CGContextRestoreGState(context);
     }
 
@@ -186,15 +176,15 @@ NSOperationQueue * queue;
         CGContextRestoreGState(context);
     }
 
-    if(weakBackgroundImage)
+    if(self.backgroundImage)
     {
         CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, weakBackgroundImage.size.height);
+        CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
-        CGRect frame = [self calculateFrameForImage:weakBackgroundImage];
-
+        CGRect frame = [self calculateFrameForImage:backgroundImage];
+        NSLog(@" ");
         
-        CGContextDrawImage(context, frame, weakBackgroundImage.CGImage);
+        CGContextDrawImage(context, frame, self.backgroundImage.CGImage);
        
         CGContextStrokePath(context);
         CGContextRestoreGState(context);
@@ -209,14 +199,9 @@ NSOperationQueue * queue;
         
         i++;
     }
-    UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
-       
+    
+    self.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-        [[NSOperationQueue mainQueue]addOperationWithBlock:^(){
-         self.image = img;
-    }];
-  }];
-        
 }
 
 
@@ -292,6 +277,7 @@ NSOperationQueue * queue;
 
     myPath.lineCapStyle=kCGLineCapRound;
     myPath.lineJoinStyle=kCGLineJoinRound;
+   // myPath.miterLimit=15;
     myPath.lineWidth=brushSize;
     [myPath moveToPoint:[mytouch locationInView:self]];
     [eraserPath moveToPoint:[mytouch locationInView:self]];
