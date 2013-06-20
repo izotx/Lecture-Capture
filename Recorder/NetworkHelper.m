@@ -21,6 +21,10 @@
 
 -(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath {
     NSURL * url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
+    
+    
+    
+    
 
     __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:currentVideo.title forKey:@"Title"];

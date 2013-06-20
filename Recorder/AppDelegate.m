@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "UIDevice+IdentifierAddition.h"
 
 @implementation AppDelegate
 
