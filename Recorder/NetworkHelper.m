@@ -7,7 +7,7 @@
 //
 
 #import "NetworkHelper.h"
-
+#import "AFNetworking.h"
 #define MaxSize 100
 @interface NetworkHelper(){
     BlockTest  successBlock;
@@ -21,8 +21,10 @@
 
 -(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath {
     NSURL * url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
+/*
     
-    
+    NSDictionary *parameters = [NSDictionary dictionaryWithObject:@"json" forKey:@"format"];
+*/
     
     
 

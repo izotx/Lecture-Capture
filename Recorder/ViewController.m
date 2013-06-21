@@ -352,9 +352,9 @@ if(manager.userId){
 
 }
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)tableView:(UITableView *)_tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(tableView==compileTableView){
+    if(_tableView==compileTableView){
     return YES;
     }
     else return NO;

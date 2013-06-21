@@ -957,6 +957,7 @@ If you have any questions about our policy or the security of Screen Capture app
                 <relationship kind="action" name="cancelAndDismissRecordingView:"/>
                 <relationship kind="action" name="contactSupport:"/>
                 <relationship kind="action" name="copyURL:"/>
+                <relationship kind="action" name="createNewRecording:"/>
                 <relationship kind="action" name="deleteVideo:"/>
                 <relationship kind="action" name="editTable:"/>
                 <relationship kind="action" name="logInOrOut:"/>
