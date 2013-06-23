@@ -21,11 +21,17 @@
 
 -(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath {
     NSURL * url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
-/*
     
-    NSDictionary *parameters = [NSDictionary dictionaryWithObject:@"json" forKey:@"format"];
-*/
+    NSDictionary * dict = [NSDictionary dictionaryWithObjects:@[currentVideo.title,manager.loginName,manager.loginPassword] forKeys:@[@"Title",@"email",@"password"]];
     
+    
+   // NSData *imageData = UIImagePNGRepresentation(image);
+    NSURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:imageData name:@"avatar" fileName:@"avatar.png" mimeType:@"image/png"];
+    }];
+    
+    
+
     
 
     __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];

@@ -42,7 +42,7 @@ static Manager* _sharedManager = nil;
 
 -(id)init {
 	self = [super init];
-	if (self != nil) {
+	if (self) {
 		// initialize stuff here
         NSArray * arrayPaths=NSSearchPathForDirectoriesInDomains(
         NSDocumentDirectory,
