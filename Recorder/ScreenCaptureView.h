@@ -47,7 +47,6 @@
 	AVAssetWriterInputPixelBufferAdaptor *avAdaptor;
 	
 	//recording state
-	BOOL _recording;
 	NSDate* startedAt;
 	void* bitmapData;
     NSString *outputPath;
@@ -75,6 +74,7 @@
 @property CGRect  videoPreviewFrame;
 @property BOOL fullScreen;
 @property BOOL rotatePreview;
+@property BOOL recording;
 
 
 @end

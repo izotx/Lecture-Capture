@@ -39,8 +39,11 @@
 @property(nonatomic, assign) id <LogoutDelegate> logoutDelegate;
 @property(strong) NSNumber * userId;
 
+@property(strong) NSURL * url;
 
-+(Manager*)sharedManager;
+
++(Manager *)sharedInstance;
+
 -(void) loginWithLogin: (NSString *) login andPassword:(NSString *) pass;
 -(void) registerWithName: (NSString *) displayName andEmail:(NSString *)email andPassword:(NSString *) pass;
 -(void) logOut;

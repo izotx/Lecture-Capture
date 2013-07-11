@@ -25,7 +25,7 @@
 UIPopoverController * cameraPopoverController;
 
 
-- (BOOL) startCameraControllerFromViewController: (UIViewController*) controller
+- (BOOL) startCameraControllerFromViewController: (UIViewController* ) controller
                                    usingDelegate: (id <UIImagePickerControllerDelegate,
                                                    UINavigationControllerDelegate>) delegate from:(UIView *)view  picker:(BOOL)picker andPopover:(UIPopoverController *)_cameraPopoverController {
     if(!picker){

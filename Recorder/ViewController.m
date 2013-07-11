@@ -136,12 +136,17 @@ if(manager.userId){
         }
         else{
         // upload video here
-        
+            __block UIButton * button = copyURLButton;
             [networkHelper setCompletionBlocks:^(){
+                button.enabled = YES;
+               // NSLog(@"Button enabled %@ %@",button, copyURLButton);
                 
-            } andError:^(){
+            } andError:^(
+             
+             ){
             
             }];
+            NSLog(@"Trying to upload it");
             [networkHelper uploadVideo:currentVideo andManager:manager andVideoPath:filePath];
         }
     }
@@ -151,6 +156,7 @@ if(manager.userId){
         [a show];
     }
 }
+
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //Executed when NExt button is clicked.
@@ -236,7 +242,7 @@ if(manager.userId){
     
     self.uploadingVideoLabel.hidden=YES;
     self.uploadingVideoActivityIndicator.hidden=YES;
-    manager= [Manager sharedManager];
+    manager= [Manager sharedInstance];
     manager.logoutDelegate =self;
      videoTitleLabel.text=@"";
     self.movie_url_label.text=@"";

@@ -61,9 +61,11 @@
         
         if(error)
         {
-            NSLog(@"Ups. Something went wrong! %@", [error debugDescription]);
+            NSLog(@"Ups. Something went wrong! %@ video %f audio %f ", [error debugDescription], CMTimeGetSeconds(videoasset.duration), CMTimeGetSeconds(audioasset.duration));
         }
     }
+
+    
     
     NSURL * movieURL = [NSURL fileURLWithPath:path];
    

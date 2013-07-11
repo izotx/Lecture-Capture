@@ -74,7 +74,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    manager = [Manager sharedManager];
+    manager = [Manager sharedInstance];
     manager.loginDelegate =self;
     manager.registerDelegate=self;
     //setting up text array with text fields

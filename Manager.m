@@ -14,31 +14,19 @@
 @synthesize registerDelegate;
 @synthesize logoutDelegate;
 @synthesize userId;
-static Manager* _sharedManager = nil;
+static Manager* sharedInstance = nil;
 
 
-+(Manager*)sharedManager
++(Manager *)sharedInstance
 {
-	@synchronized([Manager class])
-	{
-		if (!_sharedManager)
-			[[self alloc] init];
-		return _sharedManager;	
-    }
-	return nil;
-}
-
-+(id)alloc
-{
-	@synchronized([Manager class])
-	{
-		NSAssert(_sharedManager == nil, @"Attempted to allocate a second instance of a singleton.");
-		_sharedManager = [super alloc];
-		return _sharedManager;
-	}
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[Manager alloc] init];
+    });
     
-	return nil;
+    return sharedInstance;
 }
+
 
 -(id)init {
 	self = [super init];
@@ -50,6 +38,8 @@ static Manager* _sharedManager = nil;
         YES);
         
         docDir = [arrayPaths objectAtIndex:0];
+        self.url = [[NSURL alloc]initWithString:@"http://djmobilesoftware.com/screencapture/videoUpload.php"];
+        
 	}
 	return self;
 }

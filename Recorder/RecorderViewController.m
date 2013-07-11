@@ -158,6 +158,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 - (void) recordingStartedNotification{
     DebugLog(@"Recording Started ");
+    recordingScreenView.recording = YES;
     
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
         NSString * lastObject;

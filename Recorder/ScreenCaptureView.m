@@ -38,8 +38,8 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     paintView.backgroundColor = [UIColor blackColor];
 	self.clearsContextBeforeDrawing = YES;
 	self.currentScreen = nil;
-	self.frameRate = 15.0f;     //10 frames per seconds
-	_recording = false;
+	self.frameRate = 35.0f;     //10 frames per seconds
+	
 	videoWriter = nil;
 	videoWriterInput = nil;
 	avAdaptor = nil;
@@ -145,6 +145,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 
 
 - (void) drawRect:(CGRect)rect {
+    
 #pragma warning add operation queue
     NSDate* start = [NSDate date];
 	//CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
@@ -223,10 +224,11 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
+        float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
+        delayRemaining = (1.0 / self.frameRate) - processingSeconds;
+        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
     }
-    float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
-    delayRemaining = (1.0 / self.frameRate) - processingSeconds;
-    [self setNeedsDisplay];
+//        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
 }
 
 
@@ -328,10 +330,10 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     // Wait for the video
 	int status = videoWriter.status;
     while (status == AVAssetWriterStatusUnknown) {
-		[NSThread sleepForTimeInterval:0.5f];
+		[NSThread sleepForTimeInterval:0.1f];
 		 status = videoWriter.status;
 	}
-       // [videoWriter endSessionAtSourceTime:currentCMTime];
+        //[videoWriter endSessionAtSourceTime:currentCMTime];
 		[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
@@ -340,6 +342,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         if(videoWriter.status == AVAssetWriterStatusFailed)
         {
             success = false;
+            NSLog(@"Video Writer Failed");
         }
             
         if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
@@ -352,41 +355,6 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 }
 
 
-- (void) legacyCompleteRecordingSession {
-    @autoreleasepool {
-        
-    
-	
-	[videoWriterInput markAsFinished];
-	
-	// Wait for the video
-	int status = videoWriter.status;
-	while (status == AVAssetWriterStatusUnknown) {
-		[NSThread sleepForTimeInterval:0.5f];
-		status = videoWriter.status;
-	}
-	
-	@synchronized(self) {
-		BOOL success = [videoWriter finishWriting];
-		if (!success) {
-			NSLog(@"finishWriting returned NO");
-		}
-		
-		[self cleanupWriter];
-		
-		id delegateObj = self.delegate;
-		self.outputPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], @"output.mp4"];
-		NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
-		
-		NSLog(@"Completed recording, file is stored at:  %@", outputURL);
-		if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
-			[delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:(success ? outputURL : nil) waitUntilDone:YES];
-		}
-      }
-   }
-}
-
-
 
 - (bool) startRecording {
  
@@ -396,7 +364,11 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 			result = [self setUpWriter];
 			startedAt = [NSDate date];
 			_recording = true;
-		}
+
+            [self performSelector:@selector(setNeedsDisplay)];
+        }
+    
+        
 	}
 	return result;
 }
@@ -409,10 +381,6 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
                 NSLog(@" Complete Recording session");
                 [self completeRecordingSession];
             }
-            else if([videoWriter respondsToSelector:@selector(finishWriting)]){
-                NSLog(@" Complete Legacy Recording session");
-                [self legacyCompleteRecordingSession];
-            }
         }
 	}
 }
@@ -422,7 +390,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     if(paused) return;
     
     if (![videoWriterInput isReadyForMoreMediaData]) {
-		//  NSLog(@"Not ready for video data");
+		  NSLog(@"Not ready for video data");
 	}
 	else {
 		@synchronized (self) {
@@ -444,8 +412,9 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 			
 			if(status == 0){
                     BOOL success = [avAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:time];
-                    if (!success)
-                        NSLog(@"Warning:  Unable to write buffer to video");
+                    if (!success) NSLog(@"Warning:  Unable to write buffer to video");
+             
+               // NSLog(@"Write and time : %f",CMTimeGetSeconds(time));
                 currentCMTime = time;
             }
 			//clean up
