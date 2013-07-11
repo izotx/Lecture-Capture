@@ -51,14 +51,14 @@
 
 #pragma mark - Orientation
 
--(void)deviceDidRotate:(UIDeviceOrientation)newOrientation
+-(void)deviceDidRotate:(UIInterfaceOrientation)newOrientation
 {
     
 }
 
 -(void)deviceRotated:(NSNotification *)notification
 {
-    [self deviceDidRotate:[[UIDevice currentDevice] orientation]];
+    [self deviceDidRotate:[UIApplication sharedApplication].statusBarOrientation];
 }
 
 -(void)forceStartupOrientation

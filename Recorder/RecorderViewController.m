@@ -17,8 +17,7 @@
  
 */
 
-CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
-CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
+
 
 #import "RecorderViewController.h"
 #import "AppDelegate.h"
@@ -224,8 +223,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     paused = NO;
 }
 
-- (void)viewDidUnload
-{
+- (void)viewWillDisappear:(BOOL)animated{
     recordingScreenView = nil;
     durationLabel = nil;
     recordingScreenView = nil;
@@ -235,7 +233,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     backgroundView = nil;
     [self setToolbar:nil];
     [self setColorBarButton:nil];
-    [super viewDidUnload];
+    [super viewWillDisappear:animated];
     // Release any retained subviews of the main view.
 }
 
@@ -245,12 +243,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 }
 
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    //We need to rotate the preview:
-    
-    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
-}
 
 - (NSUInteger) supportedInterfaceOrientations
 {

@@ -25,10 +25,10 @@
 UIPopoverController * cameraPopoverController;
 
 
-- (BOOL) startCameraControllerFromViewController: (UIViewController* ) controller
+- (BOOL) startCameraControllerFromViewController: (UIViewController *)  controller
                                    usingDelegate: (id <UIImagePickerControllerDelegate,
                                                    UINavigationControllerDelegate>) delegate from:(UIView *)view  picker:(BOOL)picker andPopover:(UIPopoverController *)_cameraPopoverController {
-    if(!picker){
+       if(!picker){
         if (([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera] == NO))
         {
         UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Error" message:@"We were not able to find a camera on this device" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];

@@ -8,40 +8,43 @@
 //#import "AVCaptureHelper.h"
 #import <QuartzCore/QuartzCore.h>
 #import "PaintView.h"
+@interface PaintView(){
+    
+    NSMutableArray * paths;
+    NSMutableArray * colors;
+    NSMutableArray * sizes;
+    NSMutableArray * backgroundColors;
+    NSMutableArray * backgroundImages;
+    UIBezierPath * eraserPath;
+ 
+    CGPoint translation;
+    NSMutableDictionary * redo;
+    float scale;
+    dispatch_queue_t drawingQueue;
+    NSOperationQueue * queue;
+    UIImage * incrementalImage;
+    CGLayerRef backgroundLayer;
+    CGLayerRef pathLayer;
+}
+
+@end
 
 @implementation PaintView
 @synthesize colorOfBackground,strokeColor;
 @synthesize brushSize;
 @synthesize backgroundImage, startImage;
 @synthesize myPath;
-
 @synthesize panGesture;
 @synthesize pinchGesture; 
 @synthesize backgroundScreen;
-
 @synthesize eraseMode;
-
-NSMutableArray * paths;
-NSMutableArray * colors;
-NSMutableArray * sizes;
-NSMutableArray * backgroundColors;
-NSMutableArray * backgroundImages;
-
-UIBezierPath * eraserPath;
-float scale;
-CGPoint translation;
-
-NSMutableDictionary * redo;
-CGLayerRef destLayer;
-CGContextRef destContext;
-BOOL layerReady;
 
 
 - (id)initWithFrame:(CGRect)frame
 {
+    pathLayer = nil;
     translation = CGPointZero;
-    
-    
+    queue = [[NSOperationQueue alloc]init];
     NSMutableArray * p = [[NSMutableArray alloc]initWithCapacity:0];
     NSMutableArray * c = [[NSMutableArray alloc]initWithCapacity:1];
     NSMutableArray * s = [[NSMutableArray alloc]initWithCapacity:0];
@@ -55,7 +58,7 @@ BOOL layerReady;
     if (self) {
         // Initialization code
 
-         UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+        UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
         
         self.image = UIGraphicsGetImageFromCurrentImageContext();
         startImage =self.image;
@@ -93,14 +96,8 @@ BOOL layerReady;
         [self addGestureRecognizer:panGesture];
         scale =1;
         
-        CGFloat contentScale = [[UIScreen mainScreen]scale];
-        CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
-        destLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), layerSize, NULL);
-        destContext = CGLayerGetContext(destLayer);
-        CGContextScaleCTM(destContext, contentScale, contentScale);
-        layerReady = NO;
-
-        
+        //off screen drawing
+        drawingQueue = dispatch_queue_create("drawingQueue", NULL);
         
     }
     return self;
@@ -191,15 +188,21 @@ BOOL layerReady;
     }
     int i=0;
     
-    for(UIBezierPath * p in paths)
-    {
-        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-        [[colors objectAtIndex:i]setStroke];
-        [p stroke];
-        
-        i++;
+    @try {
+        for(UIBezierPath * p in paths)
+        {
+            myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
+            [[colors objectAtIndex:i]setStroke];
+            [p stroke];
+            i++;
+        }
     }
-    
+    @catch (NSException *exception) {
+        NSLog(@"Exception %@",exception.debugDescription);
+    }
+    @finally {
+        
+    }    
     self.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 }
@@ -208,10 +211,22 @@ BOOL layerReady;
 
 
 -(void)registerValues{
-    [paths addObject:myPath];
-    NSValue * sizeVal = [NSNumber numberWithFloat:brushSize];
-    [sizes addObject:sizeVal];
-    [colors addObject:strokeColor];
+   
+    [queue addOperationWithBlock:^{
+        @try {
+            [paths addObject:myPath];
+            NSValue * sizeVal = [NSNumber numberWithFloat:brushSize];
+            [sizes addObject:sizeVal];
+            [colors addObject:strokeColor];
+            
+        }
+        @catch (NSException *exception) {
+            NSLog(@"Exception %@",exception.debugDescription);
+        }
+        @finally {
+            
+        }
+    }];
 }
 
 
@@ -277,7 +292,6 @@ BOOL layerReady;
 
     myPath.lineCapStyle=kCGLineCapRound;
     myPath.lineJoinStyle=kCGLineJoinRound;
-   // myPath.miterLimit=15;
     myPath.lineWidth=brushSize;
     [myPath moveToPoint:[mytouch locationInView:self]];
     [eraserPath moveToPoint:[mytouch locationInView:self]];
@@ -289,10 +303,14 @@ BOOL layerReady;
 {
        
     int touchesCount=    [[event allTouches]count];
-    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+    NSArray * blockPaths = [paths copy];
+    //UIBezierPath * blockPath = [myPath copy];
+    //dispatch_async(drawingQueue, ^{
+    [queue addOperationWithBlock:^(){
+    
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, YES);
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
     if(self.backgroundScreen)
     {
         CGContextSaveGState(context);
@@ -311,16 +329,14 @@ BOOL layerReady;
 
     if(self.backgroundImage){
         CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-        CGRect  rect = [self calculateFrameForImage:backgroundImage];
+       if (!backgroundLayer) {
+            
+            backgroundLayer = CGLayerCreateWithContext(context, self.bounds.size, NULL);
+            CGContextRef flowerContext = CGLayerGetContext(backgroundLayer);
+            CGContextDrawImage(flowerContext, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
+        }
         
-        NSLog(@" %f %f %f %f ",rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
-        
-        
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
-        
-        
+        CGContextDrawLayerInRect(context, self.bounds, backgroundLayer);
         CGContextRestoreGState(context);
     }
     if(eraseMode == YES)
@@ -331,6 +347,7 @@ BOOL layerReady;
     else{
         if(touchesCount==1)
         {
+         
         [myPath addLineToPoint:[mytouch locationInView:self]];
          myPath.lineWidth=brushSize;
         [strokeColor setStroke];
@@ -339,16 +356,50 @@ BOOL layerReady;
     }
 
     int i=0;
-    for(UIBezierPath * p in paths)
-    {
-        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-        [[colors objectAtIndex:i]setStroke];
-        [p stroke];
-        i++;
-    }
+    
+#warning change it hmm cache layer.
+//       
+//    for(UIBezierPath * p in blockPaths)
+//    {
+//        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
+//        [[colors objectAtIndex:i]setStroke];
+////        CGAffineTransform transform = CGAffineTransformMakeScale(scale, scale);
+//        
+////        CGPathRef intermediatePath = CGPathCreateCopyByTransformingPath(myPath.CGPath,
+////                                                                        &transform);
+////        CGPathRef intermediatePath2 = CGPathCreateCopyByTransformingPath(p.CGPath,
+////                                                                        &transform);
+////        
+////        myPath.CGPath = intermediatePath;
+////        p.CGPath = intermediatePath2;
+////        
+////        CGPathRelease(intermediatePath2);
+////        CGPathRelease(intermediatePath);
+//        [p stroke];
+//        i++;
+//    }
+        
+        CGContextRef pathContext;
+        if(!pathLayer)
+        {
+            pathLayer = CGLayerCreateWithContext(context, self.bounds.size, NULL);
+        
+        }
+            pathContext = CGLayerGetContext(pathLayer);
+            CGContextAddPath(pathContext, myPath.CGPath);
+            CGContextStrokePath(pathContext);
+            CGContextDrawLayerInRect(context, self.bounds, pathLayer);
 
-    self.image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+        UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        //CGContextRelease(pathContext);
+        
+        [[NSOperationQueue mainQueue]addOperationWithBlock:^{
+                self.image = image;
+
+        }];
+        
+    }];
 }
 
 
@@ -370,7 +421,7 @@ BOOL layerReady;
 }
 
 -(void)setSizeOfBrush:(int)_brushSize{
-    [self registerValues];
+   // [self registerValues];
     self.brushSize =_brushSize;
 }
 
@@ -378,6 +429,9 @@ BOOL layerReady;
 -(void) setBackgroundPhotoImage:(UIImage *)image{
     translation =CGPointZero;
     scale =1;
+    //here we neet create a new CGLayer
+    CGLayerRelease(backgroundLayer);
+    backgroundLayer = Nil;
     self.backgroundImage = image;
     self.backgroundScreen = nil;
     [self drawImageAndLines];

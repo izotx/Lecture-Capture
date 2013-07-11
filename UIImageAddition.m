@@ -443,6 +443,7 @@
         case UIImageOrientationRight: //EXIF = 8
             rotated =YES;
             break;
+        default: break;
     }
     
     if(!rotated){

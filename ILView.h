@@ -25,6 +25,6 @@
  *
  * @param newOrientation The new device orientation
  */
--(void)deviceDidRotate:(UIDeviceOrientation)newOrientation;
+-(void)deviceDidRotate:(UIInterfaceOrientation) newOrientation;
 
 @end

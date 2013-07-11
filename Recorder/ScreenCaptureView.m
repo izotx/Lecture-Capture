@@ -146,9 +146,8 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 
 - (void) drawRect:(CGRect)rect {
     
-#pragma warning add operation queue
     NSDate* start = [NSDate date];
-	//CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
+
     
 	float delayRemaining=0;
 	//not sure why this is necessary...image renders upside-down and mirrored
@@ -228,7 +227,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         delayRemaining = (1.0 / self.frameRate) - processingSeconds;
         [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
     }
-//        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+
 }
 
 
@@ -299,6 +298,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 	
 	//add input
 	[videoWriter addInput:videoWriterInput];
+   
 	[videoWriter startWriting];
 	[videoWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
 	[delegate recordingStartedNotification];
@@ -312,8 +312,8 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
  
 
 	@try {
-        [videoWriterInput markAsFinished];
-
+        
+         [videoWriterInput markAsFinished];
         NSLog(@"Mark recording as finished ");
     }
     @catch (NSException *exception) {
@@ -329,11 +329,14 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         
     // Wait for the video
 	int status = videoWriter.status;
+        
+
     while (status == AVAssetWriterStatusUnknown) {
 		[NSThread sleepForTimeInterval:0.1f];
 		 status = videoWriter.status;
-	}
-        //[videoWriter endSessionAtSourceTime:currentCMTime];
+        }
+        
+        [videoWriter endSessionAtSourceTime:currentCMTime];
 		[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
