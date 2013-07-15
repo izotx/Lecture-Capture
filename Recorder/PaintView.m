@@ -34,13 +34,14 @@ CGPoint translation;
 NSMutableDictionary * redo;
 CGLayerRef destLayer;
 CGContextRef destContext;
+CGMutablePathRef realPath;
 BOOL layerReady;
 
 
 - (id)initWithFrame:(CGRect)frame
 {
     translation = CGPointZero;
-    
+
     
     NSMutableArray * p = [[NSMutableArray alloc]initWithCapacity:0];
     NSMutableArray * c = [[NSMutableArray alloc]initWithCapacity:1];
@@ -159,15 +160,7 @@ BOOL layerReady;
     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(self.backgroundScreen)
-    {
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundScreen.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundScreen], self.backgroundScreen.CGImage);
-        CGContextRestoreGState(context);
-    }
-
+  
     if(self.colorOfBackground)
     {
         CGContextSaveGState(context);
@@ -199,9 +192,9 @@ BOOL layerReady;
         
         i++;
     }
-    
-    self.image = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    self.image = image;
 }
 
 
@@ -274,16 +267,12 @@ BOOL layerReady;
         self.myPath = path;
         eraserPath = [UIBezierPath bezierPath];
     }
-
-    myPath.lineCapStyle=kCGLineCapRound;
-    myPath.lineJoinStyle=kCGLineJoinRound;
-   // myPath.miterLimit=15;
-    myPath.lineWidth=brushSize;
-    [myPath moveToPoint:[mytouch locationInView:self]];
+    realPath = CGPathCreateMutable();
+    CGPoint point =  [mytouch locationInView:self];
+    CGPathMoveToPoint(realPath, &CGAffineTransformIdentity, point.x, point.y);
+    
     [eraserPath moveToPoint:[mytouch locationInView:self]];
 }
-
-
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -291,17 +280,11 @@ BOOL layerReady;
     int touchesCount=    [[event allTouches]count];
     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
-    CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(self.backgroundScreen)
-    {
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundScreen.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundScreen], self.backgroundScreen.CGImage);
-        CGContextRestoreGState(context);
-    }
-    if(self.colorOfBackground)
+    CGContextRef context = UIGraphicsGetCurrentContext();
+   
+    
+       if(self.colorOfBackground)
     {
         CGContextSaveGState(context);
         CGContextSetFillColorWithColor(context, colorOfBackground.CGColor);
@@ -319,8 +302,6 @@ BOOL layerReady;
         
         
         CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
-        
-        
         CGContextRestoreGState(context);
     }
     if(eraseMode == YES)
@@ -331,22 +312,35 @@ BOOL layerReady;
     else{
         if(touchesCount==1)
         {
-        [myPath addLineToPoint:[mytouch locationInView:self]];
-         myPath.lineWidth=brushSize;
-        [strokeColor setStroke];
-        [myPath stroke];
+        //[myPath addLineToPoint:[mytouch locationInView:self]];
+        // myPath.lineWidth=brushSize;
+        //[strokeColor setStroke];
+        //[myPath stroke];
+            CGContextSaveGState(context);
+          //   CGContextTranslateCTM(context, 0.0f, self.bounds.size.height);
+            //CGContextScaleCTM(context, scale, -scale);
+           // CGContextDrawImage(context,self.bounds, self.image.CGImage);
+            
+            
+            
+            CGContextRestoreGState(context);
+            [self.image drawInRect:self.bounds];
+            
+            CGPoint point = [mytouch locationInView:self];
+            CGPathAddLineToPoint(realPath, &CGAffineTransformIdentity, point.x, point.y);
+            CGContextSetLineWidth(context, self.brushSize);
+            CGContextAddPath(context, realPath);
+            CGContextSetStrokeColorWithColor(context, strokeColor.CGColor);
+            CGContextSetFillColorWithColor(context, strokeColor.CGColor);
+            CGContextStrokePath(context);
+            
         }
+
+      
+
     }
 
-    int i=0;
-    for(UIBezierPath * p in paths)
-    {
-        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-        [[colors objectAtIndex:i]setStroke];
-        [p stroke];
-        i++;
-    }
-
+    
     self.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 }
@@ -354,7 +348,7 @@ BOOL layerReady;
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self registerValues];
+   // [self registerValues];
         
 }
 
