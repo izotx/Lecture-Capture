@@ -67,8 +67,8 @@
 @property(nonatomic, assign) id<ScreenCaptureViewDelegate> delegate;
 @property(nonatomic,retain) NSString *outputPath;
 @property(nonatomic,strong) PaintView * paintView;
+@property(nonatomic,strong) UIImageView * backgroundView;
 @property(nonatomic,strong) UIImage * vi;
-@property(nonatomic,strong) UIImageView * imgView;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property(nonatomic,strong) CaptureSessionManager * csm;
 @property CGRect  videoPreviewFrame;

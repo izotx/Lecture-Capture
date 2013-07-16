@@ -25,6 +25,7 @@
     UIImage * incrementalImage;
     CGLayerRef backgroundLayer;
     CGLayerRef pathLayer;
+    CGMutablePathRef cgMutablePath;
 }
 
 @end
@@ -58,13 +59,13 @@
     if (self) {
         // Initialization code
 
-        UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, YES);
         
         self.image = UIGraphicsGetImageFromCurrentImageContext();
         startImage =self.image;
         UIGraphicsEndImageContext();
 
-        self.backgroundColor=[UIColor whiteColor];
+        //self.backgroundColor=[UIColor whiteColor];
         self.userInteractionEnabled=YES;
         
         brushSize=10;
@@ -81,8 +82,8 @@
         colors= [[NSMutableArray alloc]initWithCapacity:0];
         paths= [[NSMutableArray alloc]initWithCapacity:0];
         sizes = [[NSMutableArray alloc]initWithCapacity:0];
-       backgroundColors = [[NSMutableArray alloc]initWithCapacity:0];
-       backgroundImages = [[NSMutableArray alloc]initWithCapacity:0];
+        backgroundColors = [[NSMutableArray alloc]initWithCapacity:0];
+        backgroundImages = [[NSMutableArray alloc]initWithCapacity:0];
       
         // Gestures
         pinchGesture = [[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(pinchMethod:)];
@@ -98,6 +99,8 @@
         
         //off screen drawing
         drawingQueue = dispatch_queue_create("drawingQueue", NULL);
+        cgMutablePath = CGPathCreateMutable();
+        
         
     }
     return self;
@@ -153,7 +156,7 @@
 
 -(void)drawImageAndLines{
 
-    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     if(self.backgroundScreen)
@@ -288,13 +291,19 @@
         UIBezierPath * path= [UIBezierPath bezierPath];
         self.myPath = path;
         eraserPath = [UIBezierPath bezierPath];
+        cgMutablePath = CGPathCreateMutable();
+        
     }
 
     myPath.lineCapStyle=kCGLineCapRound;
     myPath.lineJoinStyle=kCGLineJoinRound;
     myPath.lineWidth=brushSize;
+    CGPoint point = [mytouch locationInView:self];
     [myPath moveToPoint:[mytouch locationInView:self]];
+    CGPathMoveToPoint(cgMutablePath, &CGAffineTransformIdentity, point.x, point.y);
+    
     [eraserPath moveToPoint:[mytouch locationInView:self]];
+    
 }
 
 
@@ -303,13 +312,12 @@
 {
        
     int touchesCount=    [[event allTouches]count];
-    NSArray * blockPaths = [paths copy];
-    //UIBezierPath * blockPath = [myPath copy];
-    //dispatch_async(drawingQueue, ^{
     [queue addOperationWithBlock:^(){
     
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, YES);
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
+    CGPoint point = [mytouch locationInView:self];
+        
     CGContextRef context = UIGraphicsGetCurrentContext();
     if(self.backgroundScreen)
     {
@@ -348,48 +356,26 @@
         if(touchesCount==1)
         {
          
-        [myPath addLineToPoint:[mytouch locationInView:self]];
-         myPath.lineWidth=brushSize;
-        [strokeColor setStroke];
-        [myPath stroke];
+          CGPathAddLineToPoint(cgMutablePath, &CGAffineTransformIdentity, point.x, point.y);
         }
     }
 
-    int i=0;
-    
-#warning change it hmm cache layer.
-//       
-//    for(UIBezierPath * p in blockPaths)
-//    {
-//        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-//        [[colors objectAtIndex:i]setStroke];
-////        CGAffineTransform transform = CGAffineTransformMakeScale(scale, scale);
-//        
-////        CGPathRef intermediatePath = CGPathCreateCopyByTransformingPath(myPath.CGPath,
-////                                                                        &transform);
-////        CGPathRef intermediatePath2 = CGPathCreateCopyByTransformingPath(p.CGPath,
-////                                                                        &transform);
-////        
-////        myPath.CGPath = intermediatePath;
-////        p.CGPath = intermediatePath2;
-////        
-////        CGPathRelease(intermediatePath2);
-////        CGPathRelease(intermediatePath);
-//        [p stroke];
-//        i++;
-//    }
-        
         CGContextRef pathContext;
         if(!pathLayer)
         {
             pathLayer = CGLayerCreateWithContext(context, self.bounds.size, NULL);
-        
         }
             pathContext = CGLayerGetContext(pathLayer);
-            CGContextAddPath(pathContext, myPath.CGPath);
-            CGContextStrokePath(pathContext);
-            CGContextDrawLayerInRect(context, self.bounds, pathLayer);
-
+        
+            CGContextSetStrokeColorWithColor(context, self.strokeColor.CGColor);
+            CGContextSetFillColorWithColor(context, self.strokeColor.CGColor);
+            CGContextSetLineWidth(context, self.brushSize);
+        
+        [self.image drawInRect:self.bounds];
+        
+        CGContextAddPath(context, cgMutablePath);
+        CGContextStrokePath(context);
+                
         UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         //CGContextRelease(pathContext);
@@ -405,7 +391,7 @@
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self registerValues];
+    //[self registerValues];
         
 }
 
