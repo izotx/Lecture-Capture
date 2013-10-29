@@ -2,7 +2,7 @@
 //  CameraPicker.h
 //  Frames Sharing
 //
-//  Created by Janusz Chudzynski on 4/3/13.
+//  Created by DJMobile INC on 4/3/13.
 //  Copyright (c) 2013 Blue Plover Productions. All rights reserved.
 //
 

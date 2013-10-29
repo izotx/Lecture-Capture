@@ -2,7 +2,7 @@
 //  UIImageAddition.h
 //  Lecture Capture
 //
-//  Created by sadmin on 8/7/12.
+//  Created by DJMobile INC on 8/7/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
@@ -18,7 +18,7 @@
 
 @interface UIImageAddition : NSObject
 - (UIImage *)scaleAndRotateImage:(UIImage *)image forMaxResolutionWidth:(int)width andMaxResolutionHeight:(int)height ;
--(UIImage *)resizeImage:(UIImage *)image andDestWidth:(int)destWidth andDestHeight:(int) destHeight;
+//-(UIImage *)resizeImage:(UIImage *)image andDestWidth:(int)destWidth andDestHeight:(int) destHeight;
 -(UIImage *)scaleImage:(UIImage *)image toHeight:(int)maxHeight andWidth:(int)maxWidth;
 
 

@@ -13,8 +13,8 @@
 -(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block saveAtPath:(NSString *)path
 {
     AVMutableComposition *mixComposition = [AVMutableComposition composition];
-    AVMutableCompositionTrack *videoCompositionTrack =[[AVMutableCompositionTrack alloc]init];
-    AVMutableCompositionTrack *audioCompositionTrack =[[AVMutableCompositionTrack alloc]init];
+    AVMutableCompositionTrack *videoCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
+    AVMutableCompositionTrack *audioCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
     videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
@@ -29,17 +29,17 @@
         
         
         if(![fm fileExistsAtPath:movieFilePath]){
-            NSLog(@"Movie doesn't exist %@ ",movieFilePath);
+           // NSLog(@"Movie doesn't exist %@ ",movieFilePath);
         }
         else{
-            NSLog(@"Movie exist %@ ",movieFilePath);
+           // NSLog(@"Movie exist %@ ",movieFilePath);
         }
         
         if(![fm fileExistsAtPath:audioFilePath]){
-            NSLog(@"Audio doesn't exist %@ ",audioFilePath);
+            //NSLog(@"Audio doesn't exist %@ ",audioFilePath);
         }
         else{
-            NSLog(@"Audio exists %@ ",audioFilePath);
+            //NSLog(@"Audio exists %@ ",audioFilePath);
         }
         
         

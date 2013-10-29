@@ -2,7 +2,7 @@
 //  LoginRegisterViewController.m
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 5/16/12.
+//  Created by DJMobile INC on 5/16/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
@@ -87,7 +87,7 @@
     
 }
 
-- (void)viewDidUnload
+- (void)viewDidDisappear:(BOOL)animated
 {
     [self setEmailTextField:nil];
     [self setPasswordTextField:nil];
@@ -96,14 +96,14 @@
     [self setEmailLoginTextField:nil];
     [self setPasswordLoginTextField:nil];
     [self setRegistrationView:nil];
-    [super viewDidUnload];
+    [super viewDidDisappear:animated];
     // Release any retained subviews of the main view.
 }
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
+//
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+//}
 
 - (IBAction)registerUser:(id)sender {
     

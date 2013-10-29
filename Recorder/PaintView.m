@@ -2,8 +2,8 @@
 //  PaintView.m
 //  CoreImageisFun
 //
-//  Created by Janusz Chudzynski on 8/6/12.
-//  Copyright (c) 2012 Janusz Chudzynski. All rights reserved.
+//  Created by DJMobile INC on 8/6/12.
+//  Copyright (c) 2012 DJMobile INC. All rights reserved.
 //
 //#import "AVCaptureHelper.h"
 #import <QuartzCore/QuartzCore.h>
@@ -17,7 +17,7 @@
 
 @synthesize panGesture;
 @synthesize pinchGesture; 
-@synthesize backgroundScreen;
+//@synthesize backgroundScreen;
 
 @synthesize eraseMode;
 
@@ -42,11 +42,12 @@ BOOL layerReady;
     translation = CGPointZero;
     
     
-    NSMutableArray * p = [[NSMutableArray alloc]initWithCapacity:0];
-    NSMutableArray * c = [[NSMutableArray alloc]initWithCapacity:1];
-    NSMutableArray * s = [[NSMutableArray alloc]initWithCapacity:0];
+    NSMutableArray * p = [NSMutableArray new];
+    NSMutableArray * c = [NSMutableArray new];
+    NSMutableArray * s = [NSMutableArray new];
     
-    redo = [[NSMutableDictionary alloc]initWithCapacity:0];
+    redo = [NSMutableDictionary new];
+
     [redo setValue:p forKey:@"paths"];
     [redo setValue:c forKey:@"colors"];
     [redo setValue:s forKey:@"sizes"];
@@ -159,15 +160,7 @@ BOOL layerReady;
     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(self.backgroundScreen)
-    {
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundScreen.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundScreen], self.backgroundScreen.CGImage);
-        CGContextRestoreGState(context);
-    }
-
+   
     if(self.colorOfBackground)
     {
         CGContextSaveGState(context);
@@ -293,15 +286,7 @@ BOOL layerReady;
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(self.backgroundScreen)
-    {
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundScreen.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundScreen], self.backgroundScreen.CGImage);
-        CGContextRestoreGState(context);
-    }
-    if(self.colorOfBackground)
+       if(self.colorOfBackground)
     {
         CGContextSaveGState(context);
         CGContextSetFillColorWithColor(context, colorOfBackground.CGColor);
@@ -313,9 +298,9 @@ BOOL layerReady;
         CGContextSaveGState(context);
         CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
-        CGRect  rect = [self calculateFrameForImage:backgroundImage];
+      //  CGRect  rect = [self calculateFrameForImage:backgroundImage];
         
-        NSLog(@" %f %f %f %f ",rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
+      //  NSLog(@" %f %f %f %f ",rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
         
         
         CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
@@ -379,18 +364,9 @@ BOOL layerReady;
     translation =CGPointZero;
     scale =1;
     self.backgroundImage = image;
-    self.backgroundScreen = nil;
     [self drawImageAndLines];
 }
 
--(void) setScreenshotAsBackgroundPhotoImage:(UIImage *)image{
-    translation =CGPointZero;
-    scale =1;
-    self.backgroundImage = nil;
-    self.colorOfBackground =nil;
-    self.backgroundScreen = image;
-    [self drawImageAndLines];
-}
 
 -(void) removeBackgroundPhoto{
     translation =CGPointZero;

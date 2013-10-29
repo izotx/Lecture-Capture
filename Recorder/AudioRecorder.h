@@ -2,7 +2,7 @@
 //  AudioRecorder.h
 //  Recorder
 //
-//  Created by Janusz Chudzynski on 5/1/12.
+//  Created by DJMobile INC on 5/1/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 

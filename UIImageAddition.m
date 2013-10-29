@@ -2,12 +2,11 @@
 //  UIImageAddition.m
 //  Lecture Capture
 //
-//  Created by sadmin on 8/7/12.
+//  Created by DJMobile INC on 8/7/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #import "UIImageAddition.h"
-
 
 @implementation UIImage (Extras)
 
@@ -188,14 +187,14 @@
 
 - (UIImage *)imageRotatedByRadians:(CGFloat)radians
 {
-    return [self imageRotatedByDegrees:RadiansToDegrees(radians)];
+    return [self imageRotatedByDegrees:DEGREES(radians)];
 }
 
 - (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
 {
     // calculate the size of the rotated view's containing box for our drawing space
     UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
-    CGAffineTransform t = CGAffineTransformMakeRotation(DegreesToRadians(degrees));
+    CGAffineTransform t = CGAffineTransformMakeRotation(RADIANS(degrees));
     rotatedViewBox.transform = t;
     CGSize rotatedSize = rotatedViewBox.frame.size;
     
@@ -208,7 +207,7 @@
     CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
     
     //   // Rotate the image context
-    CGContextRotateCTM(bitmap, DegreesToRadians(degrees));
+    CGContextRotateCTM(bitmap, RADIANS(degrees));
     
     // Now, draw the rotated/scaled image into the context
     CGContextScaleCTM(bitmap, 1.0, -1.0);
@@ -417,88 +416,88 @@
 }
 
 
--(UIImage *)resizeImage:(UIImage *)image andDestWidth:(int)destWidth andDestHeight:(int) destHeight {
-	int w = image.size.width;
-    int h = image.size.height; 
-	
-	CGImageRef imageRef = [image CGImage];
-	
-	int width, height;
-	
-    UIImageOrientation orient = image.imageOrientation;
-    BOOL rotated = NO;
-    switch(orient) {
-        case UIImageOrientationLeftMirrored: //EXIF = 5
-            rotated =YES;
-            break;
-            
-        case UIImageOrientationLeft: //EXIF = 6
-            rotated =YES;
-            break;
-            
-        case UIImageOrientationRightMirrored: //EXIF = 7
-            rotated =YES;
-            break;
-            
-        case UIImageOrientationRight: //EXIF = 8
-            rotated =YES;
-            break;
-    }
-    
-    if(!rotated){
-        if(w > h){
-            width = destWidth;
-            height = h*destWidth/w;
-        }
-        else {
-            height = destHeight;
-            width = w*destHeight/h;
-        }
-    }
-    else{
-        if(w > h){
-            height = destHeight;
-            width = w*destHeight/h;
-        }
-        else {
-            width = destWidth;
-            height = h*destWidth/w;
-        }
-    }
-    
-    NSLog(@"Target: %d %d Resized: %d %d original: %d %d",destWidth, destHeight, width, height, w,h );
-    
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    
-	CGContextRef bitmap;
-	bitmap = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedFirst);
-	
-	if (image.imageOrientation == UIImageOrientationLeft) {
-		CGContextRotateCTM (bitmap, M_PI/2);
-		CGContextTranslateCTM (bitmap, 0, -height);
-		
-	} else if (image.imageOrientation == UIImageOrientationRight) {
-		CGContextRotateCTM (bitmap, -M_PI/2);
-		CGContextTranslateCTM (bitmap, -width, 0);
-		
-	} else if (image.imageOrientation == UIImageOrientationUp) {
-		
-	} else if (image.imageOrientation == UIImageOrientationDown) {
-		CGContextTranslateCTM (bitmap, width,height);
-		CGContextRotateCTM (bitmap, -M_PI);
-		
-	}
-	
-	CGContextDrawImage(bitmap, CGRectMake(0, 0, width, height), imageRef);
-	CGImageRef ref = CGBitmapContextCreateImage(bitmap);
-	UIImage *result = [UIImage imageWithCGImage:ref];
-	
-	CGContextRelease(bitmap);
-	CGImageRelease(ref);
-	
-	return result;	
-}
-
+//-(UIImage *)resizeImage:(UIImage *)image andDestWidth:(int)destWidth andDestHeight:(int) destHeight {
+//	int w = image.size.width;
+//    int h = image.size.height; 
+//	
+//	CGImageRef imageRef = [image CGImage];
+//	
+//	int width, height;
+//	
+//    UIImageOrientation orient = image.imageOrientation;
+//    BOOL rotated = NO;
+//    switch(orient) {
+//        case UIImageOrientationLeftMirrored: //EXIF = 5
+//            rotated =YES;
+//            break;
+//            
+//        case UIImageOrientationLeft: //EXIF = 6
+//            rotated =YES;
+//            break;
+//            
+//        case UIImageOrientationRightMirrored: //EXIF = 7
+//            rotated =YES;
+//            break;
+//            
+//        case UIImageOrientationRight: //EXIF = 8
+//            rotated =YES;
+//            break;
+//    }
+//    
+//    if(!rotated){
+//        if(w > h){
+//            width = destWidth;
+//            height = h*destWidth/w;
+//        }
+//        else {
+//            height = destHeight;
+//            width = w*destHeight/h;
+//        }
+//    }
+//    else{
+//        if(w > h){
+//            height = destHeight;
+//            width = w*destHeight/h;
+//        }
+//        else {
+//            width = destWidth;
+//            height = h*destWidth/w;
+//        }
+//    }
+//    
+//    NSLog(@"Target: %d %d Resized: %d %d original: %d %d",destWidth, destHeight, width, height, w,h );
+//    
+//	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    
+//	CGContextRef bitmap;
+//	bitmap = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGBitmapByteOrderDefault);
+//	
+//	if (image.imageOrientation == UIImageOrientationLeft) {
+//		CGContextRotateCTM (bitmap, M_PI/2);
+//		CGContextTranslateCTM (bitmap, 0, -height);
+//		
+//	} else if (image.imageOrientation == UIImageOrientationRight) {
+//		CGContextRotateCTM (bitmap, -M_PI/2);
+//		CGContextTranslateCTM (bitmap, -width, 0);
+//		
+//	} else if (image.imageOrientation == UIImageOrientationUp) {
+//		
+//	} else if (image.imageOrientation == UIImageOrientationDown) {
+//		CGContextTranslateCTM (bitmap, width,height);
+//		CGContextRotateCTM (bitmap, -M_PI);
+//		
+//	}
+//	
+//	CGContextDrawImage(bitmap, CGRectMake(0, 0, width, height), imageRef);
+//	CGImageRef ref = CGBitmapContextCreateImage(bitmap);
+//	UIImage *result = [UIImage imageWithCGImage:ref];
+//	
+//	CGContextRelease(bitmap);
+//	CGImageRelease(ref);
+//	
+//	return result;	
+//}
+//
 
 
 

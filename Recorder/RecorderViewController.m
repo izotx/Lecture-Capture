@@ -2,7 +2,7 @@
 //  RecorderViewController.m
 //  Recorder
 //
-//  Created by Janusz Chudzynski on 4/27/12.
+//  Created by DJMobile INC on 4/27/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 /*
@@ -17,8 +17,6 @@
  
 */
 
-CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
-CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 #import "RecorderViewController.h"
 #import "AppDelegate.h"
@@ -27,9 +25,10 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 #import "UIImage+Resize.h"
 #import "VideoPreview.h"
 #import "IOHelper.h"
-
-
 #define FRAME_RATE 10
+
+
+
 
 @interface UIImage (Extras)
 - (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
@@ -39,7 +38,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 {
     // calculate the size of the rotated view's containing box for our drawing space
     UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
-    CGAffineTransform t = CGAffineTransformMakeRotation(DegreesToRadians(degrees));
+    CGAffineTransform t = CGAffineTransformMakeRotation(RADIANS(degrees));
     rotatedViewBox.transform = t;
     CGSize rotatedSize = rotatedViewBox.frame.size;
     
@@ -52,7 +51,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
     
     //   // Rotate the image context
-    CGContextRotateCTM(bitmap, DegreesToRadians(degrees));
+    CGContextRotateCTM(bitmap, RADIANS(degrees));
     
     // Now, draw the rotated/scaled image into the context
     CGContextScaleCTM(bitmap, 1.0, -1.0);
@@ -132,7 +131,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 @implementation RecorderViewController
 @synthesize movie_title;
 @synthesize managedObjectContext = _managedObjectContext;
-@synthesize bannerView;
+
 @synthesize bannerIsVisible;
 @synthesize eraseMode;
 @synthesize toolbar;
@@ -224,18 +223,17 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     paused = NO;
 }
 
-- (void)viewDidUnload
+- (void)viewDidDisappear:(BOOL)animated
 {
     recordingScreenView = nil;
     durationLabel = nil;
     recordingScreenView = nil;
     scrollView = nil;
-     activityIndicator = nil;
-    [self setBannerView:nil];
+    activityIndicator = nil;
     backgroundView = nil;
     [self setToolbar:nil];
     [self setColorBarButton:nil];
-    [super viewDidUnload];
+    [super viewDidDisappear:animated];
     // Release any retained subviews of the main view.
 }
 
@@ -244,13 +242,13 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
  
 }
 
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    //We need to rotate the preview:
-    
-    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
-}
+//
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//    //We need to rotate the preview:
+//    
+//    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
+//}
 
 - (NSUInteger) supportedInterfaceOrientations
 {
@@ -298,7 +296,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 }
 
 
-#warning HERE User Tapped on the Finish Button
 -(IBAction)finishRecording:(id)sender
 {
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
@@ -327,7 +324,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
         }
         NSString * path = [ioHelper getRandomFilePath];
         [ioHelper putTogetherVideo:moviePieces andAudioPieces:audioPieces andCompletionBlock:^(BOOL success,CMTime duration) {
-                NSLog(@"Method returned.");
+               // NSLog(@"Method returned.");
             NSString * message;
             if(success){
                 [self saveData:duration ofPath:path];
@@ -425,8 +422,8 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
     int count =  scrollViewScreenshots.count;
 
-    float lastx;
-    float lastWidth;
+    float lastx=0;
+    float lastWidth=0;
     float totalWidth=0;
     for( int i=0; i<count; i++)
     {
@@ -488,7 +485,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     {
         fileSize = [fileAttributes objectForKey:NSFileSize];
         float fileSizeMB = [fileSize intValue]/1024.0/1024.0;
-        NSLog(@"File Size is: %@ %f",fileSize,fileSizeMB);
+       // NSLog(@"File Size is: %@ %f",fileSize,fileSizeMB);
         fileSize=[NSString stringWithFormat:@"%.1f MB",fileSizeMB];
     }
     else{
@@ -528,32 +525,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     }
     else{
         [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-#pragma  mark iAD
-- (void)bannerViewDidLoadAd:(ADBannerView *)banner
-{
-    if (!self.bannerIsVisible)
-    {
-        [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
-        // Assumes the banner view is just off the bottom of the screen.
-        banner.frame = CGRectOffset(banner.frame, 0, +banner.frame.size.height);
-        [UIView commitAnimations];
-        self.bannerIsVisible = YES;
-
-    }
-
-}
-
-- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
-{
-    if (self.bannerIsVisible)
-    {
-        [UIView beginAnimations:@"animateAdBannerOff" context:NULL];
-        // Assumes the banner view is placed at the bottom of the screen.
-        banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
-        [UIView commitAnimations];
-        self.bannerIsVisible = NO;
     }
 }
 

@@ -2,7 +2,7 @@
 //  IOHelper.h
 //  Lecture Capture
 //
-//  Created by sadmin on 6/14/13.
+//  Created by DJMobile INC on 6/14/13.
 //
 //
 

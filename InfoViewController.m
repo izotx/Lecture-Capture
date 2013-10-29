@@ -2,7 +2,7 @@
 //  InfoViewController.m
 //  Recorder
 //
-//  Created by Janusz Chudzynski on 5/9/12.
+//  Created by DJMobile INC on 5/9/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
@@ -51,24 +51,24 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    NSLog(@"View Did Load");
     webView.opaque = YES;
     webView.backgroundColor = [UIColor clearColor];
     webView.delegate=self;
 }
 
-- (void)viewDidUnload
+- (void)viewWillDisappear:(BOOL)animated
 {
     [self setWebView:nil];
-    [super viewDidUnload];
+    [super viewWillDisappear:animated];
     // Release any retained subviews of the main view.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
-	
-}
+//
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
+//	
+//}
 
 - (IBAction)dimissMe:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];

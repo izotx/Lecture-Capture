@@ -2,7 +2,7 @@
 //  Utilities.m
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 8/8/12.
+//  Created by DJMobile INC on 8/8/12.
 //
 //
 
@@ -55,7 +55,7 @@
         int hours= durationInSeconds/3600;
         int minutes = durationInSeconds%3600;
         int seconds = durationInSeconds%60;
-        durationText=[NSString stringWithFormat:@"%d:%d:%d",hours,minutes,seconds];
+        //=[NSString stringWithFormat:@"%d:%d:%d",hours,minutes,seconds];
         if(minutes<10)
         {
             if(seconds<10)

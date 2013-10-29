@@ -2,7 +2,7 @@
 //  NetworkHelper.m
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 5/22/13.
+//  Created by DJMobile INC on 5/22/13.
 //
 //
 

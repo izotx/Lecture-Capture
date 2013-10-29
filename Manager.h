@@ -1,6 +1,6 @@
 //
 //  Manager.h
-//  Created by Janusz Chudzynski on 5/31/11.
+//  Created by DJMobile INC on 5/31/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 
 #import <Foundation/Foundation.h>

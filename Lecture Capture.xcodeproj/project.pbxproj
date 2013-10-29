@@ -123,7 +123,6 @@
 		82498DBF1644A15200265D0E /* buttonBackBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 82498DBE1644A15200265D0E /* buttonBackBlack.png */; };
 		82498DC11644C78A00265D0E /* buttonBackRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 82498DC01644C78A00265D0E /* buttonBackRed.png */; };
 		82622A64176B544000E89194 /* IOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82622A63176B544000E89194 /* IOHelper.m */; };
-		82622A67176B55BB00E89194 /* CoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82622A66176B55BB00E89194 /* CoreDataHelper.m */; };
 		82622A6A176B9CCB00E89194 /* cloud_download.png in Resources */ = {isa = PBXBuildFile; fileRef = 82622A68176B9CCB00E89194 /* cloud_download.png */; };
 		82622A6B176B9CCB00E89194 /* cloud_upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 82622A69176B9CCB00E89194 /* cloud_upload.png */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
@@ -237,8 +236,8 @@
 		4FD48E30154B22E3007880C2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		4FD48E32154B22EE007880C2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		4FD724FA174D6CC10005D782 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
-		4FD724FC174D6E870005D782 /* NetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkHelper.h; sourceTree = "<group>"; };
-		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkHelper.m; sourceTree = "<group>"; };
+		4FD724FC174D6E870005D782 /* NetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkHelper.h; path = Recorder/NetworkHelper.h; sourceTree = "<group>"; };
+		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkHelper.m; path = Recorder/NetworkHelper.m; sourceTree = "<group>"; };
 		4FDAC3D515A1FFB5003D1B16 /* ILColorPickerDualExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILColorPickerDualExampleController.h; sourceTree = "<group>"; };
 		4FDAC3D615A1FFB5003D1B16 /* ILColorPickerDualExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILColorPickerDualExampleController.m; sourceTree = "<group>"; };
 		4FDAC3D715A1FFB5003D1B16 /* ILColorPickerDualExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ILColorPickerDualExampleController.xib; sourceTree = "<group>"; };
@@ -270,14 +269,12 @@
 		82498DBC16449F8700265D0E /* eraserSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eraserSelected.png; sourceTree = "<group>"; };
 		82498DBE1644A15200265D0E /* buttonBackBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonBackBlack.png; sourceTree = "<group>"; };
 		82498DC01644C78A00265D0E /* buttonBackRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonBackRed.png; path = Recorder/buttonBackRed.png; sourceTree = "<group>"; };
-		82622A62176B544000E89194 /* IOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOHelper.h; path = ../IOHelper.h; sourceTree = "<group>"; };
-		82622A63176B544000E89194 /* IOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOHelper.m; path = ../IOHelper.m; sourceTree = "<group>"; };
-		82622A65176B55BB00E89194 /* CoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataHelper.h; sourceTree = "<group>"; };
-		82622A66176B55BB00E89194 /* CoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataHelper.m; sourceTree = "<group>"; };
+		82622A62176B544000E89194 /* IOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOHelper.h; sourceTree = "<group>"; };
+		82622A63176B544000E89194 /* IOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOHelper.m; sourceTree = "<group>"; };
 		82622A68176B9CCB00E89194 /* cloud_download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_download.png; sourceTree = "<group>"; };
 		82622A69176B9CCB00E89194 /* cloud_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_upload.png; sourceTree = "<group>"; };
-		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableButton.h; sourceTree = "<group>"; };
-		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableButton.m; sourceTree = "<group>"; };
+		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomTableButton.h; path = Recorder/CustomTableButton.h; sourceTree = "<group>"; };
+		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomTableButton.m; path = Recorder/CustomTableButton.m; sourceTree = "<group>"; };
 		82BB17AB1772AA640039F287 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		82BB17AC1772AA640039F287 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		82BB17AD1772AA640039F287 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -377,6 +374,35 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		4F9D58E818203765000A004F /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				4FC62A9F164199F0001C2B39 /* VideoPreview */,
+				4F4545501635F14D0091F335 /* RecorderViewController.h */,
+				4F4545511635F14D0091F335 /* RecorderViewController.m */,
+				4F4545521635F14D0091F335 /* ScreenCaptureView.h */,
+				4F4545531635F14D0091F335 /* ScreenCaptureView.m */,
+				4F4545541635F14D0091F335 /* ScreenView.h */,
+				4F4545551635F14D0091F335 /* ScreenView.m */,
+				4F4545591635F16D0091F335 /* PaintView.h */,
+				4F45455A1635F16D0091F335 /* PaintView.m */,
+				4F45455C1635F1790091F335 /* AudioRecorder.h */,
+				4F45455D1635F1790091F335 /* AudioRecorder.m */,
+			);
+			name = Recording;
+			path = Recorder;
+			sourceTree = "<group>";
+		};
+		4F9D58E9182037A3000A004F /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */,
+				4FA727A3155B4FF0002A2F1D /* Video.h */,
+				4FA727A4155B4FF0002A2F1D /* Video.m */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
 		4FA727D61563EC4F002A2F1D /* Login Management */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,21 +425,17 @@
 				82EE2720164360F7008F99AE /* VideoPreview.m */,
 			);
 			name = VideoPreview;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
-				4F081488173DEC90007092C4 /* CameraPicker.h */,
-				4F081489173DEC90007092C4 /* CameraPicker.m */,
-				4F18C63D173C232B009FD464 /* NewModel.xcdatamodeld */,
+				4F9D58E818203765000A004F /* Recording */,
+				4F9D58E9182037A3000A004F /* CoreData */,
 				82536123176A50E7000D8F92 /* Images */,
-				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
 				4FFF477415D553EE0047ED11 /* LectureCapturePDF.pdf */,
-				4FC62A9F164199F0001C2B39 /* VideoPreview */,
 				4FA727D61563EC4F002A2F1D /* Login Management */,
-				4FA727A3155B4FF0002A2F1D /* Video.h */,
-				4FA727A4155B4FF0002A2F1D /* Video.m */,
 				4FD48DC8154ACC7A007880C2 /* Utilities */,
 				4FD48DA7154AC95D007880C2 /* Recorder */,
 				4F0FED0D169B6FA700C04ADC /* Lecture Capture Test */,
@@ -458,33 +480,14 @@
 		4FD48DA7154AC95D007880C2 /* Recorder */ = {
 			isa = PBXGroup;
 			children = (
-				82622A62176B544000E89194 /* IOHelper.h */,
-				82622A63176B544000E89194 /* IOHelper.m */,
-				4FD724FC174D6E870005D782 /* NetworkHelper.h */,
-				4FD724FD174D6E870005D782 /* NetworkHelper.m */,
-				82622A65176B55BB00E89194 /* CoreDataHelper.h */,
-				82622A66176B55BB00E89194 /* CoreDataHelper.m */,
 				4FA72775155B0834002A2F1D /* InfoViewController.h */,
 				4FA72776155B0834002A2F1D /* InfoViewController.m */,
-				4F4545501635F14D0091F335 /* RecorderViewController.h */,
-				4F4545511635F14D0091F335 /* RecorderViewController.m */,
-				4F4545521635F14D0091F335 /* ScreenCaptureView.h */,
-				4F4545531635F14D0091F335 /* ScreenCaptureView.m */,
-				4F4545541635F14D0091F335 /* ScreenView.h */,
-				4F4545551635F14D0091F335 /* ScreenView.m */,
 				4F4545491635F0EA0091F335 /* AppDelegate.h */,
-				4F4545621635F23C0091F335 /* InfoPlist.strings */,
 				4F45454B1635F1040091F335 /* AppDelegate.m */,
-				4F4545591635F16D0091F335 /* PaintView.h */,
-				4F45455A1635F16D0091F335 /* PaintView.m */,
 				4F4545651635F2580091F335 /* MainStoryboard.storyboard */,
-				8282D683176673BB00F82722 /* CustomTableButton.h */,
-				8282D684176673BB00F82722 /* CustomTableButton.m */,
-				4FD48DA8154AC95D007880C2 /* Supporting Files */,
-				4F45455C1635F1790091F335 /* AudioRecorder.h */,
-				4F45455D1635F1790091F335 /* AudioRecorder.m */,
 				4F45454D1635F12B0091F335 /* ViewController.h */,
 				4F45454E1635F12B0091F335 /* ViewController.m */,
+				4FD48DA8154AC95D007880C2 /* Supporting Files */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -492,7 +495,7 @@
 		4FD48DA8154AC95D007880C2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4FDAC3EE15A20559003D1B16 /* Images */,
+				4F4545621635F23C0091F335 /* InfoPlist.strings */,
 				4FD48DA9154AC95D007880C2 /* Lecture Capture-Info.plist */,
 				4FD48DAD154AC95D007880C2 /* main.m */,
 				4FD48DAF154AC95D007880C2 /* Lecture Capture-Prefix.pch */,
@@ -503,6 +506,15 @@
 		4FD48DC8154ACC7A007880C2 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8282D683176673BB00F82722 /* CustomTableButton.h */,
+				8282D684176673BB00F82722 /* CustomTableButton.m */,
+				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
+				82622A62176B544000E89194 /* IOHelper.h */,
+				82622A63176B544000E89194 /* IOHelper.m */,
+				4FD724FC174D6E870005D782 /* NetworkHelper.h */,
+				4FD724FD174D6E870005D782 /* NetworkHelper.m */,
+				4F081488173DEC90007092C4 /* CameraPicker.h */,
+				4F081489173DEC90007092C4 /* CameraPicker.m */,
 				82BB17D01772AA6F0039F287 /* AFNetworking */,
 				82C554AF1772A89E001D24CF /* UIImageAddition.h */,
 				82C554B01772A89E001D24CF /* UIImageAddition.m */,
@@ -546,7 +558,7 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		4FDAC3EE15A20559003D1B16 /* Images */ = {
+		82536123176A50E7000D8F92 /* Images */ = {
 			isa = PBXGroup;
 			children = (
 				4F2C34DE166FFF1500EC0A88 /* graphpaper.png */,
@@ -564,14 +576,6 @@
 				8212310515620EEF00D62E58 /* screencapture 144.png */,
 				821231081562111E00D62E58 /* recorder144.png */,
 				8212310215620E1D00D62E58 /* recorder72.png */,
-			);
-			name = Images;
-			path = ..;
-			sourceTree = "<group>";
-		};
-		82536123176A50E7000D8F92 /* Images */ = {
-			isa = PBXGroup;
-			children = (
 				820FE61A165108A4004B484E /* camera.png */,
 				82622A68176B9CCB00E89194 /* cloud_download.png */,
 				82622A69176B9CCB00E89194 /* cloud_upload.png */,
@@ -662,7 +666,7 @@
 		4FD48D94154AC95D007880C2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 4FD48D97154AC95D007880C2 /* Build configuration list for PBXProject "Lecture Capture" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -827,7 +831,6 @@
 				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,
 				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,
 				82622A64176B544000E89194 /* IOHelper.m in Sources */,
-				82622A67176B55BB00E89194 /* CoreDataHelper.m in Sources */,
 				82C554B11772A89E001D24CF /* UIImageAddition.m in Sources */,
 				82BB17BE1772AA640039F287 /* AFHTTPClient.m in Sources */,
 				82BB17C01772AA640039F287 /* AFHTTPRequestOperation.m in Sources */,
@@ -923,10 +926,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -941,10 +945,14 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -954,10 +962,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -965,10 +974,13 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;

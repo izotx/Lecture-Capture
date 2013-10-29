@@ -2,7 +2,7 @@
 //  ViewController.m
 //  Recorder
 //
-//  Created by Janusz Chudzynski on 4/27/12.
+//  Created by DJMobile INC on 4/27/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
@@ -473,7 +473,7 @@ if(manager.userId){
 
 
 -(void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"Did Select");
+
     if([_tableView isEqual:tableView]){
     Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
 

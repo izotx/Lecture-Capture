@@ -2,7 +2,7 @@
 //  Utilities.h
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 8/8/12.
+//  Created by DJMobile INC on 8/8/12.
 //
 //
 
