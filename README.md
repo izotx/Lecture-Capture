@@ -16,7 +16,7 @@ Recording Process:
   User taps on the Record Button and that executes the  
   -(IBAction)startRecording:(id)sender method.
   Inside the startRecoring method I call startRecording method of recordingScreenView which is an instance of 
-  ScreenCapture class. 
+  ScreenCaptureView class. 
   
   ScreenCaptureView is responsible for several important tasks:
     - setting up the instance of a PaintView class - app's canvas place where user is drawing using his/hers fingers
@@ -24,9 +24,9 @@ Recording Process:
       [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)]; writes an image to a video.
     
   PaintView - it's a subclass of UIImageView
-    - it's a canvas. I'm using a UIBezierPath and touchesBegan, touchesMoved and etc. to 
-        
+    - it's a canvas. I'm using a UIBezierPath and touchesBegan, touchesMoved and etc. to draw the paths.
+    It's most likely one of the reasons of the bad performance.
       
-        
+       
       
       
