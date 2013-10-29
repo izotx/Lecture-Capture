@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="11G63" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Project" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="videos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Video" inverseName="project" inverseEntity="Video" syncable="YES"/>
+    </entity>
+    <entity name="Video" representedClassName="Video" syncable="YES">
+        <attribute name="duration" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="project_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="user_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="video_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="video_path" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="video_size" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="video_url" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="videos" inverseEntity="Project" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Project" positionX="-252" positionY="252" width="153" height="90"/>
+        <element name="Video" positionX="18" positionY="240" width="128" height="180"/>
+    </elements>
+</model>
