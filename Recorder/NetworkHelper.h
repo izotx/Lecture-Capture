@@ -14,7 +14,6 @@
 @interface NetworkHelper : NSObject
 typedef void (^ BlockTest)();
 
-
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 -(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath;

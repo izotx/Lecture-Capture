@@ -40,7 +40,7 @@
 /**
  * Delegate
  */
-@property (assign, nonatomic) IBOutlet id<ILSaturationBrightnessPickerViewDelegate> delegate;
+@property IBOutlet id<ILSaturationBrightnessPickerViewDelegate> delegate;
 
 /**
  * Get/Set the current hue

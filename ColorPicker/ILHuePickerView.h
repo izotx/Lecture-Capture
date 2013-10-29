@@ -45,7 +45,7 @@ typedef enum {
 /**
  * Delegate
  */
-@property (assign, nonatomic) IBOutlet id<ILHuePickerViewDelegate> delegate;
+@property  IBOutlet id<ILHuePickerViewDelegate> delegate;
 
 /**
  * The current hue

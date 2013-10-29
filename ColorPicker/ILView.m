@@ -34,6 +34,7 @@
     [self setup];
 }
 
+
 -(void)setup
 {
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -46,7 +47,7 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
+   // [super dealloc];
 }
 
 #pragma mark - Orientation
