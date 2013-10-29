@@ -443,7 +443,6 @@
         case UIImageOrientationRight: //EXIF = 8
             rotated =YES;
             break;
-        default: break;
     }
     
     if(!rotated){
@@ -472,7 +471,7 @@
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     
 	CGContextRef bitmap;
-	bitmap = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace,  kCGBitmapByteOrderDefault);
+	bitmap = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedFirst);
 	
 	if (image.imageOrientation == UIImageOrientationLeft) {
 		CGContextRotateCTM (bitmap, M_PI/2);
@@ -496,8 +495,7 @@
 	
 	CGContextRelease(bitmap);
 	CGImageRelease(ref);
-	CGColorSpaceRelease(colorSpace);
-    
+	
 	return result;	
 }
 

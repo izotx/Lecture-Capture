@@ -87,7 +87,8 @@
     
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
+- (void)viewDidUnload
+{
     [self setEmailTextField:nil];
     [self setPasswordTextField:nil];
     [self setConfirmPasswordTextField:nil];
@@ -95,14 +96,14 @@
     [self setEmailLoginTextField:nil];
     [self setPasswordLoginTextField:nil];
     [self setRegistrationView:nil];
-    [super viewWillDisappear:YES];
+    [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-//{
-//    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-//}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
 
 - (IBAction)registerUser:(id)sender {
     

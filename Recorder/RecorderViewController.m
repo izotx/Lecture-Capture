@@ -17,7 +17,8 @@
  
 */
 
-
+CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 #import "RecorderViewController.h"
 #import "AppDelegate.h"
@@ -212,8 +213,6 @@
     
     [scrollView setContentSize:scrollView.frame.size];
     ar = [[AudioRecorder alloc]init];
-    bannerView = nil;
-
     bannerIsVisible = NO;
     vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
@@ -225,7 +224,8 @@
     paused = NO;
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
+- (void)viewDidUnload
+{
     recordingScreenView = nil;
     durationLabel = nil;
     recordingScreenView = nil;
@@ -235,7 +235,7 @@
     backgroundView = nil;
     [self setToolbar:nil];
     [self setColorBarButton:nil];
-    [super viewWillDisappear:animated];
+    [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
@@ -245,6 +245,12 @@
 }
 
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    //We need to rotate the preview:
+    
+    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
+}
 
 - (NSUInteger) supportedInterfaceOrientations
 {

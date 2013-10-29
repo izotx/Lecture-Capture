@@ -26,6 +26,3 @@
 #else
 #define DebugLog( s, ... ) 
 #endif
-
-#define DegreesToRadians(degrees) degrees * M_PI / 180
-#define RadiansToDegrees(radians) radians * 180/M_PI

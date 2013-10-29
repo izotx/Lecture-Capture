@@ -28,7 +28,7 @@
 #pragma mark warning - revisit it
     afClient = [AFHTTPClient clientWithBaseURL:[[Manager sharedInstance]url]];
     NSDictionary * dict = [NSDictionary dictionaryWithObjects:@[currentVideo.title,manager.loginName,manager.loginPassword] forKeys:@[@"Title",@"email",@"password"]];
-
+    NSLog(@"Now what? 1 ");
    NSURLRequest * request = [afClient multipartFormRequestWithMethod:@"POST" path:nil parameters:dict constructingBodyWithBlock:^(id <AFMultipartFormData> formData) {
         NSData * data = [NSData dataWithContentsOfFile:videoPath];
         if(!data){
@@ -52,7 +52,7 @@
                                                      encoding:NSUTF8StringEncoding];
             NSString * ext = [[newStr pathExtension]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString * acext=@"mov";
-          
+            NSLog(@"%@ and %@" ,ext,acext);
 
             if(![ext isEqualToString:acext])
             {

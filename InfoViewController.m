@@ -57,16 +57,18 @@
     webView.delegate=self;
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+- (void)viewDidUnload
+{
     [self setWebView:nil];
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
 }
 
-//
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-//{
-//    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
-//	
-//}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
+	
+}
 
 - (IBAction)dimissMe:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
