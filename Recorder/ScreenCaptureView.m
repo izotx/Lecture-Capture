@@ -166,57 +166,57 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
            
         }
           [paintView.image drawInRect:self.bounds];
-//        if([csm.captureSession isRunning]){
-//            
-//            CGRect tframe;
-//            CGRect videoPreviewBackgroundFrame;
-//            if(fullScreen){
-//                tframe = self.frame;
-//            }
-//            else{
-//                tframe = videoPreviewFrame;
-//            }
-//            
-//            float h = videoPreviewFrame.size.height;
-//            float w = videoPreviewFrame.size.width;
-//            
-//            float ow = self.frame.size.width;
-//            float oh = self.frame.size.height;
-//            float dx,dy;
-//            if(fullScreen){
-//                dx = (ow - w)/2.0;
-//                dy = (oh - h)/2.0;
-//            }
-//            else{
-//                dx= videoPreviewFrame.origin.x;
-//                dy= videoPreviewFrame.origin.y;
-//            }
-//            
-//            CGRect tempRect = CGRectMake(dx, dy, w, h);
-//                 
-//            float x = tempRect.origin.x;
-//            float y = tempRect.origin.y;
-//            
-//            x = x-(0.1*w)/2.0;
-//            y = y-(0.1*h)/2.0;
-//            w = 1.1 * w;
-//            h = 1.1 * h;
-//            
-//            videoPreviewBackgroundFrame = CGRectMake(x,y,w,h);
-//            
-//            CGContextSetFillColorWithColor(ctx, [[UIColor grayColor]CGColor]);
-//            CGContextFillRect(ctx, tframe);
-//            
-//            CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
-//            CGContextFillRect(ctx, videoPreviewBackgroundFrame);
-//            
-//            if(!fullScreen){
-//                [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
-//            }
-//            else{
-//                [vi drawInRect:videoPreviewBackgroundFrame blendMode:kCGBlendModeNormal alpha:1];
-//            }  
-//        }
+        if([csm.captureSession isRunning]){
+            
+            CGRect tframe;
+            CGRect videoPreviewBackgroundFrame;
+            if(fullScreen){
+                tframe = self.frame;
+            }
+            else{
+                tframe = videoPreviewFrame;
+            }
+            
+            float h = videoPreviewFrame.size.height;
+            float w = videoPreviewFrame.size.width;
+            
+            float ow = self.frame.size.width;
+            float oh = self.frame.size.height;
+            float dx,dy;
+            if(fullScreen){
+                dx = (ow - w)/2.0;
+                dy = (oh - h)/2.0;
+            }
+            else{
+                dx= videoPreviewFrame.origin.x;
+                dy= videoPreviewFrame.origin.y;
+            }
+            
+            CGRect tempRect = CGRectMake(dx, dy, w, h);
+                 
+            float x = tempRect.origin.x;
+            float y = tempRect.origin.y;
+            
+            x = x-(0.1*w)/2.0;
+            y = y-(0.1*h)/2.0;
+            w = 1.1 * w;
+            h = 1.1 * h;
+            
+            videoPreviewBackgroundFrame = CGRectMake(x,y,w,h);
+            
+            CGContextSetFillColorWithColor(ctx, [[UIColor grayColor]CGColor]);
+            CGContextFillRect(ctx, tframe);
+            
+            CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
+            CGContextFillRect(ctx, videoPreviewBackgroundFrame);
+            
+            if(!fullScreen){
+                [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
+            }
+            else{
+                [vi drawInRect:videoPreviewBackgroundFrame blendMode:kCGBlendModeNormal alpha:1];
+            }  
+        }
         
         
         UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
