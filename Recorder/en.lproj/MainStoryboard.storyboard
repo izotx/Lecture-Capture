@@ -265,7 +265,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="58" sectionHeaderHeight="45" sectionFooterHeight="22" id="zxE-tY-RXK">
-                                <rect key="frame" x="0.0" y="44" width="281" height="660"/>
+                                <rect key="frame" x="0.0" y="44" width="281" height="680"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -273,7 +273,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                         <rect key="frame" x="0.0" y="45" width="281" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SjR-65-FyC" id="ChX-YU-IOY">
-                                            <rect key="frame" x="0.0" y="0.0" width="283" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="281" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="video.png" id="5vl-8q-ELv">
@@ -343,7 +343,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                 </items>
                             </toolbar>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="w7e-f8-BQM">
-                                <rect key="frame" x="0.0" y="704" width="1024" height="44"/>
+                                <rect key="frame" x="0.0" y="724" width="1024" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
                                     <barButtonItem title="+New Recording" id="KQx-xk-vtW">
@@ -657,7 +657,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                     <barButtonItem width="26" style="plain" systemItem="fixedSpace" id="5wG-Rg-iqO"/>
                                     <barButtonItem style="plain" id="NFa-3h-nTp">
                                         <slider key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="25" id="CL7-Jq-3rp">
-                                            <rect key="frame" x="311" y="8" width="87" height="29"/>
+                                            <rect key="frame" x="311" y="5" width="87" height="34"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <connections>
                                                 <action selector="changeBrushSize:" destination="els-1i-Bum" eventType="valueChanged" id="nPd-re-KSK"/>

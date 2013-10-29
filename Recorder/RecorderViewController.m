@@ -212,6 +212,8 @@
     
     [scrollView setContentSize:scrollView.frame.size];
     ar = [[AudioRecorder alloc]init];
+    bannerView = nil;
+
     bannerIsVisible = NO;
     vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];

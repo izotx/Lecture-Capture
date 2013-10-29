@@ -13,8 +13,8 @@
 -(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block saveAtPath:(NSString *)path
 {
     AVMutableComposition *mixComposition = [AVMutableComposition composition];
-    AVMutableCompositionTrack *videoCompositionTrack =[[AVMutableCompositionTrack alloc]init];
-    AVMutableCompositionTrack *audioCompositionTrack =[[AVMutableCompositionTrack alloc]init];
+    AVMutableCompositionTrack *videoCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
+    AVMutableCompositionTrack *audioCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
     videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     

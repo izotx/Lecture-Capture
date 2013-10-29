@@ -43,20 +43,22 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    pathLayer = nil;
-    translation = CGPointZero;
-    queue = [[NSOperationQueue alloc]init];
-    NSMutableArray * p = [[NSMutableArray alloc]initWithCapacity:0];
-    NSMutableArray * c = [[NSMutableArray alloc]initWithCapacity:1];
-    NSMutableArray * s = [[NSMutableArray alloc]initWithCapacity:0];
-    
-    redo = [[NSMutableDictionary alloc]initWithCapacity:0];
-    [redo setValue:p forKey:@"paths"];
-    [redo setValue:c forKey:@"colors"];
-    [redo setValue:s forKey:@"sizes"];
+  
     
     self = [super initWithFrame:frame];
     if (self) {
+        pathLayer = nil;
+        translation = CGPointZero;
+        queue = [[NSOperationQueue alloc]init];
+        NSMutableArray * p = [[NSMutableArray alloc]initWithCapacity:0];
+        NSMutableArray * c = [[NSMutableArray alloc]initWithCapacity:1];
+        NSMutableArray * s = [[NSMutableArray alloc]initWithCapacity:0];
+        
+        redo = [[NSMutableDictionary alloc]initWithCapacity:0];
+        [redo setValue:p forKey:@"paths"];
+        [redo setValue:c forKey:@"colors"];
+        [redo setValue:s forKey:@"sizes"];
+        
         // Initialization code
 
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, YES);
@@ -287,14 +289,15 @@
   //  int touchesCount=    [[event allTouches]count];
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
        
-    @autoreleasepool {
-        UIBezierPath * path= [UIBezierPath bezierPath];
-        self.myPath = path;
-        eraserPath = [UIBezierPath bezierPath];
-        cgMutablePath = CGPathCreateMutable();
-        
+   
+   UIBezierPath * path= [UIBezierPath bezierPath];
+   self.myPath = path;
+   eraserPath = [UIBezierPath bezierPath];
+    if(cgMutablePath){
+        CGPathRelease(cgMutablePath);
     }
-
+    cgMutablePath = CGPathCreateMutable();
+   
     myPath.lineCapStyle=kCGLineCapRound;
     myPath.lineJoinStyle=kCGLineJoinRound;
     myPath.lineWidth=brushSize;
@@ -360,12 +363,12 @@
         }
     }
 
-        CGContextRef pathContext;
+        //CGContextRef pathContext;
         if(!pathLayer)
         {
             pathLayer = CGLayerCreateWithContext(context, self.bounds.size, NULL);
         }
-            pathContext = CGLayerGetContext(pathLayer);
+           // pathContext = CGLayerGetContext(pathLayer);
         
             CGContextSetStrokeColorWithColor(context, self.strokeColor.CGColor);
             CGContextSetFillColorWithColor(context, self.strokeColor.CGColor);
@@ -379,7 +382,7 @@
         UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         //CGContextRelease(pathContext);
-        
+        // CGPathRelease(cgMutablePath);
         [[NSOperationQueue mainQueue]addOperationWithBlock:^{
                 self.image = image;
 
@@ -392,6 +395,8 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     //[self registerValues];
+    //release
+    
         
 }
 

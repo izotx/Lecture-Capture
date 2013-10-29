@@ -472,7 +472,7 @@
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     
 	CGContextRef bitmap;
-	bitmap = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedFirst);
+	bitmap = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace,  kCGBitmapByteOrderDefault);
 	
 	if (image.imageOrientation == UIImageOrientationLeft) {
 		CGContextRotateCTM (bitmap, M_PI/2);
@@ -496,7 +496,8 @@
 	
 	CGContextRelease(bitmap);
 	CGImageRelease(ref);
-	
+	CGColorSpaceRelease(colorSpace);
+    
 	return result;	
 }
 

@@ -37,7 +37,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     [self addSubview:self.backgroundView];
     [self addSubview:self.paintView];
     paintView.backgroundColor = [UIColor clearColor];
-    self.backgroundView.image = [UIImage imageNamed:@"graphpaper"];
+   // self.backgroundView.image = [UIImage imageNamed:@"graphpaper"];
     
 	self.clearsContextBeforeDrawing = YES;
 	self.currentScreen = nil;
@@ -107,40 +107,42 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 	return self;
 }
 
-- (CGContextRef) createBitmapContextOfSize:(CGSize) size {
-	CGContextRef    context = NULL;
-	CGColorSpaceRef colorSpace;
-	int             bitmapByteCount;
-	int             bitmapBytesPerRow;
-	
-	bitmapBytesPerRow   = (size.width * 4);
-	bitmapByteCount     = (bitmapBytesPerRow * size.height);
-	colorSpace = CGColorSpaceCreateDeviceRGB();
-	if (bitmapData != NULL) {
-		free(bitmapData);
-	}
-	bitmapData = malloc( bitmapByteCount );
-	if (bitmapData == NULL) {
-		return NULL;
-	}
-	
-	context = CGBitmapContextCreate (bitmapData,
-									 size.width,
-									 size.height,
-									 8,      // bits per component
-									 bitmapBytesPerRow,
-									 colorSpace,
-									 kCGImageAlphaNoneSkipFirst);
-
-	CGContextSetAllowsAntialiasing(context,NO);
-	if (context== NULL) {
-		free (bitmapData);
-		fprintf (stderr, "Context not created!");
-		return NULL;
-	}
-	CGColorSpaceRelease(colorSpace);
-	return context;
-}
+//- (CGContextRef) createBitmapContextOfSize:(CGSize) size {
+//	CGContextRef    context = NULL;
+//	CGColorSpaceRef colorSpace;
+//	int             bitmapByteCount;
+//	int             bitmapBytesPerRow;
+//	
+//	bitmapBytesPerRow   = (size.width * 4);
+//	bitmapByteCount     = (bitmapBytesPerRow * size.height);
+//	colorSpace = CGColorSpaceCreateDeviceRGB();
+//	if (bitmapData != NULL) {
+//		free(bitmapData);
+//	}
+//	bitmapData = malloc( bitmapByteCount );
+//	if (bitmapData == NULL) {
+//		CGColorSpaceRelease(colorSpace);
+//        return NULL;
+//	}
+//	
+//	context = CGBitmapContextCreate (bitmapData,
+//									 size.width,
+//									 size.height,
+//									 8,      // bits per component
+//									 bitmapBytesPerRow,
+//									 colorSpace,
+//									 kCGImageAlphaNoneSkipFirst);
+//
+//	CGContextSetAllowsAntialiasing(context,NO);
+//	if (context== NULL) {
+//		free (bitmapData);
+//		fprintf (stderr, "Context not created!");
+//		CGColorSpaceRelease(colorSpace);
+//        return NULL;
+//	}
+//	CGColorSpaceRelease(colorSpace);
+//	return context;
+//}
 
 
 - (void) drawRect:(CGRect)rect {
@@ -149,9 +151,9 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     [myQueue addOperationWithBlock:^{
         __block float delayRemaining=0;
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-        //not sure why this is necessary...image renders upside-down and mirrored
+
         NSDate* start = [NSDate date];
-        CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
+     //   CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
       //  CGContextConcatCTM(destContext, flipVertical);
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, YES);
         CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -360,11 +362,11 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 		[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
-        BOOL success = true;
+       //    BOOL success;// = true;
         
         if(videoWriter.status == AVAssetWriterStatusFailed)
         {
-            success = false;
+           // success = false;
             NSLog(@"Video Writer Failed");
         }
             
