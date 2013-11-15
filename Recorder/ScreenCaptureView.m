@@ -128,7 +128,7 @@
 									 8,      // bits per component
 									 bitmapBytesPerRow,
 									 colorSpace,
-									 kCGBitmapByteOrderDefault);
+									 kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
 	
 	CGContextSetAllowsAntialiasing(context,NO);
 	if (context== NULL) {
