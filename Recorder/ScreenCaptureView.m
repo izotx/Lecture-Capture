@@ -35,10 +35,9 @@
     paintView = [[PaintView alloc]initWithFrame:self.bounds];
     paintView.backgroundColor = [UIColor blackColor];
 	[self addSubview:self.paintView];
-    self.clearsContextBeforeDrawing = YES;
 
     self.currentScreen = nil;
-	self.frameRate = 35.0f;     //10 frames per seconds
+	self.frameRate = 10;     //frames per seconds
 	
 	videoWriter = nil;
 	videoWriterInput = nil;
@@ -146,11 +145,22 @@
 
 - (void)captureFrame:(CADisplayLink *)displayLink
 {
-
 #pragma warning add operation queue
-    NSDate* start = [NSDate date];
-	   
-	float delayRemaining=0;
+	
+	if (displayLink.frameInterval == 1) {
+		// We have not yet set the frame interval to match the frame rate
+		CFTimeInterval secondsPerRefresh = displayLink.duration;
+		CFTimeInterval capturesPerSecond = self.frameRate;
+		float capturesPerRefresh = capturesPerSecond * secondsPerRefresh;
+		float refreshesPerCapture = 1 / capturesPerRefresh;
+		NSUInteger frameInterval = ceil(refreshesPerCapture);
+		displayLink.frameInterval = frameInterval;
+		
+		NSLog(@"Setting frame interval to %u", (unsigned int)frameInterval);
+	}
+	
+	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+	
 	//not sure why this is necessary...image renders upside-down and mirrored
     
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
@@ -227,11 +237,10 @@
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-        float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
-        delayRemaining = (1.0 / self.frameRate) - processingSeconds;
-        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
     }
-//        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
+	NSLog(@"Capture time: %g", end - start);
+	
 }
 
 
@@ -361,11 +370,11 @@
 			_recording = true;
 
 			CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(captureFrame:)];
-			displayLink.frameInterval = 10;
+			// Note: the frame interval will be adjusted to match self.frameRate after one frame has been captured.
+			// That way, we know what the refresh rate of this display is.
+			displayLink.frameInterval = 1;
 			[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 			self.displayLink = displayLink;
-			
-            [self performSelector:@selector(setNeedsDisplay)];
         }
     
         
