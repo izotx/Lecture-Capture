@@ -9,7 +9,22 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PaintView.h"
 
-@implementation PaintView
+@implementation PaintView {
+	NSMutableArray * paths;
+	NSMutableArray * colors;
+	NSMutableArray * sizes;
+	NSMutableArray * backgroundColors;
+	NSMutableArray * backgroundImages;
+	
+	UIBezierPath * eraserPath;
+	float scale;
+	CGPoint translation;
+	
+	NSMutableDictionary * redo;
+	CGLayerRef destLayer;
+	CGContextRef destContext;
+	BOOL layerReady;
+}
 @synthesize colorOfBackground,strokeColor;
 @synthesize brushSize;
 @synthesize backgroundImage, startImage;
@@ -21,20 +36,6 @@
 
 @synthesize eraseMode;
 
-NSMutableArray * paths;
-NSMutableArray * colors;
-NSMutableArray * sizes;
-NSMutableArray * backgroundColors;
-NSMutableArray * backgroundImages;
-
-UIBezierPath * eraserPath;
-float scale;
-CGPoint translation;
-
-NSMutableDictionary * redo;
-CGLayerRef destLayer;
-CGContextRef destContext;
-BOOL layerReady;
 
 
 - (id)initWithFrame:(CGRect)frame

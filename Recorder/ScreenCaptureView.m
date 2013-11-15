@@ -133,6 +133,7 @@
 	CGContextSetAllowsAntialiasing(context,NO);
 	if (context== NULL) {
 		free (bitmapData);
+		bitmapData = NULL;
 		fprintf (stderr, "Context not created!");
 		CGColorSpaceRelease(colorSpace);
         return NULL;
@@ -326,7 +327,7 @@
 		 status = videoWriter.status;
 	}
         //[videoWriter endSessionAtSourceTime:currentCMTime];
-		[videoWriter finishWritingWithCompletionHandler:^{
+	[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
      
