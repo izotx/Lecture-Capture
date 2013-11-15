@@ -2,7 +2,7 @@
 //  NetworkHelper.h
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 5/22/13.
+//  Created by DJMobile INC on 5/22/13.
 //
 //
 
@@ -13,7 +13,6 @@
 
 @interface NetworkHelper : NSObject
 typedef void (^ BlockTest)();
-
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 

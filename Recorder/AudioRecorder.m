@@ -2,7 +2,7 @@
 //  AudioRecorder.m
 //  Recorder
 //
-//  Created by Janusz Chudzynski on 5/1/12.
+//  Created by DJMobile INC on 5/1/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
@@ -74,15 +74,17 @@ AVAudioRecorder * recorder;
     recorder.meteringEnabled = YES;
     
     
-    BOOL audioHWAvailable = false;// = audioSession.inputAvailable;
-    if([audioSession respondsToSelector:@selector(inputAvailable)])
+    BOOL audioHWAvailable = false;
+//    if([audioSession respondsToSelector:@selector(inputIsAvailable)])
+//    {
+//        audioHWAvailable = audioSession.inputIsAvailable;
+//    }
+    if([audioSession respondsToSelector:@selector(isInputAvailable)])
     {
         audioHWAvailable = audioSession.inputAvailable;
     }
-    else if([audioSession respondsToSelector:@selector(inputIsAvailable)])
-    {
-        audioHWAvailable = audioSession.inputIsAvailable;
-    }
+   
+  
 
     if (! audioHWAvailable) {
         UIAlertView *cantRecordAlert =

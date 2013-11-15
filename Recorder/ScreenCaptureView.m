@@ -4,7 +4,15 @@
 #import "VideoPreview.h"
 
 #import "UIImageAddition.h"
-@interface ScreenCaptureView(Private)
+@interface ScreenCaptureView()
+@property BOOL paused;
+@property CMTime currentCMTime;
+@property CGLayerRef destLayer;
+@property CGContextRef destContext;
+@property BOOL layerReady;
+@property NSTimer *captureTimer;
+
+
 - (void) writeVideoFrameAtTime:(CMTime)time;
 @end
 
@@ -14,31 +22,22 @@
 @synthesize paintView;
 @synthesize outputPath;
 @synthesize vi;
-@synthesize imgView;
+
 @synthesize panGesture;
 @synthesize csm;
 @synthesize videoPreviewFrame;
 @synthesize fullScreen;
 @synthesize rotatePreview;
 
-BOOL paused;
-CMTime currentCMTime;
-CGLayerRef destLayer;
-CGContextRef destContext;
-BOOL layerReady;
-NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 
-
-
-#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
 - (void) initialize {
-    self.paintView = [[PaintView alloc]initWithFrame:self.bounds];
-    [self addSubview:self.paintView];
+    paintView = [[PaintView alloc]initWithFrame:self.bounds];
     paintView.backgroundColor = [UIColor blackColor];
-	self.clearsContextBeforeDrawing = YES;
-	self.currentScreen = nil;
-	self.frameRate = 35.0f;     //10 frames per seconds
+	[self addSubview:self.paintView];
+
+    self.currentScreen = nil;
+	self.frameRate = 10;     //frames per second
 	
 	videoWriter = nil;
 	videoWriterInput = nil;
@@ -56,13 +55,12 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     //Preparing for drawing in background
     CGFloat contentScale = [[UIScreen mainScreen]scale];
     CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
-    destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
-    destContext = CGLayerGetContext(destLayer);
-    CGContextScaleCTM(destContext, contentScale, contentScale);
-    layerReady = NO;
+    _destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
+    _destContext = CGLayerGetContext(_destLayer);
+    CGContextScaleCTM(_destContext, contentScale, contentScale);
+    _layerReady = NO;
     
-    myQueue = [[NSOperationQueue alloc] init];
-    myQueue.name = @"Download Queue";
+  
     
 }
 
@@ -120,8 +118,8 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 	}
 	bitmapData = malloc( bitmapByteCount );
 	if (bitmapData == NULL) {
-	//	fprintf (stderr, "Memory not allocated!");
-		return NULL;
+		CGColorSpaceRelease(colorSpace);
+        return NULL;
 	}
 	
 	context = CGBitmapContextCreate (bitmapData,
@@ -130,37 +128,35 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 									 8,      // bits per component
 									 bitmapBytesPerRow,
 									 colorSpace,
-									 kCGImageAlphaNoneSkipFirst);
+									 kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);
 	
 	CGContextSetAllowsAntialiasing(context,NO);
 	if (context== NULL) {
 		free (bitmapData);
+		bitmapData = NULL;
 		fprintf (stderr, "Context not created!");
-		return NULL;
+		CGColorSpaceRelease(colorSpace);
+        return NULL;
 	}
 	CGColorSpaceRelease(colorSpace);
 	
 	return context;
 }
 
+- (void)captureFrame:(NSTimer *)captureTimer
+{
 
-- (void) drawRect:(CGRect)rect {
-    
-#pragma warning add operation queue
-    NSDate* start = [NSDate date];
-	//CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
-    
-	float delayRemaining=0;
-	//not sure why this is necessary...image renders upside-down and mirrored
     
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
-    CGContextConcatCTM(destContext, flipVertical);
+    CGContextConcatCTM(_destContext, flipVertical);
+	
+	[paintView prepareForImageCapture];
     UIImage* background =   paintView.image;
     
     self.currentScreen = background;
     if([csm.captureSession isRunning]){
         
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 1);
         
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [background drawInRect:self.frame];
@@ -209,7 +205,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         
         CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
         CGContextFillRect(ctx, videoPreviewBackgroundFrame);
-        
+        [background drawInRect:self.bounds];
         if(!fullScreen){
             [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
         }
@@ -218,17 +214,15 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
         }
         UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
         self.currentScreen = newImage;
+		UIGraphicsEndImageContext();
     }
     
     
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-        float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
-        delayRemaining = (1.0 / self.frameRate) - processingSeconds;
-        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
     }
-//        [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+	
 }
 
 
@@ -309,11 +303,8 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 	
     @autoreleasepool {
         NSLog(@"Complete recording session ");
- 
-
 	@try {
         [videoWriterInput markAsFinished];
-
         NSLog(@"Mark recording as finished ");
     }
     @catch (NSException *exception) {
@@ -322,10 +313,7 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
     @finally {
         
     }
-	
-    NSLog(@"Before while looop");
 
-//    [videoWriter endSessionAtSourceTime:videoWriterInput.]
         
     // Wait for the video
 	int status = videoWriter.status;
@@ -334,19 +322,17 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 		 status = videoWriter.status;
 	}
         //[videoWriter endSessionAtSourceTime:currentCMTime];
-		[videoWriter finishWritingWithCompletionHandler:^{
+	[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
         id delegateObj = self.delegate;
-        BOOL success = true;
+     
         
         if(videoWriter.status == AVAssetWriterStatusFailed)
         {
-            success = false;
             NSLog(@"Video Writer Failed");
         }
             
         if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
-            NSLog(@"Calls the delegate object ");
             [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:nil waitUntilDone:YES];
         }
         
@@ -365,7 +351,13 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 			startedAt = [NSDate date];
 			_recording = true;
 
-            [self performSelector:@selector(setNeedsDisplay)];
+			NSTimeInterval frameInterval = (1.0 / self.frameRate);
+			NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:frameInterval
+															  target:self
+															selector:@selector(captureFrame:)
+															userInfo:nil
+															 repeats:YES];
+			self.captureTimer = timer;
         }
     
         
@@ -376,6 +368,9 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 - (void) stopRecording {
 	@synchronized(self) {
 		if (_recording) {
+			[self.captureTimer invalidate];
+			self.captureTimer = nil;
+			
 			_recording = false;
             if([videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
                 NSLog(@" Complete Recording session");
@@ -387,41 +382,51 @@ NSOperationQueue *myQueue;// = [[NSOperationQueue alloc] init];
 
 -(void) writeVideoFrameAtTime:(CMTime)time {
     
-    if(paused) return;
+    if(self.paused) return;
     
     if (![videoWriterInput isReadyForMoreMediaData]) {
 		  NSLog(@"Not ready for video data");
 	}
 	else {
 		@synchronized (self) {
-			UIImage* newFrame = self.currentScreen;
-			CVPixelBufferRef pixelBuffer = NULL;
-			CGImageRef cgImage = CGImageCreateCopy([newFrame CGImage]);
-            
-			CFDataRef image = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
-			
-			int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, avAdaptor.pixelBufferPool, &pixelBuffer);
-			if(status != 0){
-				//could not get a buffer from the pool
-				NSLog(@"Error creating pixel buffer:  status=%d", status);
-			}
-			// set image data into pixel buffer
-			CVPixelBufferLockBaseAddress(pixelBuffer, 0 );
-			uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
-			CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
-			
-			if(status == 0){
+		
+            @try {
+                UIImage* newFrame = self.currentScreen;
+                CVPixelBufferRef pixelBuffer = NULL;
+                CGImageRef cgImage = CGImageCreateCopy([newFrame CGImage]);
+                
+                CFDataRef image = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
+                
+                int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, avAdaptor.pixelBufferPool, &pixelBuffer);
+                if(status != 0){
+                    //could not get a buffer from the pool
+                    NSLog(@"Error creating pixel buffer:  status=%d", status);
+                }
+                // set image data into pixel buffer
+                CVPixelBufferLockBaseAddress(pixelBuffer, 0 );
+                uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
+               
+                CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
+                
+                if(status == 0){
                     BOOL success = [avAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:time];
                     if (!success) NSLog(@"Warning:  Unable to write buffer to video");
-             
-               // NSLog(@"Write and time : %f",CMTimeGetSeconds(time));
-                currentCMTime = time;
+                    
+                    self.currentCMTime = time;
+                }
+                //clean up
+                CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
+                CVPixelBufferRelease( pixelBuffer );
+                CFRelease(image);
+                CGImageRelease(cgImage);
             }
-			//clean up
-			CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
-			CVPixelBufferRelease( pixelBuffer );
-			CFRelease(image);
-			CGImageRelease(cgImage);
+            @catch (NSException *exception) {
+                NSLog(@"exception %@",exception.debugDescription);
+            }
+            @finally {
+                
+            }
+           
 		}		
 	}	
 }

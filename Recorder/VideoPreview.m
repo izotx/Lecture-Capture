@@ -2,11 +2,12 @@
 //  VideoPreview.m
 //  Lecture Capture
 //
-//  Created by sadmin on 11/1/12.
+//  Created by DJMobile INC on 11/1/12.
 //
 //
 
 #import "VideoPreview.h"
+#import "RecorderViewController.h"
 
 @implementation VideoPreview
 @synthesize fullScreen;
@@ -62,10 +63,10 @@ int smallHeight = 344;
         self.bounds =CGRectMake(0,0,width,height);
         toolBar.frame = CGRectMake(0,height-44,width,44);
         float l = 0.9 * (height -44);
-        float x = (width - l)/2.0;
         float tempWidth = 0.8 * width;
-        x = (width-tempWidth) /2.0;
         float y = (height - 44- l)/2.0;
+        float x = (width-tempWidth) /2.0;
+        
         previewImageView.frame = CGRectMake(x, y, tempWidth, l);
         
     
