@@ -193,6 +193,12 @@
         
         i++;
     }
+	
+    if (myPath) {
+        [strokeColor setStroke];
+        myPath.lineWidth = brushSize;
+        [myPath stroke];
+    }
     
     self.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -283,32 +289,8 @@
 {
        
     int touchesCount=    [[event allTouches]count];
-    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-       if(self.colorOfBackground)
-    {
-        CGContextSaveGState(context);
-        CGContextSetFillColorWithColor(context, colorOfBackground.CGColor);
-        CGContextFillRect(context, self.bounds);
-        CGContextRestoreGState(context);
-    }
-
-    if(self.backgroundImage){
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-      //  CGRect  rect = [self calculateFrameForImage:backgroundImage];
-        
-      //  NSLog(@" %f %f %f %f ",rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
-        
-        
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
-        
-        
-        CGContextRestoreGState(context);
-    }
+	
     if(eraseMode == YES)
     {
         [self erasePathAtPoint:[mytouch locationInView:self]];
@@ -317,24 +299,11 @@
     else{
         if(touchesCount==1)
         {
-        [myPath addLineToPoint:[mytouch locationInView:self]];
-         myPath.lineWidth=brushSize;
-        [strokeColor setStroke];
-        [myPath stroke];
+            [myPath addLineToPoint:[mytouch locationInView:self]];
         }
     }
-
-    int i=0;
-    for(UIBezierPath * p in paths)
-    {
-        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-        [[colors objectAtIndex:i]setStroke];
-        [p stroke];
-        i++;
-    }
-
-    self.image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+	
+	[self drawImageAndLines];
 }
 
 
