@@ -344,6 +344,7 @@
 {
     [self registerValues];
     self.myPath = nil;
+	[self clearCurrentPathDrawing];
     [self drawImageAndLines];
 }
 

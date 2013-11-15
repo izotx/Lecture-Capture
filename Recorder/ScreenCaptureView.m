@@ -10,7 +10,7 @@
 @property CGLayerRef destLayer;
 @property CGContextRef destContext;
 @property BOOL layerReady;
-@property CADisplayLink *displayLink;
+@property NSTimer *captureTimer;
 
 
 - (void) writeVideoFrameAtTime:(CMTime)time;
@@ -37,7 +37,7 @@
 	[self addSubview:self.paintView];
 
     self.currentScreen = nil;
-	self.frameRate = 10;     //frames per seconds
+	self.frameRate = 10;     //frames per second
 	
 	videoWriter = nil;
 	videoWriterInput = nil;
@@ -143,21 +143,9 @@
 	return context;
 }
 
-- (void)captureFrame:(CADisplayLink *)displayLink
+- (void)captureFrame:(NSTimer *)captureTimer
 {
 #pragma warning add operation queue
-	
-	if (displayLink.frameInterval == 1) {
-		// We have not yet set the frame interval to match the frame rate
-		CFTimeInterval secondsPerRefresh = displayLink.duration;
-		CFTimeInterval capturesPerSecond = self.frameRate;
-		float capturesPerRefresh = capturesPerSecond * secondsPerRefresh;
-		float refreshesPerCapture = 1 / capturesPerRefresh;
-		NSUInteger frameInterval = ceil(refreshesPerCapture);
-		displayLink.frameInterval = frameInterval;
-		
-		NSLog(@"Setting frame interval to %u", (unsigned int)frameInterval);
-	}
 	
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 	
@@ -239,7 +227,6 @@
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
     }
 	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
-	NSLog(@"Capture time: %g", end - start);
 	
 }
 
@@ -369,12 +356,13 @@
 			startedAt = [NSDate date];
 			_recording = true;
 
-			CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(captureFrame:)];
-			// Note: the frame interval will be adjusted to match self.frameRate after one frame has been captured.
-			// That way, we know what the refresh rate of this display is.
-			displayLink.frameInterval = 1;
-			[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-			self.displayLink = displayLink;
+			NSTimeInterval frameInterval = (1.0 / self.frameRate);
+			NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:frameInterval
+															  target:self
+															selector:@selector(captureFrame:)
+															userInfo:nil
+															 repeats:YES];
+			self.captureTimer = timer;
         }
     
         
@@ -385,8 +373,8 @@
 - (void) stopRecording {
 	@synchronized(self) {
 		if (_recording) {
-			[self.displayLink invalidate];
-			self.displayLink = nil;
+			[self.captureTimer invalidate];
+			self.captureTimer = nil;
 			
 			_recording = false;
             if([videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
