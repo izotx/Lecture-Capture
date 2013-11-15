@@ -145,11 +145,7 @@
 
 - (void)captureFrame:(NSTimer *)captureTimer
 {
-#pragma warning add operation queue
-	
-	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-	
-	//not sure why this is necessary...image renders upside-down and mirrored
+
     
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
     CGContextConcatCTM(_destContext, flipVertical);
@@ -160,7 +156,7 @@
     self.currentScreen = background;
     if([csm.captureSession isRunning]){
         
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0);
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 1);
         
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         [background drawInRect:self.frame];
@@ -209,7 +205,7 @@
         
         CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
         CGContextFillRect(ctx, videoPreviewBackgroundFrame);
-        
+        [background drawInRect:self.bounds];
         if(!fullScreen){
             [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
         }
@@ -226,7 +222,6 @@
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
     }
-	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
 	
 }
 
@@ -394,34 +389,44 @@
 	}
 	else {
 		@synchronized (self) {
-			UIImage* newFrame = self.currentScreen;
-			CVPixelBufferRef pixelBuffer = NULL;
-			CGImageRef cgImage = CGImageCreateCopy([newFrame CGImage]);
-            
-			CFDataRef image = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
-			
-			int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, avAdaptor.pixelBufferPool, &pixelBuffer);
-			if(status != 0){
-				//could not get a buffer from the pool
-				NSLog(@"Error creating pixel buffer:  status=%d", status);
-			}
-			// set image data into pixel buffer
-			CVPixelBufferLockBaseAddress(pixelBuffer, 0 );
-			uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
-			CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
-			
-			if(status == 0){
+		
+            @try {
+                UIImage* newFrame = self.currentScreen;
+                CVPixelBufferRef pixelBuffer = NULL;
+                CGImageRef cgImage = CGImageCreateCopy([newFrame CGImage]);
+                
+                CFDataRef image = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
+                
+                int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, avAdaptor.pixelBufferPool, &pixelBuffer);
+                if(status != 0){
+                    //could not get a buffer from the pool
+                    NSLog(@"Error creating pixel buffer:  status=%d", status);
+                }
+                // set image data into pixel buffer
+                CVPixelBufferLockBaseAddress(pixelBuffer, 0 );
+                uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
+               
+                CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
+                
+                if(status == 0){
                     BOOL success = [avAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:time];
                     if (!success) NSLog(@"Warning:  Unable to write buffer to video");
-             
-               // NSLog(@"Write and time : %f",CMTimeGetSeconds(time));
-                self.currentCMTime = time;
+                    
+                    self.currentCMTime = time;
+                }
+                //clean up
+                CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
+                CVPixelBufferRelease( pixelBuffer );
+                CFRelease(image);
+                CGImageRelease(cgImage);
             }
-			//clean up
-			CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
-			CVPixelBufferRelease( pixelBuffer );
-			CFRelease(image);
-			CGImageRelease(cgImage);
+            @catch (NSException *exception) {
+                NSLog(@"exception %@",exception.debugDescription);
+            }
+            @finally {
+                
+            }
+           
 		}		
 	}	
 }
