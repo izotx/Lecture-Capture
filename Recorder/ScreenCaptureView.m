@@ -155,6 +155,8 @@
     
     CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
     CGContextConcatCTM(_destContext, flipVertical);
+	
+	[paintView prepareForImageCapture];
     UIImage* background =   paintView.image;
     
     self.currentScreen = background;

@@ -36,5 +36,7 @@
 -(void) removeBackgroundPhoto;
 -(void) undo;
 
+- (void)prepareForImageCapture;
+
 
 @end
