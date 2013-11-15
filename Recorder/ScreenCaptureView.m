@@ -10,6 +10,7 @@
 @property CGLayerRef destLayer;
 @property CGContextRef destContext;
 @property BOOL layerReady;
+@property CADisplayLink *displayLink;
 
 
 - (void) writeVideoFrameAtTime:(CMTime)time;
@@ -143,9 +144,9 @@
 	return context;
 }
 
+- (void)captureFrame:(CADisplayLink *)displayLink
+{
 
-- (void) drawRect:(CGRect)rect {
-    
 #pragma warning add operation queue
     NSDate* start = [NSDate date];
 	   
@@ -357,6 +358,11 @@
 			startedAt = [NSDate date];
 			_recording = true;
 
+			CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(captureFrame:)];
+			displayLink.frameInterval = 10;
+			[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+			self.displayLink = displayLink;
+			
             [self performSelector:@selector(setNeedsDisplay)];
         }
     
@@ -368,6 +374,9 @@
 - (void) stopRecording {
 	@synchronized(self) {
 		if (_recording) {
+			[self.displayLink invalidate];
+			self.displayLink = nil;
+			
 			_recording = false;
             if([videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
                 NSLog(@" Complete Recording session");

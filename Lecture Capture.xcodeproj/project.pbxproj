@@ -125,6 +125,7 @@
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
+		B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7AC82781835FC9300FAF74F /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,6 +280,7 @@
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
+		B7AC82781835FC9300FAF74F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +311,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */,
 				4F0FED66169DB02200C04ADC /* MediaPlayer.framework in Frameworks */,
 				4F1D995415647BBA002D8F6C /* iAd.framework in Frameworks */,
 				82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */,
@@ -430,6 +433,7 @@
 		4FD48DA0154AC95D007880C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B7AC82781835FC9300FAF74F /* QuartzCore.framework */,
 				4FA7279A155B0DFB002A2F1D /* libz.1.2.5.dylib */,
 				4F0FED65169DB02200C04ADC /* MediaPlayer.framework */,
 				4F1D995315647BBA002D8F6C /* iAd.framework */,
