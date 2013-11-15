@@ -217,6 +217,7 @@
         }
         UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
         self.currentScreen = newImage;
+		UIGraphicsEndImageContext();
     }
     
     
