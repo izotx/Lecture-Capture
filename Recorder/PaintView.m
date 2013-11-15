@@ -208,7 +208,9 @@
 
 
 -(void)registerValues{
-    [paths addObject:myPath];
+    if (myPath) {
+        [paths addObject:myPath];
+    }
     NSValue * sizeVal = [NSNumber numberWithFloat:brushSize];
     [sizes addObject:sizeVal];
     [colors addObject:strokeColor];
@@ -310,6 +312,7 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self registerValues];
+    self.myPath = nil;
         
 }
 
