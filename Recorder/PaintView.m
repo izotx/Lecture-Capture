@@ -9,7 +9,24 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PaintView.h"
 
-@implementation PaintView
+@implementation PaintView {
+	NSMutableArray * paths;
+	NSMutableArray * colors;
+	NSMutableArray * sizes;
+	NSMutableArray * backgroundColors;
+	NSMutableArray * backgroundImages;
+	
+	UIBezierPath * eraserPath;
+	float scale;
+	CGPoint translation;
+	
+	NSMutableDictionary * redo;
+	CGLayerRef destLayer;
+	CGContextRef destContext;
+	BOOL layerReady;
+    
+    UIImageView *currentPathImageView;
+}
 @synthesize colorOfBackground,strokeColor;
 @synthesize brushSize;
 @synthesize backgroundImage, startImage;
@@ -21,40 +38,26 @@
 
 @synthesize eraseMode;
 
-NSMutableArray * paths;
-NSMutableArray * colors;
-NSMutableArray * sizes;
-NSMutableArray * backgroundColors;
-NSMutableArray * backgroundImages;
-
-UIBezierPath * eraserPath;
-float scale;
-CGPoint translation;
-
-NSMutableDictionary * redo;
-CGLayerRef destLayer;
-CGContextRef destContext;
-BOOL layerReady;
 
 
 - (id)initWithFrame:(CGRect)frame
 {
-    translation = CGPointZero;
-    
-    
-    NSMutableArray * p = [NSMutableArray new];
-    NSMutableArray * c = [NSMutableArray new];
-    NSMutableArray * s = [NSMutableArray new];
-    
-    redo = [NSMutableDictionary new];
-
-    [redo setValue:p forKey:@"paths"];
-    [redo setValue:c forKey:@"colors"];
-    [redo setValue:s forKey:@"sizes"];
-    
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        
+        translation = CGPointZero;
+        
+        
+        NSMutableArray * p = [NSMutableArray new];
+        NSMutableArray * c = [NSMutableArray new];
+        NSMutableArray * s = [NSMutableArray new];
+        
+        redo = [NSMutableDictionary new];
+        
+        [redo setValue:p forKey:@"paths"];
+        [redo setValue:c forKey:@"colors"];
+        [redo setValue:s forKey:@"sizes"];
 
          UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
         
@@ -100,8 +103,13 @@ BOOL layerReady;
         destContext = CGLayerGetContext(destLayer);
         CGContextScaleCTM(destContext, contentScale, contentScale);
         layerReady = NO;
-
         
+        // This image view will only be used while touches are coming in.
+        // Once the touches end, it will be cleared and its content collapsed
+        // into the main image.
+        currentPathImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+		currentPathImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+        [self addSubview:currentPathImageView];
         
     }
     return self;
@@ -155,9 +163,9 @@ BOOL layerReady;
 }
 
 
--(void)drawImageAndLines{
+-(void)drawImageAndLines {
 
-    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, 1);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
    
@@ -175,7 +183,6 @@ BOOL layerReady;
         CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
         CGRect frame = [self calculateFrameForImage:backgroundImage];
-        NSLog(@" ");
         
         CGContextDrawImage(context, frame, self.backgroundImage.CGImage);
        
@@ -186,22 +193,48 @@ BOOL layerReady;
     
     for(UIBezierPath * p in paths)
     {
-        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-        [[colors objectAtIndex:i]setStroke];
+        [[colors objectAtIndex:i] setStroke];
         [p stroke];
         
         i++;
+    }
+	
+    if (myPath) {
+        [strokeColor setStroke];
+        myPath.lineWidth = brushSize;
+        [myPath stroke];
     }
     
     self.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 }
 
+- (void)drawCurrentPath
+{
+    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, 1);
+    
+    if (myPath) {
+        [strokeColor setStroke];
+        myPath.lineWidth = brushSize;
+        [myPath stroke];
+    }
+    
+    UIImage *currentPathImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
 
+    currentPathImageView.image = currentPathImage;
+}
+
+- (void)clearCurrentPathDrawing
+{
+    currentPathImageView.image = nil;
+}
 
 
 -(void)registerValues{
-    [paths addObject:myPath];
+    if (myPath) {
+        [paths addObject:myPath];
+    }
     NSValue * sizeVal = [NSNumber numberWithFloat:brushSize];
     [sizes addObject:sizeVal];
     [colors addObject:strokeColor];
@@ -249,9 +282,9 @@ BOOL layerReady;
     
     }
     else{
-        self.image =self.startImage;
+        self.image = self.startImage;
     }
-        self.image = UIGraphicsGetImageFromCurrentImageContext();    
+    self.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 }
 
@@ -282,32 +315,8 @@ BOOL layerReady;
 {
        
     int touchesCount=    [[event allTouches]count];
-    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-       if(self.colorOfBackground)
-    {
-        CGContextSaveGState(context);
-        CGContextSetFillColorWithColor(context, colorOfBackground.CGColor);
-        CGContextFillRect(context, self.bounds);
-        CGContextRestoreGState(context);
-    }
-
-    if(self.backgroundImage){
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-      //  CGRect  rect = [self calculateFrameForImage:backgroundImage];
-        
-      //  NSLog(@" %f %f %f %f ",rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
-        
-        
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
-        
-        
-        CGContextRestoreGState(context);
-    }
+	
     if(eraseMode == YES)
     {
         [self erasePathAtPoint:[mytouch locationInView:self]];
@@ -316,31 +325,32 @@ BOOL layerReady;
     else{
         if(touchesCount==1)
         {
-        [myPath addLineToPoint:[mytouch locationInView:self]];
-         myPath.lineWidth=brushSize;
-        [strokeColor setStroke];
-        [myPath stroke];
+            [myPath addLineToPoint:[mytouch locationInView:self]];
         }
     }
-
-    int i=0;
-    for(UIBezierPath * p in paths)
-    {
-        myPath.lineWidth = [[sizes objectAtIndex:i]floatValue];
-        [[colors objectAtIndex:i]setStroke];
-        [p stroke];
-        i++;
-    }
-
-    self.image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+	
+	[self drawCurrentPath];
 }
-
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self registerValues];
-        
+    self.myPath = nil;
+    [self clearCurrentPathDrawing];
+    [self drawImageAndLines];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self registerValues];
+    self.myPath = nil;
+	[self clearCurrentPathDrawing];
+    [self drawImageAndLines];
+}
+
+-(void)prepareForImageCapture
+{
+    [self drawImageAndLines];
 }
 
 -(void)setBrushStrokeColor:(UIColor *)_strokeColor{

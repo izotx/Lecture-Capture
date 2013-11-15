@@ -46,6 +46,8 @@
 		4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545601635F1890091F335 /* LoginRegisterViewController.m */; };
 		4F4545641635F23C0091F335 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545621635F23C0091F335 /* InfoPlist.strings */; };
 		4F4545671635F2580091F335 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545651635F2580091F335 /* MainStoryboard.storyboard */; };
+		4F98B32418368FA1006EBBC1 /* recorde76.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32218368FA1006EBBC1 /* recorde76.png */; };
+		4F98B32518368FA1006EBBC1 /* recorder156.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32318368FA1006EBBC1 /* recorder156.png */; };
 		4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D58EA18205A8C000A004F /* InfoViewController.m */; };
 		4F9D58EE18205A8C000A004F /* LectureCapturePDF.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */; };
 		4F9D590E18205AA8000A004F /* cloud_download.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D58EF18205AA8000A004F /* cloud_download.png */; };
@@ -66,8 +68,6 @@
 		4F9D591D18205AA8000A004F /* Eraser-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D58FE18205AA8000A004F /* Eraser-icon.png */; };
 		4F9D591E18205AA8000A004F /* resizeBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D58FF18205AA8000A004F /* resizeBtn.png */; };
 		4F9D591F18205AA8000A004F /* recorder144.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590018205AA8000A004F /* recorder144.png */; };
-		4F9D592018205AA8000A004F /* screencapture 72.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590118205AA8000A004F /* screencapture 72.png */; };
-		4F9D592118205AA8000A004F /* screencapture 144.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590218205AA8000A004F /* screencapture 144.png */; };
 		4F9D592218205AA8000A004F /* recorder72.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590318205AA8000A004F /* recorder72.png */; };
 		4F9D592318205AA8000A004F /* recorder512.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590418205AA8000A004F /* recorder512.png */; };
 		4F9D592418205AA8000A004F /* buttonBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590518205AA8000A004F /* buttonBack.png */; };
@@ -125,6 +125,7 @@
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
+		B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7AC82781835FC9300FAF74F /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +166,8 @@
 		4F4545601635F1890091F335 /* LoginRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginRegisterViewController.m; path = Recorder/LoginRegisterViewController.m; sourceTree = "<group>"; };
 		4F4545631635F23C0091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4F4545661635F2580091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		4F98B32218368FA1006EBBC1 /* recorde76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorde76.png; path = Images/recorde76.png; sourceTree = "<group>"; };
+		4F98B32318368FA1006EBBC1 /* recorder156.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder156.png; path = Images/recorder156.png; sourceTree = "<group>"; };
 		4F9D58EA18205A8C000A004F /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
 		4F9D58EB18205A8C000A004F /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
 		4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = LectureCapturePDF.pdf; path = Recorder/LectureCapturePDF.pdf; sourceTree = "<group>"; };
@@ -186,8 +189,6 @@
 		4F9D58FE18205AA8000A004F /* Eraser-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Eraser-icon.png"; path = "Images/Eraser-icon.png"; sourceTree = "<group>"; };
 		4F9D58FF18205AA8000A004F /* resizeBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = resizeBtn.png; path = Images/resizeBtn.png; sourceTree = "<group>"; };
 		4F9D590018205AA8000A004F /* recorder144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder144.png; path = Images/recorder144.png; sourceTree = "<group>"; };
-		4F9D590118205AA8000A004F /* screencapture 72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "screencapture 72.png"; path = "Images/screencapture 72.png"; sourceTree = "<group>"; };
-		4F9D590218205AA8000A004F /* screencapture 144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "screencapture 144.png"; path = "Images/screencapture 144.png"; sourceTree = "<group>"; };
 		4F9D590318205AA8000A004F /* recorder72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder72.png; path = Images/recorder72.png; sourceTree = "<group>"; };
 		4F9D590418205AA8000A004F /* recorder512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder512.png; path = Images/recorder512.png; sourceTree = "<group>"; };
 		4F9D590518205AA8000A004F /* buttonBack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonBack.png; path = Images/buttonBack.png; sourceTree = "<group>"; };
@@ -279,6 +280,7 @@
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
+		B7AC82781835FC9300FAF74F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +311,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */,
 				4F0FED66169DB02200C04ADC /* MediaPlayer.framework in Frameworks */,
 				4F1D995415647BBA002D8F6C /* iAd.framework in Frameworks */,
 				82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */,
@@ -430,6 +433,7 @@
 		4FD48DA0154AC95D007880C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B7AC82781835FC9300FAF74F /* QuartzCore.framework */,
 				4FA7279A155B0DFB002A2F1D /* libz.1.2.5.dylib */,
 				4F0FED65169DB02200C04ADC /* MediaPlayer.framework */,
 				4F1D995315647BBA002D8F6C /* iAd.framework */,
@@ -530,6 +534,8 @@
 		82536123176A50E7000D8F92 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4F98B32218368FA1006EBBC1 /* recorde76.png */,
+				4F98B32318368FA1006EBBC1 /* recorder156.png */,
 				4F9D58EF18205AA8000A004F /* cloud_download.png */,
 				4F9D58F018205AA8000A004F /* cloud_upload.png */,
 				4F9D58F118205AA8000A004F /* plus.png */,
@@ -548,8 +554,6 @@
 				4F9D58FE18205AA8000A004F /* Eraser-icon.png */,
 				4F9D58FF18205AA8000A004F /* resizeBtn.png */,
 				4F9D590018205AA8000A004F /* recorder144.png */,
-				4F9D590118205AA8000A004F /* screencapture 72.png */,
-				4F9D590218205AA8000A004F /* screencapture 144.png */,
 				4F9D590318205AA8000A004F /* recorder72.png */,
 				4F9D590418205AA8000A004F /* recorder512.png */,
 				4F9D590518205AA8000A004F /* buttonBack.png */,
@@ -637,6 +641,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0500;
+				TargetAttributes = {
+					4FD48D9C154AC95D007880C2 = {
+						DevelopmentTeam = BZUY5AR8YB;
+					};
+				};
 			};
 			buildConfigurationList = 4FD48D97154AC95D007880C2 /* Build configuration list for PBXProject "Lecture Capture" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -674,6 +683,7 @@
 				4F9D591F18205AA8000A004F /* recorder144.png in Resources */,
 				4F9D596818205B91000A004F /* ILColorPickerDualExampleController.xib in Resources */,
 				4F9D591518205AA8000A004F /* graphpaper.png in Resources */,
+				4F98B32418368FA1006EBBC1 /* recorde76.png in Resources */,
 				4F9D591918205AA8000A004F /* camera.png in Resources */,
 				4F4545641635F23C0091F335 /* InfoPlist.strings in Resources */,
 				4F9D592318205AA8000A004F /* recorder512.png in Resources */,
@@ -685,7 +695,6 @@
 				4F9D591B18205AA8000A004F /* buttonBackBlack.png in Resources */,
 				4F9D58EE18205A8C000A004F /* LectureCapturePDF.pdf in Resources */,
 				4F9D591718205AA8000A004F /* illus.png in Resources */,
-				4F9D592118205AA8000A004F /* screencapture 144.png in Resources */,
 				4F9D591A18205AA8000A004F /* buttonBackRed.png in Resources */,
 				4F9D592C18205AA8000A004F /* cancel_24.png in Resources */,
 				4F9D592418205AA8000A004F /* buttonBack.png in Resources */,
@@ -700,10 +709,10 @@
 				4F9D592718205AA8000A004F /* video.png in Resources */,
 				4F9D591618205AA8000A004F /* linepaper.png in Resources */,
 				4F9D591018205AA8000A004F /* plus.png in Resources */,
+				4F98B32518368FA1006EBBC1 /* recorder156.png in Resources */,
 				4F9D591D18205AA8000A004F /* Eraser-icon.png in Resources */,
 				4F9D592A18205AA8000A004F /* delete_24.png in Resources */,
 				4F9D591818205AA8000A004F /* screen.png in Resources */,
-				4F9D592018205AA8000A004F /* screencapture 72.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -946,7 +955,7 @@
 				GCC_PREFIX_HEADER = "Recorder/Lecture Capture-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "Recorder/Lecture Capture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "Lecture Capture";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -956,7 +965,7 @@
 		4FD48DBD154AC95D007880C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -966,7 +975,7 @@
 				GCC_PREFIX_HEADER = "Recorder/Lecture Capture-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "Recorder/Lecture Capture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "Lecture Capture";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
