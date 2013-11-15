@@ -108,6 +108,7 @@
         // Once the touches end, it will be cleared and its content collapsed
         // into the main image.
         currentPathImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+		currentPathImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
         [self addSubview:currentPathImageView];
         
     }
