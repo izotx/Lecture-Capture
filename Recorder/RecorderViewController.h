@@ -12,8 +12,9 @@
 #import "AudioRecorder.h"
 #import "Video.h"
 #import "ScreenView.h"
-
 #import "ILColorPickerDualExampleController.h"
+@class Lecture;
+@class Slide;
 
 @interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ScreenShotDelegate,ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate>
 {
@@ -24,17 +25,15 @@ __weak IBOutlet UIScrollView *scrollView;
 __weak IBOutlet UIActivityIndicatorView *activityIndicator;
     UIPopoverController * colorPopover;
     UIPopoverController * cameraPopover;
-    IBOutlet UIBarButtonItem *cameraBarButton;
     UIActionSheet * photoAction;
+    
     IBOutlet UIImageView * testImageView;
+    IBOutlet UIBarButtonItem *cameraBarButton;
 }
+
 @property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *colorBarButton;
-
-
-@property(nonatomic,retain)NSString * movie_title;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
+@property (strong, nonatomic) Lecture * lecture;
 
 @property BOOL eraseMode;
 

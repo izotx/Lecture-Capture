@@ -46,6 +46,15 @@
 		4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545601635F1890091F335 /* LoginRegisterViewController.m */; };
 		4F4545641635F23C0091F335 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545621635F23C0091F335 /* InfoPlist.strings */; };
 		4F4545671635F2580091F335 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545651635F2580091F335 /* MainStoryboard.storyboard */; };
+		4F864BC7183BFA6200C888B8 /* controlsButtonRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */; };
+		4F864BCA183BFC8900C888B8 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC8183BFC8900C888B8 /* addButton.png */; };
+		4F864BCB183BFC8900C888B8 /* removeButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC9183BFC8900C888B8 /* removeButton.png */; };
+		4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BCD183BFFCA00C888B8 /* LectureAPI.m */; };
+		4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */; };
+		4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BDA183C094500C888B8 /* Slide+Operations.m */; };
+		4F864BDE183C109C00C888B8 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BDD183C109C00C888B8 /* Slide.m */; };
+		4F864BE4183C13F300C888B8 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BE3183C13F300C888B8 /* Lecture.m */; };
+		4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */; };
 		4F98B32418368FA1006EBBC1 /* recorde76.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32218368FA1006EBBC1 /* recorde76.png */; };
 		4F98B32518368FA1006EBBC1 /* recorder156.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32318368FA1006EBBC1 /* recorder156.png */; };
 		4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D58EA18205A8C000A004F /* InfoViewController.m */; };
@@ -166,6 +175,21 @@
 		4F4545601635F1890091F335 /* LoginRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginRegisterViewController.m; path = Recorder/LoginRegisterViewController.m; sourceTree = "<group>"; };
 		4F4545631635F23C0091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4F4545661635F2580091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = controlsButtonRight.png; path = Images/controlsButtonRight.png; sourceTree = "<group>"; };
+		4F864BC8183BFC8900C888B8 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
+		4F864BC9183BFC8900C888B8 /* removeButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = removeButton.png; sourceTree = "<group>"; };
+		4F864BCC183BFFCA00C888B8 /* LectureAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LectureAPI.h; path = Recorder/LectureAPI.h; sourceTree = "<group>"; };
+		4F864BCD183BFFCA00C888B8 /* LectureAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LectureAPI.m; path = Recorder/LectureAPI.m; sourceTree = "<group>"; };
+		4F864BD6183C08CC00C888B8 /* Lecture+Operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Lecture+Operations.h"; path = "Recorder/Lecture+Operations.h"; sourceTree = "<group>"; };
+		4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Lecture+Operations.m"; path = "Recorder/Lecture+Operations.m"; sourceTree = "<group>"; };
+		4F864BD9183C094500C888B8 /* Slide+Operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Slide+Operations.h"; path = "Recorder/Slide+Operations.h"; sourceTree = "<group>"; };
+		4F864BDA183C094500C888B8 /* Slide+Operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Slide+Operations.m"; path = "Recorder/Slide+Operations.m"; sourceTree = "<group>"; };
+		4F864BDC183C109C00C888B8 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Slide.h; path = Recorder/Slide.h; sourceTree = "<group>"; };
+		4F864BDD183C109C00C888B8 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Slide.m; path = Recorder/Slide.m; sourceTree = "<group>"; };
+		4F864BE2183C13F300C888B8 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Lecture.h; path = Recorder/Lecture.h; sourceTree = "<group>"; };
+		4F864BE3183C13F300C888B8 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Lecture.m; path = Recorder/Lecture.m; sourceTree = "<group>"; };
+		4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePhotoPicker.h; sourceTree = "<group>"; };
+		4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePhotoPicker.m; sourceTree = "<group>"; };
 		4F98B32218368FA1006EBBC1 /* recorde76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorde76.png; path = Images/recorde76.png; sourceTree = "<group>"; };
 		4F98B32318368FA1006EBBC1 /* recorder156.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder156.png; path = Images/recorder156.png; sourceTree = "<group>"; };
 		4F9D58EA18205A8C000A004F /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
@@ -378,6 +402,11 @@
 		4F9D58E9182037A3000A004F /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
+				4F864BE2183C13F300C888B8 /* Lecture.h */,
+				4F864BE3183C13F300C888B8 /* Lecture.m */,
+				4F864BDC183C109C00C888B8 /* Slide.h */,
+				4F864BDD183C109C00C888B8 /* Slide.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -408,6 +437,12 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				4F864BCC183BFFCA00C888B8 /* LectureAPI.h */,
+				4F864BCD183BFFCA00C888B8 /* LectureAPI.m */,
+				4F864BD6183C08CC00C888B8 /* Lecture+Operations.h */,
+				4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */,
+				4F864BD9183C094500C888B8 /* Slide+Operations.h */,
+				4F864BDA183C094500C888B8 /* Slide+Operations.m */,
 				4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */,
 				4F9D58E818203765000A004F /* Recording */,
 				4F9D58E9182037A3000A004F /* CoreData */,
@@ -484,6 +519,8 @@
 		4FD48DC8154ACC7A007880C2 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */,
+				4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */,
 				4F9D596D18205C17000A004F /* UIImageAddition.h */,
 				4F9D596E18205C17000A004F /* UIImageAddition.m */,
 				4F9D596F18205C17000A004F /* UIImage+Alpha.m */,
@@ -500,7 +537,6 @@
 				4F9D593218205AFB000A004F /* Video.m */,
 				4F9D593318205AFB000A004F /* Utilities.h */,
 				4F9D593418205AFB000A004F /* Manager.m */,
-				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
 				8282D683176673BB00F82722 /* CustomTableButton.h */,
 				8282D684176673BB00F82722 /* CustomTableButton.m */,
 				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
@@ -534,6 +570,7 @@
 		82536123176A50E7000D8F92 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */,
 				4F98B32218368FA1006EBBC1 /* recorde76.png */,
 				4F98B32318368FA1006EBBC1 /* recorder156.png */,
 				4F9D58EF18205AA8000A004F /* cloud_download.png */,
@@ -559,6 +596,8 @@
 				4F9D590518205AA8000A004F /* buttonBack.png */,
 				4F9D590618205AA8000A004F /* Default-Landscape~ipad.png */,
 				4F9D590718205AA8000A004F /* Default.psd */,
+				4F864BC8183BFC8900C888B8 /* addButton.png */,
+				4F864BC9183BFC8900C888B8 /* removeButton.png */,
 				4F9D590818205AA8000A004F /* video.png */,
 				4F9D590918205AA8000A004F /* font_24.png */,
 				4F9D590A18205AA8000A004F /* video_24.png */,
@@ -691,6 +730,7 @@
 				4F4545671635F2580091F335 /* MainStoryboard.storyboard in Resources */,
 				4F9D592518205AA8000A004F /* Default-Landscape~ipad.png in Resources */,
 				4F9D591E18205AA8000A004F /* resizeBtn.png in Resources */,
+				4F864BCA183BFC8900C888B8 /* addButton.png in Resources */,
 				4F9D592818205AA8000A004F /* font_24.png in Resources */,
 				4F9D591B18205AA8000A004F /* buttonBackBlack.png in Resources */,
 				4F9D58EE18205A8C000A004F /* LectureCapturePDF.pdf in Resources */,
@@ -698,7 +738,9 @@
 				4F9D591A18205AA8000A004F /* buttonBackRed.png in Resources */,
 				4F9D592C18205AA8000A004F /* cancel_24.png in Resources */,
 				4F9D592418205AA8000A004F /* buttonBack.png in Resources */,
+				4F864BC7183BFA6200C888B8 /* controlsButtonRight.png in Resources */,
 				4F9D591C18205AA8000A004F /* eraserSelected.png in Resources */,
+				4F864BCB183BFC8900C888B8 /* removeButton.png in Resources */,
 				4F9D592918205AA8000A004F /* video_24.png in Resources */,
 				4F9D592618205AA8000A004F /* Default.psd in Resources */,
 				4F9D590F18205AA8000A004F /* cloud_upload.png in Resources */,
@@ -765,8 +807,10 @@
 				4F9D596918205B91000A004F /* ILColorPickerView.m in Sources */,
 				4F9D597818205C17000A004F /* UIImage+Resize.m in Sources */,
 				4F9D596A18205B91000A004F /* ILHuePickerView.m in Sources */,
+				4F864BE4183C13F300C888B8 /* Lecture.m in Sources */,
 				4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */,
 				4F9D596718205B91000A004F /* ILColorPickerDualExampleController.m in Sources */,
+				4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */,
 				4F9D593918205AFB000A004F /* Utilities.m in Sources */,
 				4F45454C1635F1040091F335 /* AppDelegate.m in Sources */,
 				4F45454F1635F12B0091F335 /* ViewController.m in Sources */,
@@ -776,10 +820,12 @@
 				4F4545561635F14D0091F335 /* RecorderViewController.m in Sources */,
 				4F9D597618205C17000A004F /* UIImage+Alpha.m in Sources */,
 				4F4545571635F14D0091F335 /* ScreenCaptureView.m in Sources */,
+				4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */,
 				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,
 				4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */,
 				4F9D598018205C43000A004F /* AVCaptureHelper.m in Sources */,
+				4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */,
 				4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */,
 				82EE2721164360F7008F99AE /* VideoPreview.m in Sources */,
 				4F9D598118205C43000A004F /* CaptureSessionManager.m in Sources */,
@@ -788,7 +834,9 @@
 				4F9D595418205B72000A004F /* AFNetworkActivityIndicatorManager.m in Sources */,
 				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,
 				4F9D596C18205B91000A004F /* UIColor+GetHSB.m in Sources */,
+				4F864BDE183C109C00C888B8 /* Slide.m in Sources */,
 				4F9D596618205B91000A004F /* ILView.m in Sources */,
+				4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */,
 				4F9D593B18205AFB000A004F /* Manager.m in Sources */,
 				4F9D593C18205AFB000A004F /* NewModel.xcdatamodeld in Sources */,
 				4F9D597718205C17000A004F /* UIImage+RoundedCorner.m in Sources */,
@@ -925,7 +973,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -947,6 +996,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -965,7 +1015,7 @@
 		4FD48DBD154AC95D007880C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

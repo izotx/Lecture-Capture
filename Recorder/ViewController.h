@@ -23,11 +23,13 @@
 @property (weak, nonatomic) IBOutlet ADBannerView *bannerView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *uploadingVideoActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *uploadingVideoLabel;
+@property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
+
 
 - (IBAction)copyURL:(id)sender;
 - (IBAction)shareURL:(id)sender;
 - (IBAction)logInOrOut:(id)sender;
 - (IBAction)editTable:(id)sender;
-- (IBAction)addToSmallTable:(id)sender;
+
 
 @end

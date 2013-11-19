@@ -9,6 +9,9 @@
 #import "ViewController.h"
 #import "NetworkHelper.h"
 #import "CustomTableButton.h"
+#import "Lecture.h"
+#import "LectureAPI.h"
+
 
 
 @interface ViewController ()
@@ -25,7 +28,6 @@
     __weak IBOutlet UIWebView *webView;
     
     CGRect recordingViewFrame;
-    NSFetchedResultsController * fetchedResultsController;
     NSString* videoPath;
     NSString* titleText;
     Video * currentVideo;
@@ -44,51 +46,15 @@
 - (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
 
-@property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
 @property(nonatomic, assign) BOOL bannerIsVisible;
-@property(nonatomic,strong) MPMoviePlayerController *globalMoviePlayerController;
+@property(nonatomic, strong) MPMoviePlayerController *globalMoviePlayerController;
+@property(nonatomic, strong) LectureAPI *lectureAPI;
+
 
 @end
 
 @implementation ViewController
 
-@synthesize bannerView = _bannerView;
-@synthesize uploadingVideoActivityIndicator = _uploadingVideoActivityIndicator;
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize movie_url_label = _movie_url_label;
-@synthesize copyURLButton;
-@synthesize loginBarButton = _loginBarButton;
-@synthesize fetchedResultsController=_fetchedResultsController;
-@synthesize loginPopOver;
-@synthesize uploadingVideoLabel = _uploadingVideoLabel;
-@synthesize bannerIsVisible;
-
-
-
-#pragma  mark iAD
-- (void)bannerViewDidLoadAd:(ADBannerView *)banner
-{
-    if (!self.bannerIsVisible)
-    {
-        [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
-        // Assumes the banner view is just off the bottom of the screen.
-        banner.frame = CGRectOffset(banner.frame, 0, +banner.frame.size.height);
-        [UIView commitAnimations];
-        self.bannerIsVisible = YES;        
-    }
-}
-
-- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
-{
-    if (self.bannerIsVisible)
-    {
-        [UIView beginAnimations:@"animateAdBannerOff" context:NULL];
-        // Assumes the banner view is placed at the bottom of the screen.
-        banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
-        [UIView commitAnimations];
-        self.bannerIsVisible = NO;
-    }
-}
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(alertView==uploadLogin)
@@ -152,7 +118,7 @@ if(manager.userId){
         }
         else{
         // upload video here
-            __block UIButton * button = copyURLButton;
+            __block UIButton * button = _copyURLButton;
             [networkHelper setCompletionBlocks:^(){
                 button.enabled = YES;
                // NSLog(@"Button enabled %@ %@",button, copyURLButton);
@@ -174,24 +140,30 @@ if(manager.userId){
 }
 
 
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    //Executed when NExt button is clicked.
+    //Executed when Next button is clicked.
+   
+     if ([segue.identifier isEqualToString:@"Edit"]) {
+       RecorderViewController *r = [segue destinationViewController];
+       r.lecture =[_fetchedResultsController objectAtIndexPath: [tableView indexPathForSelectedRow]];
+         
+         
+     }
     
-    if ([segue.identifier isEqualToString:@"Modal"]) {
+    if ([segue.identifier isEqualToString:@"CreateNew"]) {
         RecorderViewController *r = [segue destinationViewController];
-        
         informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);    
-        [self textFieldShouldReturn:editTitleTextField];
         
-        if(editTitleTextField.text.length>0)
-        {
-            r.movie_title=editTitleTextField.text;
-            NSLog(@"Movie title is %@",r.movie_title);
-        }
-        else{
-            r.movie_title=@"Untitled";
-        } 
-        r.managedObjectContext=self.managedObjectContext;
+        [self textFieldShouldReturn:editTitleTextField];
+      //creating new lecture
+        NSString *title = (editTitleTextField.text.length>0)?editTitleTextField.text:@"Untitled";
+        
+        
+        Lecture * lecture = [LectureAPI createLectureWithName:title];
+        r.lecture = lecture;
+        
+        
         [self loadVideoWithURL:nil];
     }
      if ([segue.identifier isEqualToString:@"Popover"]) {
@@ -210,12 +182,12 @@ if(manager.userId){
   
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription
-                                   entityForName:@"Video" inManagedObjectContext:self.managedObjectContext];
+                                   entityForName:@"Lecture" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
   
     NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                              initWithKey:@"title" ascending:YES];
+                              initWithKey:@"name" ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     
     
@@ -270,6 +242,8 @@ if(manager.userId){
     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
     compileTableView.dataSource = self;
     compileTableView.delegate = self;
+    
+    self.lectureAPI =[LectureAPI new];
     
     [self fetchedResultsController];
     [self loadVideoWithURL:nil];
@@ -343,22 +317,25 @@ if(manager.userId){
 #pragma mark table view
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
+    Lecture *lecture =[_fetchedResultsController objectAtIndexPath:indexPath];
     UILabel * titleLabel =  (UILabel *)[cell viewWithTag:10];
     UILabel * durationLabel =  (UILabel *)[cell viewWithTag:20];
     UILabel * fileSizeLabel =  (UILabel *)[cell viewWithTag:30];
-    titleLabel.text=info.title;
-    durationLabel.text=[NSString stringWithFormat:@"Duration: %@",info.duration];
-    fileSizeLabel.text=info.video_size;
+    titleLabel.text = lecture.name;
+
+    durationLabel.text=[NSString stringWithFormat:@"Duration: %@",lecture.duration];
+    fileSizeLabel.text=[NSString stringWithFormat:@"%@",lecture.size];
+    
+
     CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:80];
-    ctb.indexPath = indexPath;
+     ctb.indexPath = indexPath;
     [ctb addTarget:self action:@selector(uploadButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)uploadButtonPressed:(id)sender{
    
     CustomTableButton *cb =   (CustomTableButton *)sender;
-     NSLog(@" %@ ",cb);
+     NSLog(@"Upload %@ ",cb);
     //   Video * v =
     NSIndexPath *indexPath = [(CustomTableButton *) sender indexPath];
     Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
@@ -491,30 +468,30 @@ if(manager.userId){
 -(void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
     if([_tableView isEqual:tableView]){
-    Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
-
-    NSFileManager * fileManager = [NSFileManager defaultManager];
-    if([fileManager fileExistsAtPath:v.video_path])
-    {
-        videoPath =v.video_path;
-    }
-    else{
-        videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], v.video_path];
-    }
-    
- 	NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
-    
-    videoTitleLabel.text= v.title;
-   [self loadVideoWithURL:outputURL];
-    currentVideo=v;
-    if(v.video_url.length>0){
-        self.movie_url_label.text= v.video_url;
-        self.copyURLButton.enabled=YES;
-    }
-    else{
-        self.movie_url_label.text = @"Tap on the Upload Recording button to upload recording to the server.";
-        self.copyURLButton.enabled=NO;
-    }
+//    Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
+//
+//    NSFileManager * fileManager = [NSFileManager defaultManager];
+//    if([fileManager fileExistsAtPath:v.video_path])
+//    {
+//        videoPath =v.video_path;
+//    }
+//    else{
+//        videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], v.video_path];
+//    }
+//    
+// 	NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
+//    
+//    videoTitleLabel.text= v.title;
+//   [self loadVideoWithURL:outputURL];
+//    currentVideo=v;
+//    if(v.video_url.length>0){
+//        self.movie_url_label.text= v.video_url;
+//        self.copyURLButton.enabled=YES;
+//    }
+//    else{
+//        self.movie_url_label.text = @"Tap on the Upload Recording button to upload recording to the server.";
+//        self.copyURLButton.enabled=NO;
+//    }
     }
 
 }
@@ -537,10 +514,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     {
         Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
         NSManagedObjectContext *context = [_fetchedResultsController managedObjectContext];
-        [context deleteObject:v];
+    
         if(context)
         {
-        
+            [context deleteObject:v];
         }
         else{
             NSLog(@"Context doesn't exist on delete???");
@@ -574,31 +551,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
-#pragma  mark Compiling Video
-- (IBAction)addToSmallTable:(id)sender {
-  //Configure table
-    [compileTableView setEditing:YES];
-    
-    //Get the current video from the big table
-   NSLog(@"%@ ",(CustomTableButton *) sender);
-   NSIndexPath *indexPath = [(CustomTableButton *) sender indexPath];
-   Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
-
-    NSLog(@" Adding video inside a small table... %@ indexPath %@ ",indexPath, _fetchedResultsController);
-    if(info){
-        [compileVideoListArray addObject: info];
-    }
-    
-
-    
-    [compileTableView reloadData];
-    
-
-}
 
 
 - (IBAction)saveToLibrary:(id)sender {
-  
     if(videoPath.length>0)
     {
         UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
@@ -609,12 +564,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSString * message=@"You need to select a movie from the list.";
         UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [al show];
-
     }
-  
 }
-
-
 
 
 - (IBAction)cancelAndDismissRecordingView:(id)sender {
@@ -637,9 +588,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [UIView commitAnimations];
 
     [self.view addSubview:informationAboutRecordingView];
-    
     [self.view bringSubviewToFront:informationAboutRecordingView];
-    
     
     NSArray * subviews =informationAboutRecordingView.subviews;
     for (UIView * v in subviews)
@@ -772,8 +721,7 @@ else
     else{
         if( self.loginPopOver ==nil)
         {
-            NSLog(@"Nil ");
-            LoginRegisterViewController * c= [sb instantiateViewControllerWithIdentifier:@"LoginPopover"];
+           LoginRegisterViewController * c= [sb instantiateViewControllerWithIdentifier:@"LoginPopover"];
             
             c.delegate=self;
             c.loginBarButton=self.loginBarButton;
@@ -827,9 +775,9 @@ else
 
 #pragma mark popover delegate
 -(void)dissmissPopover{
-    if(loginPopOver.isPopoverVisible)
+    if(_loginPopOver.isPopoverVisible)
     {
-        [loginPopOver dismissPopoverAnimated:YES];
+        [_loginPopOver dismissPopoverAnimated:YES];
     }
 }
 

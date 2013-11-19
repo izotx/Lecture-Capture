@@ -25,6 +25,9 @@
 #import "UIImage+Resize.h"
 #import "VideoPreview.h"
 #import "IOHelper.h"
+#import "LectureAPI.h"
+#import "ImagePhotoPicker.h"
+
 #define FRAME_RATE 10
 
 
@@ -32,8 +35,70 @@
 
 @interface UIImage (Extras)
 - (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
+- (UIImage *)imageByScalingProportionallyToSize:(CGSize)targetSize;
 @end;
 @implementation UIImage (Extras)
+- (UIImage *)imageByScalingProportionallyToSize:(CGSize)targetSize {
+    
+    UIImage *sourceImage = self;
+    UIImage *newImage = nil;
+    
+    CGSize imageSize = sourceImage.size;
+    CGFloat width = imageSize.width;
+    CGFloat height = imageSize.height;
+    
+    CGFloat targetWidth = targetSize.width;
+    CGFloat targetHeight = targetSize.height;
+    
+    CGFloat scaleFactor = 0.0;
+    CGFloat scaledWidth = targetWidth;
+    CGFloat scaledHeight = targetHeight;
+    
+    CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
+    
+    if (CGSizeEqualToSize(imageSize, targetSize) == NO) {
+        
+        CGFloat widthFactor = targetWidth / width;
+        CGFloat heightFactor = targetHeight / height;
+        
+        if (widthFactor < heightFactor)
+            scaleFactor = widthFactor;
+        else
+            scaleFactor = heightFactor;
+        
+        scaledWidth  = width * scaleFactor;
+        scaledHeight = height * scaleFactor;
+        
+        // center the image
+        
+        if (widthFactor < heightFactor) {
+            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+        } else if (widthFactor > heightFactor) {
+            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
+        }
+    }
+    
+    
+    // this is actually the interesting part:
+    
+    UIGraphicsBeginImageContext(targetSize);
+    
+    CGRect thumbnailRect = CGRectZero;
+    thumbnailRect.origin = thumbnailPoint;
+    thumbnailRect.size.width  = scaledWidth;
+    thumbnailRect.size.height = scaledHeight;
+    
+    [sourceImage drawInRect:thumbnailRect];
+    
+    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    if(newImage == nil) NSLog(@"could not scale image");
+    
+    
+    return newImage ;
+}
+
 - (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
 {
     // calculate the size of the rotated view's containing box for our drawing space
@@ -115,6 +180,8 @@
     
 }
 @property (strong, nonatomic) IBOutlet UILabel *informationLabel;
+@property(strong, nonatomic) ImagePhotoPicker *photoPicker;
+
 
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
@@ -129,13 +196,8 @@
 @end
 
 @implementation RecorderViewController
-@synthesize movie_title;
-@synthesize managedObjectContext = _managedObjectContext;
 
-@synthesize bannerIsVisible;
-@synthesize eraseMode;
-@synthesize toolbar;
-@synthesize colorBarButton;
+
 #pragma mark helper
 -(NSString* ) timeConverter:(int)durationInSeconds{
     Utilities * u = [[Utilities alloc]init];
@@ -203,6 +265,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _photoPicker = [[ImagePhotoPicker alloc]init];
 	// Do any additional setup after loading the view.
     frameCounter =0;
     documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -212,7 +276,7 @@
     
     [scrollView setContentSize:scrollView.frame.size];
     ar = [[AudioRecorder alloc]init];
-    bannerIsVisible = NO;
+
     vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
         cp.delegate = self;
@@ -242,13 +306,6 @@
  
 }
 
-//
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-//{
-//    //We need to rotate the preview:
-//    
-//    return (interfaceOrientation==UIInterfaceOrientationLandscapeRight || interfaceOrientation==UIInterfaceOrientationLandscapeLeft);
-//}
 
 - (NSUInteger) supportedInterfaceOrientations
 {
@@ -298,6 +355,7 @@
 
 -(IBAction)finishRecording:(id)sender
 {
+    /*
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
     UIView  * v = [[UIView alloc]initWithFrame:self.view.bounds];
     v.backgroundColor = [UIColor grayColor];
@@ -340,6 +398,7 @@
     else{
         [self dismissMe:nil];
     }
+     */
 }
 
 -(IBAction)startRecording:(id)sender
@@ -468,10 +527,13 @@
     [scrollViewScreenshots addObject:s];
 }
 
-
-
 //Save to Core Data
 -(BOOL)saveData:(CMTime)d ofPath:(NSString * )pathToSave{
+    [LectureAPI saveLecture:self.lecture];
+    
+    /*
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
     if(!self.managedObjectContext)
     {
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -502,7 +564,6 @@
     videoObject.video_size=fileSize;
     
     
-    
     NSError * error=nil;
     [self.managedObjectContext save:&error];
     if(error==nil)
@@ -514,6 +575,9 @@
         NSLog(@"Error %@",[error debugDescription]);
         return NO;
     }
+  */
+    return YES;
+    
 }
 
 -(void)dismissMe:(NSString *) message{
@@ -554,11 +618,11 @@
     
     if(cp.operationType ==10)
     {
-        [colorPopover presentPopoverFromBarButtonItem:colorBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        [colorPopover presentPopoverFromBarButtonItem:_colorBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 
     }
     else{
-       [colorPopover presentPopoverFromBarButtonItem:colorBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+       [colorPopover presentPopoverFromBarButtonItem:_colorBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
   }
 
@@ -578,6 +642,17 @@
 }
 
 #pragma mark adding image
+- (void)showImagePicker {
+    [self.photoPicker showImagePickerForPhotoPicker:self withCompletionBlock:^(UIImage *img) {
+      //  self.currentImage = img;
+        UIImage *resizeImage = [img imageByScalingProportionallyToSize:CGSizeMake(100, 100)];
+
+    }];
+}
+
+
+
+/*
 - (void) imagePickerControllerDidCancel: (UIImagePickerController *) picker {
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -692,37 +767,37 @@
 -(void) updateViewWithImage:(UIImage *) im{
     [recordingScreenView.paintView setBackgroundPhotoImage:im];
 }
-     
+*/
 
 - (IBAction)changeBackground:(id)sender {
-    photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"New Photo", @"Photo Library", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
+    photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"Photo Background", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
     [photoAction showInView:self.view];
 }
 
 - (IBAction)eraserOnOff:(id)sender {
   
-    eraseMode = !recordingScreenView.paintView.eraseMode;
-    recordingScreenView.paintView.eraseMode = eraseMode;
+    _eraseMode = !recordingScreenView.paintView.eraseMode;
+    recordingScreenView.paintView.eraseMode = _eraseMode;
 //Very Error Prone. Change the Bar Button Item based on it's index.
 
     //Record Flex Erase
     //
     
-    NSMutableArray * buttons =[[NSMutableArray alloc]initWithArray:toolbar.items ];
+    NSMutableArray * buttons =[[NSMutableArray alloc]initWithArray:_toolbar.items ];
    
     UIBarButtonItem * stopErasing =  [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"delete_24.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(eraserOnOff:)];
      UIBarButtonItem * erase =  [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"delete_24.png"] style:UIBarButtonItemStylePlain target:self action:@selector(eraserOnOff:)];
    
     int index = buttons.count -3;
     [buttons removeObjectAtIndex:index];
-    if(eraseMode){
+    if(_eraseMode){
        [buttons insertObject:stopErasing atIndex:index];
         
     }
     else{
         [buttons insertObject:erase atIndex:index];
     }
-    [toolbar setItems:buttons animated:YES];
+    [_toolbar setItems:buttons animated:YES];
 }
 
 - (IBAction)redoAction:(id)sender {
@@ -740,26 +815,28 @@
     if([actionSheet isEqual:photoAction]){
         if(buttonIndex==1) // make photo
         {
-            [self startCameraControllerFromViewController:self usingDelegate:self]; 
+//            [self startCameraControllerFromViewController:self usingDelegate:self]; 
+//        }
+//        else if(buttonIndex==2)
+//        {
+//            [self startCameraControllerPickerViewController:self usingDelegate:self];
+          [self showImagePicker];
+        
         }
         else if(buttonIndex==2)
-        {
-            [self startCameraControllerPickerViewController:self usingDelegate:self];
-        }
-        else if(buttonIndex==3)
         {
             UIButton * b =[[UIButton alloc]init];
             b.tag=10;
             [self pickColorFor:b];
         }
-        else if(buttonIndex==4)
+        else if(buttonIndex==3)
         {
             [recordingScreenView.paintView setBackgroundPhotoImage:[UIImage imageNamed:@"linepaper"]];
         }
-        else if(buttonIndex==5)
+        else if(buttonIndex==4)
         {
             [recordingScreenView.paintView setBackgroundPhotoImage:[UIImage imageNamed:@"graphpaper"]];        }
-        else if(buttonIndex==6) // Remove Photo
+        else if(buttonIndex==5) // Remove Photo
         {
             [recordingScreenView.paintView removeBackgroundPhoto];
         }
