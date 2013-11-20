@@ -14,8 +14,10 @@
 //creates a new lecture
 + (id)createLectureWithName:(NSString *)name{
  
-    AppDelegate * delegate = (AppDelegate *)[UIApplication sharedApplication];
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Lecture * lecture= [NSEntityDescription insertNewObjectForEntityForName:@"Lecture" inManagedObjectContext:delegate.managedObjectContext];
+    
+    
     lecture.name  = name;
     NSError *error;
     [delegate.managedObjectContext save:&error];

@@ -33,21 +33,10 @@ AVAudioRecorder * recorder;
     }
     // Different Settings for Recording
     recordSetting = [[NSMutableDictionary alloc] init];
-    
-//    [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
-//    [recordSetting setValue:[NSNumber numberWithFloat:16000.0] forKey:AVSampleRateKey]; 
-//    [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
-//    
-//    [recordSetting setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
-//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
+
     [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
     [recordSetting setValue:[NSNumber numberWithFloat:32000.0] forKey:AVSampleRateKey];
     [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
-    
-//    [recordSetting setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
-//    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
     
     //File Path
     int random = arc4random()%100 * arc4random();
@@ -69,16 +58,10 @@ AVAudioRecorder * recorder;
     }
     
     //prepare to record
-    [recorder setDelegate:self];
-    [recorder prepareToRecord];
-    recorder.meteringEnabled = YES;
     
     
     BOOL audioHWAvailable = false;
-//    if([audioSession respondsToSelector:@selector(inputIsAvailable)])
-//    {
-//        audioHWAvailable = audioSession.inputIsAvailable;
-//    }
+
     if([audioSession respondsToSelector:@selector(isInputAvailable)])
     {
         audioHWAvailable = audioSession.inputAvailable;
@@ -97,7 +80,10 @@ AVAudioRecorder * recorder;
     
         return;
     }
-    
+    [recorder setDelegate:self];
+    //[recorder prepareToRecord];
+    recorder.meteringEnabled = YES;
+
     [recorder record];
 }
 

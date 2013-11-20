@@ -46,7 +46,7 @@
 - (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
 
-@property(nonatomic, assign) BOOL bannerIsVisible;
+
 @property(nonatomic, strong) MPMoviePlayerController *globalMoviePlayerController;
 @property(nonatomic, strong) LectureAPI *lectureAPI;
 
@@ -235,7 +235,6 @@ if(manager.userId){
      videoTitleLabel.text=@"";
     self.movie_url_label.text=@"";
   
-    self.bannerIsVisible=NO;
     self.copyURLButton.enabled=NO;
 	// Do any additional setup after loading the view, typically from a nib.
     recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);

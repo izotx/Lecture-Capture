@@ -9,7 +9,6 @@
 #import "ImagePhotoPicker.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import "UIImage+Resizing.h"
 
 @interface ImagePhotoPicker()
 @property(nonatomic,strong)UIImagePickerController * imagePickerController;
@@ -69,7 +68,7 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    image =  [image imageByScalingProportionallyToSize:CGSizeMake(200, 200)];
+    //image =  [image imageByScalingProportionallyToSize:CGSizeMake(200, 200)];
     
    // [self finishAndUpdate:image];
     self.finishedBlock(image);

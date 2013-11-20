@@ -33,101 +33,38 @@
 
 
 
-@interface UIImage (Extras)
-- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
-- (UIImage *)imageByScalingProportionallyToSize:(CGSize)targetSize;
-@end;
-@implementation UIImage (Extras)
-- (UIImage *)imageByScalingProportionallyToSize:(CGSize)targetSize {
-    
-    UIImage *sourceImage = self;
-    UIImage *newImage = nil;
-    
-    CGSize imageSize = sourceImage.size;
-    CGFloat width = imageSize.width;
-    CGFloat height = imageSize.height;
-    
-    CGFloat targetWidth = targetSize.width;
-    CGFloat targetHeight = targetSize.height;
-    
-    CGFloat scaleFactor = 0.0;
-    CGFloat scaledWidth = targetWidth;
-    CGFloat scaledHeight = targetHeight;
-    
-    CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
-    
-    if (CGSizeEqualToSize(imageSize, targetSize) == NO) {
-        
-        CGFloat widthFactor = targetWidth / width;
-        CGFloat heightFactor = targetHeight / height;
-        
-        if (widthFactor < heightFactor)
-            scaleFactor = widthFactor;
-        else
-            scaleFactor = heightFactor;
-        
-        scaledWidth  = width * scaleFactor;
-        scaledHeight = height * scaleFactor;
-        
-        // center the image
-        
-        if (widthFactor < heightFactor) {
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
-        } else if (widthFactor > heightFactor) {
-            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-        }
-    }
-    
-    
-    // this is actually the interesting part:
-    
-    UIGraphicsBeginImageContext(targetSize);
-    
-    CGRect thumbnailRect = CGRectZero;
-    thumbnailRect.origin = thumbnailPoint;
-    thumbnailRect.size.width  = scaledWidth;
-    thumbnailRect.size.height = scaledHeight;
-    
-    [sourceImage drawInRect:thumbnailRect];
-    
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    if(newImage == nil) NSLog(@"could not scale image");
-    
-    
-    return newImage ;
-}
-
-- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
-{
-    // calculate the size of the rotated view's containing box for our drawing space
-    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
-    CGAffineTransform t = CGAffineTransformMakeRotation(RADIANS(degrees));
-    rotatedViewBox.transform = t;
-    CGSize rotatedSize = rotatedViewBox.frame.size;
-    
-    
-    // Create the bitmap context
-    UIGraphicsBeginImageContext(rotatedSize);
-    CGContextRef bitmap = UIGraphicsGetCurrentContext();
-    
-    // Move the origin to the middle of the image so we will rotate and scale around the center.
-    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
-    
-    //   // Rotate the image context
-    CGContextRotateCTM(bitmap, RADIANS(degrees));
-    
-    // Now, draw the rotated/scaled image into the context
-    CGContextScaleCTM(bitmap, 1.0, -1.0);
-    CGContextDrawImage(bitmap, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
-    
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-    
-}
-@end
+//@interface UIImage (Extras)
+//- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
+//
+//- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
+//{
+//    // calculate the size of the rotated view's containing box for our drawing space
+//    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
+//    CGAffineTransform t = CGAffineTransformMakeRotation(RADIANS(degrees));
+//    rotatedViewBox.transform = t;
+//    CGSize rotatedSize = rotatedViewBox.frame.size;
+//    
+//    
+//    // Create the bitmap context
+//    UIGraphicsBeginImageContext(rotatedSize);
+//    CGContextRef bitmap = UIGraphicsGetCurrentContext();
+//    
+//    // Move the origin to the middle of the image so we will rotate and scale around the center.
+//    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+//    
+//    //   // Rotate the image context
+//    CGContextRotateCTM(bitmap, RADIANS(degrees));
+//    
+//    // Now, draw the rotated/scaled image into the context
+//    CGContextScaleCTM(bitmap, 1.0, -1.0);
+//    CGContextDrawImage(bitmap, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
+//    
+//    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    return newImage;
+//    
+//}
+//@end
 
 @interface NonRotatingUIImagePickerController : UIImagePickerController
 
@@ -191,7 +128,6 @@
 - (IBAction)addVideoPreview:(id)sender;
     
 
-@property(nonatomic, assign) BOOL bannerIsVisible;
 
 @end
 
@@ -216,6 +152,7 @@
     [self pauseRecording:nil];
 
 }
+
 
 - (void) recordingStartedNotification{
     DebugLog(@"Recording Started ");
@@ -350,6 +287,12 @@
             default:
             break;
     }
+}
+
+-(void)setLecture:(Lecture *)lecture{
+    //loading current slides and etc.
+    //probably we will need a collection view
+  //  http://stackoverflow.com/questions/4199879/iphone-read-uiimage-frames-from-video-with-avfoundation
 }
 
 
@@ -645,9 +588,22 @@
 - (void)showImagePicker {
     [self.photoPicker showImagePickerForPhotoPicker:self withCompletionBlock:^(UIImage *img) {
       //  self.currentImage = img;
-        UIImage *resizeImage = [img imageByScalingProportionallyToSize:CGSizeMake(100, 100)];
-
+        UIImage *resizeImage = [img imageByScalingProportionallyToSize:recordingScreenView.frame.size];
+         [self performSelectorInBackground:@selector(useImage:) withObject:resizeImage];
+        
     }];
+}
+
+-(void)useImage:(UIImage *)image
+{
+    CGSize size = CGSizeMake(recordingScreenView.paintView.frame.size.width, recordingScreenView.paintView.frame.size.height);
+    UIImage * im = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:size interpolationQuality:kCGInterpolationLow];
+    
+    [self performSelectorOnMainThread:@selector(updateViewWithImage:) withObject:im waitUntilDone:NO];
+}
+
+-(void) updateViewWithImage:(UIImage *) im{
+    [recordingScreenView.paintView setBackgroundPhotoImage:im];
 }
 
 
@@ -756,17 +712,6 @@
 
 
 
--(void)useImage:(UIImage *)image
-    {
-        CGSize size = CGSizeMake(recordingScreenView.paintView.frame.size.width, recordingScreenView.paintView.frame.size.height);
-        UIImage * im = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:size interpolationQuality:kCGInterpolationLow];
-        
-        [self performSelectorOnMainThread:@selector(updateViewWithImage:) withObject:im waitUntilDone:NO];
-    }
-
--(void) updateViewWithImage:(UIImage *) im{
-    [recordingScreenView.paintView setBackgroundPhotoImage:im];
-}
 */
 
 - (IBAction)changeBackground:(id)sender {

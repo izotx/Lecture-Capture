@@ -55,6 +55,7 @@
 		4F864BDE183C109C00C888B8 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BDD183C109C00C888B8 /* Slide.m */; };
 		4F864BE4183C13F300C888B8 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BE3183C13F300C888B8 /* Lecture.m */; };
 		4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */; };
+		4F864C00183D73C100C888B8 /* SlideCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BFF183D73C100C888B8 /* SlideCell.m */; };
 		4F98B32418368FA1006EBBC1 /* recorde76.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32218368FA1006EBBC1 /* recorde76.png */; };
 		4F98B32518368FA1006EBBC1 /* recorder156.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32318368FA1006EBBC1 /* recorder156.png */; };
 		4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D58EA18205A8C000A004F /* InfoViewController.m */; };
@@ -131,6 +132,7 @@
 		4FD48E31154B22E3007880C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E30154B22E3007880C2 /* CoreMedia.framework */; };
 		4FD48E33154B22EE007880C2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E32154B22EE007880C2 /* CoreVideo.framework */; };
 		4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD724FD174D6E870005D782 /* NetworkHelper.m */; };
+		6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C37B7E03D6432B8FD7DF0A /* libPods.a */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
@@ -190,6 +192,8 @@
 		4F864BE3183C13F300C888B8 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Lecture.m; path = Recorder/Lecture.m; sourceTree = "<group>"; };
 		4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePhotoPicker.h; sourceTree = "<group>"; };
 		4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePhotoPicker.m; sourceTree = "<group>"; };
+		4F864BFE183D73C100C888B8 /* SlideCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideCell.h; sourceTree = "<group>"; };
+		4F864BFF183D73C100C888B8 /* SlideCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideCell.m; sourceTree = "<group>"; };
 		4F98B32218368FA1006EBBC1 /* recorde76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorde76.png; path = Images/recorde76.png; sourceTree = "<group>"; };
 		4F98B32318368FA1006EBBC1 /* recorder156.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder156.png; path = Images/recorder156.png; sourceTree = "<group>"; };
 		4F9D58EA18205A8C000A004F /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
@@ -304,7 +308,9 @@
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
+		A562FF8AB3444BAAB852EED7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		B7AC82781835FC9300FAF74F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		D8C37B7E03D6432B8FD7DF0A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -352,6 +358,7 @@
 				4FD48DA2154AC95D007880C2 /* UIKit.framework in Frameworks */,
 				4FD48DA4154AC95D007880C2 /* Foundation.framework in Frameworks */,
 				4FD48DA6154AC95D007880C2 /* CoreGraphics.framework in Frameworks */,
+				6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +460,7 @@
 				4F0FED0D169B6FA700C04ADC /* Lecture Capture Test */,
 				4FD48DA0154AC95D007880C2 /* Frameworks */,
 				4FD48D9E154AC95D007880C2 /* Products */,
+				A562FF8AB3444BAAB852EED7 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -486,6 +494,7 @@
 				4FD48DA3154AC95D007880C2 /* Foundation.framework */,
 				4FD48DA5154AC95D007880C2 /* CoreGraphics.framework */,
 				4F0FED09169B6FA700C04ADC /* SenTestingKit.framework */,
+				D8C37B7E03D6432B8FD7DF0A /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -501,6 +510,8 @@
 				4F45454D1635F12B0091F335 /* ViewController.h */,
 				4F45454E1635F12B0091F335 /* ViewController.m */,
 				4FD48DA8154AC95D007880C2 /* Supporting Files */,
+				4F864BFE183D73C100C888B8 /* SlideCell.h */,
+				4F864BFF183D73C100C888B8 /* SlideCell.m */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -660,9 +671,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4FD48DBB154AC95D007880C2 /* Build configuration list for PBXNativeTarget "Lecture Capture" */;
 			buildPhases = (
+				E427FA389BFF47EFB9096C97 /* Check Pods Manifest.lock */,
 				4FD48D99154AC95D007880C2 /* Sources */,
 				4FD48D9A154AC95D007880C2 /* Frameworks */,
 				4FD48D9B154AC95D007880C2 /* Resources */,
+				7FAD85581CF94CA79A410EEB /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -774,6 +787,36 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
+		7FAD85581CF94CA79A410EEB /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E427FA389BFF47EFB9096C97 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -836,6 +879,7 @@
 				4F9D596C18205B91000A004F /* UIColor+GetHSB.m in Sources */,
 				4F864BDE183C109C00C888B8 /* Slide.m in Sources */,
 				4F9D596618205B91000A004F /* ILView.m in Sources */,
+				4F864C00183D73C100C888B8 /* SlideCell.m in Sources */,
 				4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */,
 				4F9D593B18205AFB000A004F /* Manager.m in Sources */,
 				4F9D593C18205AFB000A004F /* NewModel.xcdatamodeld in Sources */,
@@ -994,6 +1038,7 @@
 		};
 		4FD48DBC154AC95D007880C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A562FF8AB3444BAAB852EED7 /* Pods.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1014,6 +1059,7 @@
 		};
 		4FD48DBD154AC95D007880C2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A562FF8AB3444BAAB852EED7 /* Pods.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
