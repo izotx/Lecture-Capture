@@ -13,6 +13,9 @@
 #import "Video.h"
 #import "ScreenView.h"
 #import "ILColorPickerDualExampleController.h"
+#import "TJLFetchedResultsSource.h"
+
+
 @class Lecture;
 @class Slide;
 
@@ -24,9 +27,7 @@ __weak IBOutlet ScreenCaptureView *recordingScreenView;
 __weak IBOutlet UIScrollView *scrollView;
 __weak IBOutlet UIActivityIndicatorView *activityIndicator;
     UIPopoverController * colorPopover;
-    UIPopoverController * cameraPopover;
     UIActionSheet * photoAction;
-    
     IBOutlet UIImageView * testImageView;
     IBOutlet UIBarButtonItem *cameraBarButton;
 }

@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 @class Lecture;
+@class Slide;
 
 @interface LectureAPI : NSObject
 + (id)createLectureWithName:(NSString *)name;
 + (id)removeLecture:(Lecture*)lecture;
 + (id)saveLecture:(Lecture*)lecture;
 + (id)compile;
-//TO DO import pdf
-
++ (void)addNewSlideToLecture:(Lecture *)lecture;
 
 
 @end

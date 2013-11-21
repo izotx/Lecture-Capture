@@ -10,6 +10,6 @@
 
 @interface ImagePhotoPicker : NSObject <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (copy) void (^finishedBlock) (UIImage * img);
-- (IBAction)showImagePickerForPhotoPicker:(id)sender withCompletionBlock:(void (^) (UIImage * img))finishedBlock;
+- (IBAction)showImagePickerForPhotoPicker:(id)sender withCompletionBlock:(void (^) (UIImage * img))finishedBlock andBarButtonItem:(UIBarButtonItem *)item;
 
 @end

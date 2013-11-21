@@ -18,6 +18,7 @@
         <attribute name="duration" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="video" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="lecture" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Lecture" inverseName="slides" inverseEntity="Lecture" syncable="YES"/>
     </entity>
@@ -33,9 +34,9 @@
         <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="videos" inverseEntity="Project" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Project" positionX="-252" positionY="252" width="153" height="90"/>
-        <element name="Video" positionX="-11" positionY="378" width="128" height="180"/>
-        <element name="Slide" positionX="52" positionY="-72" width="128" height="133"/>
-        <element name="Lecture" positionX="-234" positionY="-45" width="128" height="118"/>
+        <element name="Lecture" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Project" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Slide" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Video" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

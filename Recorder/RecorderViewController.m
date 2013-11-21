@@ -20,78 +20,26 @@
 
 #import "RecorderViewController.h"
 #import "AppDelegate.h"
-
 #import "Utilities.h"
 #import "UIImage+Resize.h"
 #import "VideoPreview.h"
 #import "IOHelper.h"
 #import "LectureAPI.h"
 #import "ImagePhotoPicker.h"
+#import "TJLFetchedResultsSource.h"
+#import "Lecture.h"
+
 
 #define FRAME_RATE 10
 
-
-
-
-//@interface UIImage (Extras)
-//- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
-//
-//- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
-//{
-//    // calculate the size of the rotated view's containing box for our drawing space
-//    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
-//    CGAffineTransform t = CGAffineTransformMakeRotation(RADIANS(degrees));
-//    rotatedViewBox.transform = t;
-//    CGSize rotatedSize = rotatedViewBox.frame.size;
-//    
-//    
-//    // Create the bitmap context
-//    UIGraphicsBeginImageContext(rotatedSize);
-//    CGContextRef bitmap = UIGraphicsGetCurrentContext();
-//    
-//    // Move the origin to the middle of the image so we will rotate and scale around the center.
-//    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
-//    
-//    //   // Rotate the image context
-//    CGContextRotateCTM(bitmap, RADIANS(degrees));
-//    
-//    // Now, draw the rotated/scaled image into the context
-//    CGContextScaleCTM(bitmap, 1.0, -1.0);
-//    CGContextDrawImage(bitmap, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
-//    
-//    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-//    return newImage;
-//    
-//}
-//@end
-
-@interface NonRotatingUIImagePickerController : UIImagePickerController
-
-@end
-
-@implementation NonRotatingUIImagePickerController
-
-- (BOOL)shouldAutorotate
-{
-    return NO;
-}
-@end
-
-
-@interface RecorderViewController ()
+@interface RecorderViewController ()<TJLFetchedResultsSourceDelegate, UICollectionViewDelegate>
 {
     CMTime frameDuration;
     CMTime nextPresentationTimeStamp;
     NSString *moviepath;
     
     NSMutableArray * imagesNames;
-    NSMutableArray * imageNamesCopy;
-    
-    NSMutableArray * imageFrames;
     NSString *documentsDirectory;
-    
-    NSTimer * recordFramesTimer;
     NSTimer * durationTimer;
 
     UIImageView * preview;
@@ -113,19 +61,23 @@
     ILColorPickerDualExampleController * cp;
     VideoPreview * vp;
     IOHelper * ioHelper;
-    
-    
 }
-@property (strong, nonatomic) IBOutlet UILabel *informationLabel;
+@property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
+@property(strong,nonatomic) NSFetchedResultsController * fetchedController;
 
 
+
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) IBOutlet UILabel *informationLabel;
+
+- (NSString* ) timeConverter:(int)durationInSeconds;
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
 - (IBAction)makeScreenShot:(id)sender;
--(NSString* ) timeConverter:(int)durationInSeconds;
--(IBAction)finishRecording:(id)sender;
+- (IBAction)finishRecording:(id)sender;
 - (IBAction)addVideoPreview:(id)sender;
+- (IBAction)addNewSlide:(id)sender;
     
 
 
@@ -136,163 +88,48 @@
 
 #pragma mark helper
 -(NSString* ) timeConverter:(int)durationInSeconds{
-    Utilities * u = [[Utilities alloc]init];
-    return [u timeConverter:durationInSeconds];
+    return [Utilities timeConverter:durationInSeconds];
 }
 
-
-#pragma mark delegate
-- (void) recordingFinished:(BOOL)success{
-       ready = YES;
-}
-
--(void)recordingInterrupted{
-
-    interrupted = YES;
-    [self pauseRecording:nil];
-
-}
-
-
-- (void) recordingStartedNotification{
-    DebugLog(@"Recording Started ");
-    recordingScreenView.recording = YES;
+-(void)configureFetchedController{
+  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
+    [frequest setEntity: [NSEntityDescription entityForName: @"Slide" inManagedObjectContext:appDelegate.managedObjectContext ]];
+    [frequest setPredicate: [NSPredicate predicateWithFormat: @"lecture == %@", self.lecture
+                             ]];
+    NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
+    [frequest setSortDescriptors:@[sd]];
     
-    if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
-        NSString * lastObject;
-        lastObject = [audioPieces lastObject];
-        
-        if([ar.recorderFilePath isEqualToString:lastObject])
-        {
-          
-            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
-        }
-        else{
-            [audioPieces addObject:ar.recorderFilePath];
-        }
-        
-         lastObject = [moviePieces lastObject];
-        if([recordingScreenView.outputPath isEqualToString:lastObject])
-        {
-          //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
-        }
-        else{
-             [moviePieces addObject:recordingScreenView.outputPath];
-        }        
-        
-        if(![durationTimer isValid]){
-            durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
-        
-            NSRunLoop *runner = [NSRunLoop currentRunLoop];
-            [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
-            [self.informationLabel removeFromSuperview];
-        }
-    // Remove recording screen
-        [recordingStartView removeFromSuperview];
-        [activityIndicator stopAnimating];
+    _fetchedController = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
+    _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self];
     
-    }
-    else{
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
-    }
-
+    self.collectionView.dataSource = _datasource;
+    self.collectionView.delegate = self;
     
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    _photoPicker = [[ImagePhotoPicker alloc]init];
-	// Do any additional setup after loading the view.
-    frameCounter =0;
-    documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    scrollViewScreenshots =[[NSMutableArray alloc]initWithCapacity:0];
-    recordingScreenView.delegate=self;
-    recordingStarted = NO;
-    
-    [scrollView setContentSize:scrollView.frame.size];
-    ar = [[AudioRecorder alloc]init];
 
-    vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
-    cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
-        cp.delegate = self;
+#pragma mark Lecture APIs
+//adds new slide
+- (IBAction)addNewSlide:(id)sender {
+    [LectureAPI addNewSlideToLecture:self.lecture];
 
-    moviePieces = [[NSMutableArray alloc]initWithCapacity:0];
-    audioPieces=  [[NSMutableArray alloc]initWithCapacity:0];
-    ready = YES;
-    paused = NO;
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    recordingScreenView = nil;
-    durationLabel = nil;
-    recordingScreenView = nil;
-    scrollView = nil;
-    activityIndicator = nil;
-    backgroundView = nil;
-    [self setToolbar:nil];
-    [self setColorBarButton:nil];
-    [super viewDidDisappear:animated];
-    // Release any retained subviews of the main view.
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    [self manageOrientationChanges];
- 
 }
 
 
-- (NSUInteger) supportedInterfaceOrientations
-{
-    //Because your app is only landscape, your view controller for the view in your
-    // popover needs to support only landscape
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}
-
-
-
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
-    [self manageOrientationChanges];
-}
-
-
--(void)manageOrientationChanges{
-      UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
-        switch (orientation) {
-        case UIDeviceOrientationLandscapeLeft:
-            {
-                if(recordingScreenView.csm.front==NO){
-                  recordingScreenView.rotatePreview = NO;
-                }
-                else
-                {
-                   recordingScreenView.rotatePreview = YES; 
-                }
-               
-                break;}
-        case UIDeviceOrientationLandscapeRight:
-            {
-                if(recordingScreenView.csm.front==NO){
-                    recordingScreenView.rotatePreview = YES;
-                }
-                else{
-                    recordingScreenView.rotatePreview = NO;
-                }
-                
-                
-                 break;
-            }
-            default:
-            break;
-    }
-}
 
 -(void)setLecture:(Lecture *)lecture{
     //loading current slides and etc.
     //probably we will need a collection view
   //  http://stackoverflow.com/questions/4199879/iphone-read-uiimage-frames-from-video-with-avfoundation
+    _lecture = lecture;
+    if(lecture.slides.count == 0){
+        [self addNewSlide:nil];
+    }
+    else{
+        
+    }
+    
 }
 
 
@@ -375,7 +212,7 @@
            label.numberOfLines = 2;
            label.center = recordingStartView.center;
            label.contentMode = UIViewContentModeCenter;
-            label.textAlignment = NSTextAlignmentCenter;
+           label.textAlignment = NSTextAlignmentCenter;
             
            [recordingStartView addSubview:label];
            [self.view addSubview: recordingStartView];
@@ -399,20 +236,21 @@
             [durationTimer invalidate];
             durationLabel.text = @"Recording Paused";
         }
-        [self dismiss];//remmoving preview
-    }
+        [self dismiss];
+        }
     }
 }
 
 -(void) durationTimerCallback{
     frameCounter++;
    
-    NSString * time =  [self timeConverter:frameCounter];
+    NSString * time =  [Utilities timeConverter:frameCounter];
+    
     durationLabel.text=[NSString stringWithFormat:@"Duration: %@",time];
 }
 
 - (IBAction)eraseRecording:(id)sender {
-        [imageFrames removeAllObjects];
+       // [imageFrames removeAllObjects];
         frameCounter =0;
         durationLabel.text=[NSString stringWithFormat:@"Duration: %d",0];
 }
@@ -588,10 +426,11 @@
 - (void)showImagePicker {
     [self.photoPicker showImagePickerForPhotoPicker:self withCompletionBlock:^(UIImage *img) {
       //  self.currentImage = img;
-        UIImage *resizeImage = [img imageByScalingProportionallyToSize:recordingScreenView.frame.size];
-         [self performSelectorInBackground:@selector(useImage:) withObject:resizeImage];
-        
-    }];
+        if(img){
+          UIImage *resizeImage = [img imageByScalingProportionallyToSize:recordingScreenView.frame.size];
+          [self performSelectorInBackground:@selector(useImage:) withObject:resizeImage];
+        }
+    } andBarButtonItem:cameraBarButton];
 }
 
 -(void)useImage:(UIImage *)image
@@ -608,111 +447,6 @@
 
 
 
-/*
-- (void) imagePickerControllerDidCancel: (UIImagePickerController *) picker {
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    [[picker parentViewController] dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark camera
-- (BOOL) startCameraControllerFromViewController: (UIViewController*) controller
-                                   usingDelegate: (id <UIImagePickerControllerDelegate,
-                                                   UINavigationControllerDelegate>) delegate {
-    
-    if (([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera] == NO))
-    {   UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Error" message:@"We were not able to find a camera on this device" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-        [alert show];
-        return NO;
-    }
-    
-    UIImagePickerController *cameraUI = [[NonRotatingUIImagePickerController alloc] init];
-    cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
-    
-    // Displays a control that allows the user to choose picture or
-    // movie capture, if both are available:
-    cameraUI.mediaTypes =
-    [UIImagePickerController availableMediaTypesForSourceType:
-     UIImagePickerControllerSourceTypeCamera];
-    
-    // Hides the controls for moving & scaling pictures, or for
-    // trimming movies. To instead show the controls, use YES.
-    cameraUI.allowsEditing = YES;
-    cameraUI.delegate = self;
-    if(!cameraPopover.isPopoverVisible){
-        cameraPopover=[[UIPopoverController alloc]initWithContentViewController:cameraUI];
-        [cameraPopover presentPopoverFromBarButtonItem:cameraBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        
-    }
-    return YES;
-}
-
-- (BOOL) startCameraControllerPickerViewController: (UIViewController*) controller
-                                     usingDelegate: (id <UIImagePickerControllerDelegate,
-                                                     UINavigationControllerDelegate>) delegate {
-    
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO )
-    {
-        UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Error" message:@"We were not able to use photo album on this device" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-        [alert show];   
-        return NO;
-    }
-    UIImagePickerController *cameraUI = [[NonRotatingUIImagePickerController alloc] init];
-    cameraUI.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    
-    // Displays a control that allows the user to choose picture or
-    // movie capture, if both are available:
-    cameraUI.mediaTypes =[UIImagePickerController availableMediaTypesForSourceType:
-                          UIImagePickerControllerSourceTypePhotoLibrary];
-    
-    // Hides the controls for moving & scaling pictures, or for
-    // trimming movies. To instead show the controls, use YES.
-    cameraUI.allowsEditing = NO;
-    cameraUI.delegate = self;
-    if(!cameraPopover.isPopoverVisible){
-        cameraPopover=[[UIPopoverController alloc]initWithContentViewController:cameraUI];
-       [cameraPopover presentPopoverFromBarButtonItem:cameraBarButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        
-        
-        }
-      return YES;    
-}
-
-// For responding to the user accepting a newly-captured picture or movie
-- (void) imagePickerController: (UIImagePickerController *) picker
- didFinishPickingMediaWithInfo: (NSDictionary *) info {
-    
-    NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
-    //  NSLog(@"Did Finish Picking");
-    UIImage *originalImage, *editedImage;
-    UIImage * imageToSave;
-    // Handle a still image capture
-    if (CFStringCompare ((__bridge CFStringRef) mediaType, kUTTypeImage, 0)
-        == kCFCompareEqualTo) {
-        
-        originalImage = (UIImage *) [info objectForKey:
-                                     UIImagePickerControllerOriginalImage];
-        editedImage = (UIImage *) [info objectForKey:
-                                   UIImagePickerControllerEditedImage];
-        
-        if (editedImage) {
-            imageToSave = editedImage;
-            
-            
-        } else {
-            imageToSave = originalImage;
-        }
-        
-    }
-    [self performSelectorInBackground:@selector(useImage:) withObject:imageToSave];  
-
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    [cameraPopover dismissPopoverAnimated:YES];
-}
-
-
-
-*/
 
 - (IBAction)changeBackground:(id)sender {
     photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"Photo Background", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
@@ -832,6 +566,8 @@
       }
 }
 
+
+
 -(void)previewUpdated:(UIImage *)img{
     [self performSelectorOnMainThread:@selector(updatePreviewWithImage:) withObject:img waitUntilDone:NO];
 
@@ -846,7 +582,176 @@
     [self manageOrientationChanges];
 }
 
+#pragma mark delegate
+- (void) recordingFinished:(BOOL)success{
+    ready = YES;
+}
 
+-(void)recordingInterrupted{
+    
+    interrupted = YES;
+    [self pauseRecording:nil];
+    
+}
+
+
+- (void) recordingStartedNotification{
+    NSLog(@"Recording Started ");
+    recordingScreenView.recording = YES;
+    
+    if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
+        NSString * lastObject;
+        lastObject = [audioPieces lastObject];
+        
+        if([ar.recorderFilePath isEqualToString:lastObject])
+        {
+            
+            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
+        }
+        else{
+            [audioPieces addObject:ar.recorderFilePath];
+        }
+        
+        lastObject = [moviePieces lastObject];
+        if([recordingScreenView.outputPath isEqualToString:lastObject])
+        {
+            //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
+        }
+        else{
+            [moviePieces addObject:recordingScreenView.outputPath];
+        }
+        
+        if(![durationTimer isValid]){
+            durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
+            
+            NSRunLoop *runner = [NSRunLoop currentRunLoop];
+            [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
+            [self.informationLabel removeFromSuperview];
+        }
+        // Remove recording screen
+        [recordingStartView removeFromSuperview];
+        [activityIndicator stopAnimating];
+        
+    }
+    else{
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
+    }
+}
+
+
+#pragma mark - TJLFetchedResultsSourceDelegate & Collectiuon View
+
+- (void)didInsertObjectAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionView *strongCollectionView = self.collectionView;
+    [strongCollectionView insertItemsAtIndexPaths:@[indexPath]];
+    if(indexPath.row != 0) {
+        [strongCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    }
+}
+
+-(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    //show slide on the screen
+
+}
+
+#pragma mark view management
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    _photoPicker = [[ImagePhotoPicker alloc]init];
+    frameCounter =0;
+    documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    scrollViewScreenshots =[[NSMutableArray alloc]initWithCapacity:0];
+    recordingScreenView.delegate=self;
+    recordingStarted = NO;
+    
+    [scrollView setContentSize:scrollView.frame.size];
+    ar = [[AudioRecorder alloc]init];
+    
+    vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
+    cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
+    cp.delegate = self;
+    
+    moviePieces = [[NSMutableArray alloc]initWithCapacity:0];
+    audioPieces=  [[NSMutableArray alloc]initWithCapacity:0];
+    
+    [self configureFetchedController];
+//    UICollectionViewFlowLayout * fl = [[UICollectionViewFlowLayout alloc]init];
+//    fl.scrollDirection = UICollectionViewScrollDirectionVertical;
+//    [self.collectionView setCollectionViewLayout:fl];
+
+    //    self.collectionView.
+    
+    
+    ready = YES;
+    paused = NO;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    recordingScreenView = nil;
+    durationLabel = nil;
+    recordingScreenView = nil;
+    scrollView = nil;
+    activityIndicator = nil;
+    backgroundView = nil;
+    [self setToolbar:nil];
+    [self setColorBarButton:nil];
+    [super viewDidDisappear:animated];
+    // Release any retained subviews of the main view.
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [self manageOrientationChanges];
+    
+}
+
+
+- (NSUInteger) supportedInterfaceOrientations
+{
+    //Because your app is only landscape, your view controller for the view in your
+    // popover needs to support only landscape
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
+    [self manageOrientationChanges];
+}
+
+
+-(void)manageOrientationChanges{
+    UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
+    switch (orientation) {
+        case UIDeviceOrientationLandscapeLeft:
+        {
+            if(recordingScreenView.csm.front==NO){
+                recordingScreenView.rotatePreview = NO;
+            }
+            else
+            {
+                recordingScreenView.rotatePreview = YES;
+            }
+            
+            break;}
+        case UIDeviceOrientationLandscapeRight:
+        {
+            if(recordingScreenView.csm.front==NO){
+                recordingScreenView.rotatePreview = YES;
+            }
+            else{
+                recordingScreenView.rotatePreview = NO;
+            }
+            
+            
+            break;
+        }
+        default:
+            break;
+    }
+}
 
 
 @end

@@ -9,7 +9,7 @@
 #import "Utilities.h"
 
 @implementation Utilities
--(NSString* ) timeConverter:(int)durationInSeconds{
++(NSString* ) timeConverter:(int)durationInSeconds{
     NSString * durationText;
     
     if(durationInSeconds>= 60&&durationInSeconds<3600)

@@ -35,7 +35,6 @@
 		4F0FED3E169B714900C04ADC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45454B1635F1040091F335 /* AppDelegate.m */; };
 		4F0FED3F169B71A400C04ADC /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FA7279A155B0DFB002A2F1D /* libz.1.2.5.dylib */; };
 		4F0FED66169DB02200C04ADC /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F0FED65169DB02200C04ADC /* MediaPlayer.framework */; };
-		4F1D995415647BBA002D8F6C /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F1D995315647BBA002D8F6C /* iAd.framework */; };
 		4F45454C1635F1040091F335 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45454B1635F1040091F335 /* AppDelegate.m */; };
 		4F45454F1635F12B0091F335 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45454E1635F12B0091F335 /* ViewController.m */; };
 		4F4545561635F14D0091F335 /* RecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545511635F14D0091F335 /* RecorderViewController.m */; };
@@ -46,16 +45,18 @@
 		4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545601635F1890091F335 /* LoginRegisterViewController.m */; };
 		4F4545641635F23C0091F335 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545621635F23C0091F335 /* InfoPlist.strings */; };
 		4F4545671635F2580091F335 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545651635F2580091F335 /* MainStoryboard.storyboard */; };
+		4F65E1CD183E71AB004C5607 /* TJLFetchedResultsSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */; };
+		4F65E1D0183E79AD004C5607 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1CF183E79AD004C5607 /* Slide.m */; };
+		4F65E1D3183E79AD004C5607 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D2183E79AD004C5607 /* Lecture.m */; };
 		4F864BC7183BFA6200C888B8 /* controlsButtonRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */; };
 		4F864BCA183BFC8900C888B8 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC8183BFC8900C888B8 /* addButton.png */; };
 		4F864BCB183BFC8900C888B8 /* removeButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC9183BFC8900C888B8 /* removeButton.png */; };
 		4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BCD183BFFCA00C888B8 /* LectureAPI.m */; };
 		4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */; };
 		4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BDA183C094500C888B8 /* Slide+Operations.m */; };
-		4F864BDE183C109C00C888B8 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BDD183C109C00C888B8 /* Slide.m */; };
-		4F864BE4183C13F300C888B8 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BE3183C13F300C888B8 /* Lecture.m */; };
 		4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */; };
 		4F864C00183D73C100C888B8 /* SlideCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864BFF183D73C100C888B8 /* SlideCell.m */; };
+		4F864C07183E62BB00C888B8 /* NonRotatingImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F864C06183E62BB00C888B8 /* NonRotatingImagePicker.m */; };
 		4F98B32418368FA1006EBBC1 /* recorde76.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32218368FA1006EBBC1 /* recorde76.png */; };
 		4F98B32518368FA1006EBBC1 /* recorder156.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F98B32318368FA1006EBBC1 /* recorder156.png */; };
 		4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D58EA18205A8C000A004F /* InfoViewController.m */; };
@@ -177,6 +178,12 @@
 		4F4545601635F1890091F335 /* LoginRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginRegisterViewController.m; path = Recorder/LoginRegisterViewController.m; sourceTree = "<group>"; };
 		4F4545631635F23C0091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4F4545661635F2580091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		4F65E1CB183E71AB004C5607 /* TJLFetchedResultsSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TJLFetchedResultsSource.h; sourceTree = "<group>"; };
+		4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TJLFetchedResultsSource.m; sourceTree = "<group>"; };
+		4F65E1CE183E79AD004C5607 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
+		4F65E1CF183E79AD004C5607 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
+		4F65E1D1183E79AD004C5607 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
+		4F65E1D2183E79AD004C5607 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
 		4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = controlsButtonRight.png; path = Images/controlsButtonRight.png; sourceTree = "<group>"; };
 		4F864BC8183BFC8900C888B8 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
 		4F864BC9183BFC8900C888B8 /* removeButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = removeButton.png; sourceTree = "<group>"; };
@@ -186,14 +193,12 @@
 		4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Lecture+Operations.m"; path = "Recorder/Lecture+Operations.m"; sourceTree = "<group>"; };
 		4F864BD9183C094500C888B8 /* Slide+Operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Slide+Operations.h"; path = "Recorder/Slide+Operations.h"; sourceTree = "<group>"; };
 		4F864BDA183C094500C888B8 /* Slide+Operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Slide+Operations.m"; path = "Recorder/Slide+Operations.m"; sourceTree = "<group>"; };
-		4F864BDC183C109C00C888B8 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Slide.h; path = Recorder/Slide.h; sourceTree = "<group>"; };
-		4F864BDD183C109C00C888B8 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Slide.m; path = Recorder/Slide.m; sourceTree = "<group>"; };
-		4F864BE2183C13F300C888B8 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Lecture.h; path = Recorder/Lecture.h; sourceTree = "<group>"; };
-		4F864BE3183C13F300C888B8 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Lecture.m; path = Recorder/Lecture.m; sourceTree = "<group>"; };
 		4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePhotoPicker.h; sourceTree = "<group>"; };
 		4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePhotoPicker.m; sourceTree = "<group>"; };
 		4F864BFE183D73C100C888B8 /* SlideCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideCell.h; sourceTree = "<group>"; };
 		4F864BFF183D73C100C888B8 /* SlideCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideCell.m; sourceTree = "<group>"; };
+		4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NonRotatingImagePicker.h; path = Recorder/NonRotatingImagePicker.h; sourceTree = "<group>"; };
+		4F864C06183E62BB00C888B8 /* NonRotatingImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NonRotatingImagePicker.m; path = Recorder/NonRotatingImagePicker.m; sourceTree = "<group>"; };
 		4F98B32218368FA1006EBBC1 /* recorde76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorde76.png; path = Images/recorde76.png; sourceTree = "<group>"; };
 		4F98B32318368FA1006EBBC1 /* recorder156.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder156.png; path = Images/recorder156.png; sourceTree = "<group>"; };
 		4F9D58EA18205A8C000A004F /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
@@ -343,7 +348,6 @@
 			files = (
 				B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */,
 				4F0FED66169DB02200C04ADC /* MediaPlayer.framework in Frameworks */,
-				4F1D995415647BBA002D8F6C /* iAd.framework in Frameworks */,
 				82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */,
 				4FA7279F155B0E20002A2F1D /* CFNetwork.framework in Frameworks */,
 				4FA7279D155B0E18002A2F1D /* SystemConfiguration.framework in Frameworks */,
@@ -410,10 +414,10 @@
 			isa = PBXGroup;
 			children = (
 				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
-				4F864BE2183C13F300C888B8 /* Lecture.h */,
-				4F864BE3183C13F300C888B8 /* Lecture.m */,
-				4F864BDC183C109C00C888B8 /* Slide.h */,
-				4F864BDD183C109C00C888B8 /* Slide.m */,
+				4F65E1D1183E79AD004C5607 /* Lecture.h */,
+				4F65E1D2183E79AD004C5607 /* Lecture.m */,
+				4F65E1CE183E79AD004C5607 /* Slide.h */,
+				4F65E1CF183E79AD004C5607 /* Slide.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -444,6 +448,8 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */,
+				4F864C06183E62BB00C888B8 /* NonRotatingImagePicker.m */,
 				4F864BCC183BFFCA00C888B8 /* LectureAPI.h */,
 				4F864BCD183BFFCA00C888B8 /* LectureAPI.m */,
 				4F864BD6183C08CC00C888B8 /* Lecture+Operations.h */,
@@ -530,6 +536,8 @@
 		4FD48DC8154ACC7A007880C2 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				4F65E1CB183E71AB004C5607 /* TJLFetchedResultsSource.h */,
+				4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */,
 				4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */,
 				4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */,
 				4F9D596D18205C17000A004F /* UIImageAddition.h */,
@@ -844,13 +852,14 @@
 				4F9D595618205B72000A004F /* AFURLConnectionOperation.m in Sources */,
 				4F9D595718205B72000A004F /* AFXMLRequestOperation.m in Sources */,
 				4F9D595118205B72000A004F /* AFHTTPRequestOperation.m in Sources */,
+				4F65E1D0183E79AD004C5607 /* Slide.m in Sources */,
 				4F9D593A18205AFB000A004F /* Video.m in Sources */,
 				4F9D595818205B72000A004F /* UIImageView+AFNetworking.m in Sources */,
 				4FD48DAE154AC95D007880C2 /* main.m in Sources */,
 				4F9D596918205B91000A004F /* ILColorPickerView.m in Sources */,
+				4F864C07183E62BB00C888B8 /* NonRotatingImagePicker.m in Sources */,
 				4F9D597818205C17000A004F /* UIImage+Resize.m in Sources */,
 				4F9D596A18205B91000A004F /* ILHuePickerView.m in Sources */,
-				4F864BE4183C13F300C888B8 /* Lecture.m in Sources */,
 				4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */,
 				4F9D596718205B91000A004F /* ILColorPickerDualExampleController.m in Sources */,
 				4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */,
@@ -867,6 +876,7 @@
 				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,
 				4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */,
+				4F65E1D3183E79AD004C5607 /* Lecture.m in Sources */,
 				4F9D598018205C43000A004F /* AVCaptureHelper.m in Sources */,
 				4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */,
 				4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */,
@@ -877,10 +887,10 @@
 				4F9D595418205B72000A004F /* AFNetworkActivityIndicatorManager.m in Sources */,
 				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,
 				4F9D596C18205B91000A004F /* UIColor+GetHSB.m in Sources */,
-				4F864BDE183C109C00C888B8 /* Slide.m in Sources */,
 				4F9D596618205B91000A004F /* ILView.m in Sources */,
 				4F864C00183D73C100C888B8 /* SlideCell.m in Sources */,
 				4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */,
+				4F65E1CD183E71AB004C5607 /* TJLFetchedResultsSource.m in Sources */,
 				4F9D593B18205AFB000A004F /* Manager.m in Sources */,
 				4F9D593C18205AFB000A004F /* NewModel.xcdatamodeld in Sources */,
 				4F9D597718205C17000A004F /* UIImage+RoundedCorner.m in Sources */,

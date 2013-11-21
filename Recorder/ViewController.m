@@ -404,7 +404,7 @@ if(manager.userId){
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [tableView beginUpdates];
-   // DebugLog(@" Will Change");
+   // NSLog(@" Will Change");
 }
 
 

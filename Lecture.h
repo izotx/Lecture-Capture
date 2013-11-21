@@ -2,7 +2,7 @@
 //  Lecture.h
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 11/19/13.
+//  Created by Janusz Chudzynski on 11/21/13.
 //
 //
 
@@ -13,10 +13,11 @@
 
 @interface Lecture : NSManagedObject
 
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * lecture_description;
-@property (nonatomic, retain) NSNumber * size;
 @property (nonatomic, retain) NSNumber * duration;
+@property (nonatomic, retain) NSString * lecture_description;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * size;
+@property (nonatomic, retain) NSData * video;
 @property (nonatomic, retain) NSSet *slides;
 @end
 

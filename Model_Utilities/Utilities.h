@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface Utilities : NSObject
--(NSString* ) timeConverter:(int)durationInSeconds;
++(NSString* ) timeConverter:(int)durationInSeconds;
 
 @end

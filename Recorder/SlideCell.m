@@ -7,6 +7,7 @@
 //
 
 #import "SlideCell.h"
+#import "Slide.h"
 
 @implementation SlideCell
 
@@ -17,6 +18,12 @@
         // Initialization code
     }
     return self;
+}
+
+-(void)configureWithSlide:(Slide  *)slide;{
+    self.slidePreviewImage.image = [UIImage imageWithData:slide.thumbnail];
+    self.slideDurationLabel.text=  [NSString stringWithFormat:@"%@", slide.duration];
+    self.backgroundColor = [UIColor purpleColor];
 }
 
 /*

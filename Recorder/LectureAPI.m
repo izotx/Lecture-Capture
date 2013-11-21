@@ -9,8 +9,20 @@
 #import "LectureAPI.h"
 #import "Lecture.h"
 #import "AppDelegate.h"
-
+#import "Slide.h"
 @implementation LectureAPI
++ (void)addNewSlideToLecture:(Lecture *)lecture{
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
+    [lecture addSlidesObject:slide];
+    NSError *error;
+    [delegate.managedObjectContext save:&error];
+    if(error){
+        NSLog(@"Error %@",error.debugDescription);
+   
+    }
+}
+
 //creates a new lecture
 + (id)createLectureWithName:(NSString *)name{
  
