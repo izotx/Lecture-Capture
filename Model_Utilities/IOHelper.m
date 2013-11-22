@@ -5,12 +5,15 @@
 
 #import "IOHelper.h"
 
+
+
 @implementation IOHelper
 
+#warning add NSOPerationQueue
 
 #pragma mark COMBINING FILES
 //Put Together
--(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block saveAtPath:(NSString *)path
+-(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block forSlide:(Slide *)slide saveAtPath:(NSString *)path
 {
     AVMutableComposition *mixComposition = [AVMutableComposition composition];
     AVMutableCompositionTrack *videoCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
@@ -64,12 +67,9 @@
             NSLog(@"Ups. Something went wrong! %@ video %f audio %f ", [error debugDescription], CMTimeGetSeconds(videoasset.duration), CMTimeGetSeconds(audioasset.duration));
         }
     }
-
-    
     
     NSURL * movieURL = [NSURL fileURLWithPath:path];
    
-    
     AVAssetExportSession *exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetPassthrough];
     
     exporter.outputFileType=AVFileTypeQuickTimeMovie;
@@ -87,16 +87,16 @@
         switch ([exporter status]) {
             case AVAssetExportSessionStatusFailed:{
                 NSLog(@"Export failed: %@ %@", [[exporter error] localizedDescription],[[exporter error]debugDescription]);
-                block(false,CMTimeMake(0,30));
+                block(false,CMTimeMake(0,30),slide,path);
                 break;
             }
             case AVAssetExportSessionStatusCancelled:{ NSLog(@"Export canceled");
-                block(false,CMTimeMake(0,30));
+                block(false,CMTimeMake(0,30),slide,path);
                 break;}
             case AVAssetExportSessionStatusCompleted:
             {
                 CMTime duration = mixComposition.duration;
-                block(true,duration);
+                block(true,duration,slide,path);
                 [self cleanFiles:audioPieces];
                 [self cleanFiles:videoPieces];
                  
@@ -128,6 +128,53 @@
     pathToSave =[DOCUMENTS_FOLDER stringByAppendingPathComponent:pathToSave];
     return pathToSave;
 }
+
+-(void)deletePath:(NSString *)path{
+NSFileManager * fm = [NSFileManager defaultManager];
+NSError * error;
+if( [fm fileExistsAtPath:path])
+{
+    [fm removeItemAtPath:path error:&error];
+}
+if(error)
+{
+    NSLog(@"Error %@ ",[error debugDescription]);
+}
+else{
+    NSLog(@"File %@ deleted",path);
+}
+}
+
+
+-(void)saveToLibraryFileAtPath:(NSString*)videoPath;{
+    if(videoPath.length>0)
+    {
+        UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+        
+    }
+    else
+    {
+        NSString * message=@"You need to select a movie from the list.";
+        UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [al show];
+    }
+}
+
+- (void)video:(NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
+    NSString * message;
+    if(error)
+    {
+        NSLog(@"didFinishSavingWithError: %@", error);
+        message= [NSString stringWithFormat: @"Error. %@",[error localizedDescription]];
+    }
+    else{
+        message=@"Movie was successfully saved. It can be accessed from Photos App.";
+    }
+    UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [al show];
+    
+}
+
 
 
 @end

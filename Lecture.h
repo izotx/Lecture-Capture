@@ -2,7 +2,7 @@
 //  Lecture.h
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 11/21/13.
+//  Created by Janusz Chudzynski on 11/22/13.
 //
 //
 

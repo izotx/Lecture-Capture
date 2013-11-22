@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "Slide.h"
 @implementation LectureAPI
-+ (void)addNewSlideToLecture:(Lecture *)lecture{
++ (Slide *)addNewSlideToLecture:(Lecture *)lecture{
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
     [lecture addSlidesObject:slide];
@@ -21,6 +21,7 @@
         NSLog(@"Error %@",error.debugDescription);
    
     }
+    return slide;
 }
 
 //creates a new lecture

@@ -15,4 +15,10 @@
 - (void)startRecording;
 - (void)duplicateSlide;
 
+-(NSMutableArray *)getAudio;
+-(NSMutableArray *)getVideo;
+-(void)addMoviePiece:(NSString *)file;
+-(void)addAudioPiece:(NSString *)file;
+
+
 @end

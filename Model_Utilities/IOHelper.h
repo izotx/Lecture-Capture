@@ -7,12 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-@interface IOHelper : NSObject
-typedef void (^ CompletionBlock)(BOOL success, CMTime duration);
+@class Slide;
 
--(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block saveAtPath:(NSString *)path;
+@interface IOHelper : NSObject
+typedef void (^ CompletionBlock)(BOOL success, CMTime duration, Slide *slide, NSString * path);
+
+-(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block forSlide:(Slide *)slide saveAtPath:(NSString *)path;
 
 -(NSString*)getRandomFilePath;
+-(void)deletePath:(NSString *)path;
+-(void)saveToLibraryFileAtPath:(NSString*)path;
 
 
 @end

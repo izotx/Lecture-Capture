@@ -15,7 +15,7 @@
 + (id)removeLecture:(Lecture*)lecture;
 + (id)saveLecture:(Lecture*)lecture;
 + (id)compile;
-+ (void)addNewSlideToLecture:(Lecture *)lecture;
++ (Slide *)addNewSlideToLecture:(Lecture *)lecture;
 
 
 @end

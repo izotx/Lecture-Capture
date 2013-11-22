@@ -3,7 +3,6 @@
 //  Recorder
 //
 //  Created by DJMobile INC on 4/27/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 /*
     P L A N
@@ -28,7 +27,9 @@
 #import "ImagePhotoPicker.h"
 #import "TJLFetchedResultsSource.h"
 #import "Lecture.h"
-
+#import "WebVideoView.h"
+#import "SlideAPI.h"
+#import "Slide.h"
 
 #define FRAME_RATE 10
 
@@ -52,8 +53,8 @@
     int frameCounter;
     __weak IBOutlet UILabel *durationLabel;
     NSMutableArray * scrollViewScreenshots;
-    NSMutableArray * moviePieces;
-    NSMutableArray * audioPieces;
+   // NSMutableArray * moviePieces;
+   // NSMutableArray * audioPieces;
     
     UIView * recordingStartView;
     
@@ -65,11 +66,10 @@
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
 @property(strong,nonatomic) NSFetchedResultsController * fetchedController;
-
-
-
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UILabel *informationLabel;
+@property(strong,nonatomic) Slide * currentSlide;
+@property(strong,nonatomic) WebVideoView * webVideoView;
 
 - (NSString* ) timeConverter:(int)durationInSeconds;
 - (IBAction)eraseRecording:(id)sender;
@@ -78,8 +78,6 @@
 - (IBAction)finishRecording:(id)sender;
 - (IBAction)addVideoPreview:(id)sender;
 - (IBAction)addNewSlide:(id)sender;
-    
-
 
 @end
 
@@ -112,8 +110,8 @@
 #pragma mark Lecture APIs
 //adds new slide
 - (IBAction)addNewSlide:(id)sender {
-    [LectureAPI addNewSlideToLecture:self.lecture];
-
+    Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
+    _currentSlide = slide;
 }
 
 
@@ -132,20 +130,25 @@
     
 }
 
+-(void)loadSlide{
+   //if slide contains video, display it
+    
+    
+   //if slide contains audio display it as well
+    
+    
+    
+    
+}
+
 
 -(IBAction)finishRecording:(id)sender
 {
-    /*
+
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
-    UIView  * v = [[UIView alloc]initWithFrame:self.view.bounds];
-    v.backgroundColor = [UIColor grayColor];
-    [self.view addSubview:v];
-    [v addSubview:activityIndicator];
-    [activityIndicator startAnimating];
-    
-    if([durationTimer isValid]){
-        [durationTimer invalidate];
-         durationTimer =NULL;
+        if([durationTimer isValid]){
+          [durationTimer invalidate];
+          durationTimer =NULL;
     }
     [recordingScreenView performSelector:@selector(stopRecording)];
     [ar performSelector:@selector(stopRecording)];
@@ -160,25 +163,34 @@
             ioHelper  = [[IOHelper alloc]init];
             
         }
-        NSString * path = [ioHelper getRandomFilePath];
-        [ioHelper putTogetherVideo:moviePieces andAudioPieces:audioPieces andCompletionBlock:^(BOOL success,CMTime duration) {
-               // NSLog(@"Method returned.");
+        __block NSString * path = [ioHelper getRandomFilePath];
+        [ioHelper putTogetherVideo:[self.currentSlide.videoFiles allObjects] andAudioPieces:self.currentSlide.audioFiles.allObjects andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
+
             NSString * message;
             if(success){
-                [self saveData:duration ofPath:path];
-                message = @"Movie successfully saved.";
+                               
+                slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
+                NSError * error;
+                
+                slide.video = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:&error];
+                if(error){
+                    NSLog(@"Error %@",error.debugDescription);
+                    
+                }
+                [LectureAPI saveLecture:self.lecture];
+
             }
             else{
                 message = @"Movie wasn't successfully saved.";                
             }
-             [self performSelectorOnMainThread:@selector(dismissMe:) withObject:message waitUntilDone:NO];
-            } saveAtPath:path];
-      }
+            } forSlide:self.currentSlide saveAtPath:path];
+      
+        }
     }
     else{
         [self dismissMe:nil];
     }
-     */
+
 }
 
 -(IBAction)startRecording:(id)sender
@@ -307,6 +319,8 @@
     testImageView.image=recordingScreenView.currentScreen;
     [scrollViewScreenshots addObject:s];
 }
+
+
 
 //Save to Core Data
 -(BOOL)saveData:(CMTime)d ofPath:(NSString * )pathToSave{
@@ -494,11 +508,6 @@
     if([actionSheet isEqual:photoAction]){
         if(buttonIndex==1) // make photo
         {
-//            [self startCameraControllerFromViewController:self usingDelegate:self]; 
-//        }
-//        else if(buttonIndex==2)
-//        {
-//            [self startCameraControllerPickerViewController:self usingDelegate:self];
           [self showImagePicker];
         
         }
@@ -601,24 +610,25 @@
     
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
         NSString * lastObject;
-        lastObject = [audioPieces lastObject];
-        
+        lastObject = [self.currentSlide.audioFiles.allObjects  lastObject];
+
         if([ar.recorderFilePath isEqualToString:lastObject])
         {
             
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
         }
         else{
-            [audioPieces addObject:ar.recorderFilePath];
+            
+            [self.currentSlide addAudioFilesObject:<#(AudioFile *)#> addAudioPiece: ar.recorderFilePath];
         }
         
-        lastObject = [moviePieces lastObject];
+        lastObject = [[self.currentSlide getVideo]  lastObject];
         if([recordingScreenView.outputPath isEqualToString:lastObject])
         {
             //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
         }
         else{
-            [moviePieces addObject:recordingScreenView.outputPath];
+            [self.currentSlide addMoviePiece: recordingScreenView.outputPath];
         }
         
         if(![durationTimer isValid]){
@@ -651,8 +661,11 @@
 
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     //show slide on the screen
-
+    self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
+    
 }
+
+
 
 #pragma mark view management
 - (void)viewDidLoad
@@ -673,16 +686,12 @@
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
     cp.delegate = self;
     
-    moviePieces = [[NSMutableArray alloc]initWithCapacity:0];
-    audioPieces=  [[NSMutableArray alloc]initWithCapacity:0];
+    _webVideoView = [[WebVideoView alloc]initWithFrame:recordingScreenView.frame];
+    
+   // moviePieces = [[NSMutableArray alloc]initWithCapacity:0];
+   // audioPieces=  [[NSMutableArray alloc]initWithCapacity:0];
     
     [self configureFetchedController];
-//    UICollectionViewFlowLayout * fl = [[UICollectionViewFlowLayout alloc]init];
-//    fl.scrollDirection = UICollectionViewScrollDirectionVertical;
-//    [self.collectionView setCollectionViewLayout:fl];
-
-    //    self.collectionView.
-    
     
     ready = YES;
     paused = NO;

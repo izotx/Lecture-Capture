@@ -46,8 +46,13 @@
 		4F4545641635F23C0091F335 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545621635F23C0091F335 /* InfoPlist.strings */; };
 		4F4545671635F2580091F335 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4F4545651635F2580091F335 /* MainStoryboard.storyboard */; };
 		4F65E1CD183E71AB004C5607 /* TJLFetchedResultsSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */; };
-		4F65E1D0183E79AD004C5607 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1CF183E79AD004C5607 /* Slide.m */; };
-		4F65E1D3183E79AD004C5607 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D2183E79AD004C5607 /* Lecture.m */; };
+		4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D5183FB58F004C5607 /* WebVideoView.m */; };
+		4F65E1D9183FCB60004C5607 /* SlideAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D8183FCB60004C5607 /* SlideAPI.m */; };
+		4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1DB18400A1B004C5607 /* Lecture.m */; };
+		4F65E1DF18400A1C004C5607 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1DE18400A1C004C5607 /* Project.m */; };
+		4F65E1FB18400B22004C5607 /* AudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1FA18400B22004C5607 /* AudioFile.m */; };
+		4F65E1FE18400B22004C5607 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1FD18400B22004C5607 /* Slide.m */; };
+		4F65E20118400B23004C5607 /* VideoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E20018400B23004C5607 /* VideoFile.m */; };
 		4F864BC7183BFA6200C888B8 /* controlsButtonRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */; };
 		4F864BCA183BFC8900C888B8 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC8183BFC8900C888B8 /* addButton.png */; };
 		4F864BCB183BFC8900C888B8 /* removeButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC9183BFC8900C888B8 /* removeButton.png */; };
@@ -180,10 +185,20 @@
 		4F4545661635F2580091F335 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		4F65E1CB183E71AB004C5607 /* TJLFetchedResultsSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TJLFetchedResultsSource.h; sourceTree = "<group>"; };
 		4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TJLFetchedResultsSource.m; sourceTree = "<group>"; };
-		4F65E1CE183E79AD004C5607 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
-		4F65E1CF183E79AD004C5607 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
-		4F65E1D1183E79AD004C5607 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
-		4F65E1D2183E79AD004C5607 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
+		4F65E1D4183FB58F004C5607 /* WebVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebVideoView.h; path = WebVideoView/WebVideoView.h; sourceTree = "<group>"; };
+		4F65E1D5183FB58F004C5607 /* WebVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebVideoView.m; path = WebVideoView/WebVideoView.m; sourceTree = "<group>"; };
+		4F65E1D7183FCB60004C5607 /* SlideAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideAPI.h; sourceTree = "<group>"; };
+		4F65E1D8183FCB60004C5607 /* SlideAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideAPI.m; sourceTree = "<group>"; };
+		4F65E1DA18400A1B004C5607 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
+		4F65E1DB18400A1B004C5607 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
+		4F65E1DD18400A1C004C5607 /* Project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Project.h; sourceTree = "<group>"; };
+		4F65E1DE18400A1C004C5607 /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Project.m; sourceTree = "<group>"; };
+		4F65E1F918400B22004C5607 /* AudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFile.h; sourceTree = "<group>"; };
+		4F65E1FA18400B22004C5607 /* AudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFile.m; sourceTree = "<group>"; };
+		4F65E1FC18400B22004C5607 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
+		4F65E1FD18400B22004C5607 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
+		4F65E1FF18400B23004C5607 /* VideoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFile.h; sourceTree = "<group>"; };
+		4F65E20018400B23004C5607 /* VideoFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoFile.m; sourceTree = "<group>"; };
 		4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = controlsButtonRight.png; path = Images/controlsButtonRight.png; sourceTree = "<group>"; };
 		4F864BC8183BFC8900C888B8 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
 		4F864BC9183BFC8900C888B8 /* removeButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = removeButton.png; sourceTree = "<group>"; };
@@ -413,11 +428,17 @@
 		4F9D58E9182037A3000A004F /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				4F65E1FF18400B23004C5607 /* VideoFile.h */,
+				4F65E20018400B23004C5607 /* VideoFile.m */,
+				4F65E1FC18400B22004C5607 /* Slide.h */,
+				4F65E1FD18400B22004C5607 /* Slide.m */,
+				4F65E1F918400B22004C5607 /* AudioFile.h */,
+				4F65E1FA18400B22004C5607 /* AudioFile.m */,
 				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
-				4F65E1D1183E79AD004C5607 /* Lecture.h */,
-				4F65E1D2183E79AD004C5607 /* Lecture.m */,
-				4F65E1CE183E79AD004C5607 /* Slide.h */,
-				4F65E1CF183E79AD004C5607 /* Slide.m */,
+				4F65E1DD18400A1C004C5607 /* Project.h */,
+				4F65E1DE18400A1C004C5607 /* Project.m */,
+				4F65E1DA18400A1B004C5607 /* Lecture.h */,
+				4F65E1DB18400A1B004C5607 /* Lecture.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -448,6 +469,8 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				4F65E1D4183FB58F004C5607 /* WebVideoView.h */,
+				4F65E1D5183FB58F004C5607 /* WebVideoView.m */,
 				4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */,
 				4F864C06183E62BB00C888B8 /* NonRotatingImagePicker.m */,
 				4F864BCC183BFFCA00C888B8 /* LectureAPI.h */,
@@ -456,6 +479,8 @@
 				4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */,
 				4F864BD9183C094500C888B8 /* Slide+Operations.h */,
 				4F864BDA183C094500C888B8 /* Slide+Operations.m */,
+				4F65E1D7183FCB60004C5607 /* SlideAPI.h */,
+				4F65E1D8183FCB60004C5607 /* SlideAPI.m */,
 				4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */,
 				4F9D58E818203765000A004F /* Recording */,
 				4F9D58E9182037A3000A004F /* CoreData */,
@@ -548,13 +573,13 @@
 				4F9D597218205C17000A004F /* UIImage+Resize.h */,
 				4F9D597318205C17000A004F /* UIImage+RoundedCorner.h */,
 				4F9D597418205C17000A004F /* UIImage+Alpha.h */,
-				4F9D592D18205AFB000A004F /* IOHelper.m */,
+				4F9D593318205AFB000A004F /* Utilities.h */,
 				4F9D592E18205AFB000A004F /* Utilities.m */,
+				4F9D592D18205AFB000A004F /* IOHelper.m */,
 				4F9D592F18205AFB000A004F /* IOHelper.h */,
-				4F9D593018205AFB000A004F /* Manager.h */,
 				4F9D593118205AFB000A004F /* Video.h */,
 				4F9D593218205AFB000A004F /* Video.m */,
-				4F9D593318205AFB000A004F /* Utilities.h */,
+				4F9D593018205AFB000A004F /* Manager.h */,
 				4F9D593418205AFB000A004F /* Manager.m */,
 				8282D683176673BB00F82722 /* CustomTableButton.h */,
 				8282D684176673BB00F82722 /* CustomTableButton.m */,
@@ -850,19 +875,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F9D595618205B72000A004F /* AFURLConnectionOperation.m in Sources */,
+				4F65E20118400B23004C5607 /* VideoFile.m in Sources */,
 				4F9D595718205B72000A004F /* AFXMLRequestOperation.m in Sources */,
 				4F9D595118205B72000A004F /* AFHTTPRequestOperation.m in Sources */,
-				4F65E1D0183E79AD004C5607 /* Slide.m in Sources */,
 				4F9D593A18205AFB000A004F /* Video.m in Sources */,
+				4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */,
 				4F9D595818205B72000A004F /* UIImageView+AFNetworking.m in Sources */,
 				4FD48DAE154AC95D007880C2 /* main.m in Sources */,
 				4F9D596918205B91000A004F /* ILColorPickerView.m in Sources */,
+				4F65E1D9183FCB60004C5607 /* SlideAPI.m in Sources */,
 				4F864C07183E62BB00C888B8 /* NonRotatingImagePicker.m in Sources */,
 				4F9D597818205C17000A004F /* UIImage+Resize.m in Sources */,
 				4F9D596A18205B91000A004F /* ILHuePickerView.m in Sources */,
 				4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */,
 				4F9D596718205B91000A004F /* ILColorPickerDualExampleController.m in Sources */,
 				4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */,
+				4F65E1DF18400A1C004C5607 /* Project.m in Sources */,
 				4F9D593918205AFB000A004F /* Utilities.m in Sources */,
 				4F45454C1635F1040091F335 /* AppDelegate.m in Sources */,
 				4F45454F1635F12B0091F335 /* ViewController.m in Sources */,
@@ -871,12 +899,13 @@
 				4F9D595218205B72000A004F /* AFImageRequestOperation.m in Sources */,
 				4F4545561635F14D0091F335 /* RecorderViewController.m in Sources */,
 				4F9D597618205C17000A004F /* UIImage+Alpha.m in Sources */,
+				4F65E1FB18400B22004C5607 /* AudioFile.m in Sources */,
 				4F4545571635F14D0091F335 /* ScreenCaptureView.m in Sources */,
+				4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */,
 				4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */,
 				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,
 				4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */,
-				4F65E1D3183E79AD004C5607 /* Lecture.m in Sources */,
 				4F9D598018205C43000A004F /* AVCaptureHelper.m in Sources */,
 				4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */,
 				4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */,
@@ -898,6 +927,7 @@
 				4F9D593818205AFB000A004F /* IOHelper.m in Sources */,
 				4F9D595518205B72000A004F /* AFPropertyListRequestOperation.m in Sources */,
 				4F9D595018205B72000A004F /* AFHTTPClient.m in Sources */,
+				4F65E1FE18400B22004C5607 /* Slide.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

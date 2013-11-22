@@ -11,8 +11,8 @@
 #import "CustomTableButton.h"
 #import "Lecture.h"
 #import "LectureAPI.h"
-
-
+#import "IOHelper.h"
+#import "WebVideoView.h"
 
 @interface ViewController ()
 {
@@ -37,7 +37,7 @@
     
     NetworkHelper * networkHelper;
     Manager *manager;
-    
+
 }
 - (IBAction)saveToLibrary:(id)sender;
 - (IBAction)deleteVideo:(id)sender;
@@ -46,11 +46,9 @@
 - (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
 
-
-@property(nonatomic, strong) MPMoviePlayerController *globalMoviePlayerController;
 @property(nonatomic, strong) LectureAPI *lectureAPI;
-
-
+@property(nonatomic,strong) IOHelper * iohelper;
+@property(nonatomic,strong) WebVideoView *webVideoView;
 @end
 
 @implementation ViewController
@@ -86,19 +84,12 @@
 
 
 -(void)deleteFileAtPath:(NSString *)path{
-    NSFileManager * fm = [NSFileManager defaultManager];
-    NSError * error;
-    if( [fm fileExistsAtPath:path])
-    {
-        [fm removeItemAtPath:path error:&error];
-    }
-    if(error)
-    {
-        NSLog(@"Error %@ ",[error debugDescription]);
-    }
-    else{
-        NSLog(@"File %@ deleted",path);
-    }
+  if(!_iohelper)
+  {
+      _iohelper = [[IOHelper alloc]init];
+  }
+    [_iohelper deletePath:path];
+    
 }
 
 
@@ -120,8 +111,8 @@ if(manager.userId){
         // upload video here
             __block UIButton * button = _copyURLButton;
             [networkHelper setCompletionBlocks:^(){
-                button.enabled = YES;
-               // NSLog(@"Button enabled %@ %@",button, copyURLButton);
+            button.enabled = YES;
+              
                 
             } andError:^(
              
@@ -230,13 +221,13 @@ if(manager.userId){
     
     self.uploadingVideoLabel.hidden=YES;
     self.uploadingVideoActivityIndicator.hidden=YES;
+    self.movie_url_label.text=@"";
+    self.copyURLButton.enabled=NO;
+
     manager= [Manager sharedInstance];
     manager.logoutDelegate =self;
-     videoTitleLabel.text=@"";
-    self.movie_url_label.text=@"";
-  
-    self.copyURLButton.enabled=NO;
-	// Do any additional setup after loading the view, typically from a nib.
+    videoTitleLabel.text=@"";
+
     recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
     compileTableView.dataSource = self;
@@ -258,20 +249,6 @@ if(manager.userId){
 }
 
 #pragma mark notifications and Loading video
-- (void)video:(NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
-    NSString * message;
-    if(error)
-    {
-        NSLog(@"didFinishSavingWithError: %@", error);
-        message= [NSString stringWithFormat: @"Error. %@",[error localizedDescription]];
-    }
-    else{
-        message=@"Movie was successfully saved. It can be accessed from Photos App.";
-    }
-    UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [al show];
-    
-}
 
 
 
@@ -281,7 +258,7 @@ if(manager.userId){
     
 }
 
-
+#warning TO DO DELETE THE Load Video url and figure out why the notifications are here
 -(void) loadVideoWithURL:(NSURL *) url{
        //url = outputURL;
     
@@ -291,6 +268,8 @@ if(manager.userId){
     webView.backgroundColor = [UIColor clearColor];
     [webView loadHTMLString:videoHTML baseURL:nil];
 }
+
+
 
 -(void)doneButtonClick:(NSNotification*)aNotification{
     
@@ -309,6 +288,8 @@ if(manager.userId){
                                                     name:MPMoviePlayerPlaybackDidFinishNotification
                                                   object:moviePlayerController];
     [moviePlayerController.view removeFromSuperview];
+    
+    
 }
 
 
@@ -553,17 +534,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 
 - (IBAction)saveToLibrary:(id)sender {
-    if(videoPath.length>0)
-    {
-        UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-
-    }
-    else
-    {
-        NSString * message=@"You need to select a movie from the list.";
-        UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [al show];
-    }
+   
+    [_iohelper saveToLibraryFileAtPath:videoPath];
 }
 
 
