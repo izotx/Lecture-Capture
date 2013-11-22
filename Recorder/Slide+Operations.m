@@ -7,12 +7,10 @@
 //
 
 #import "Slide+Operations.h"
-@interface Slide()
-@property(nonatomic, strong) NSMutableArray * audioPieces;
-@property(nonatomic, strong) NSMutableArray * moviePieces;
+#import "AppDelegate.h"
+#import "AudioFile.h"
+#import "VideoFile.h"
 
-
-@end
 @implementation Slide (Operations)
 
 
@@ -27,26 +25,32 @@
 - (void)duplicateSlide;{}
 
 -(void)addMoviePiece:(NSString *)file{
-    if(!self.moviePieces){
-        self.moviePieces = [NSMutableArray new];
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    VideoFile * video= [NSEntityDescription insertNewObjectForEntityForName:@"VideoFile" inManagedObjectContext:delegate.managedObjectContext];
+    [self addVideoFilesObject:video];
+    video.path = file;
+    
+    NSError *error;
+    [delegate.managedObjectContext save:&error];
+    if(error){
+        NSLog(@"Error %@",error.debugDescription);
+        
     }
-    [self.moviePieces addObject:file];
+
 }
 
 -(void)addAudioPiece:(NSString *)file{
-    if(!self.audioPieces){
-        self.audioPieces = [NSMutableArray new];
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    AudioFile * audio= [NSEntityDescription insertNewObjectForEntityForName:@"AudioFile" inManagedObjectContext:delegate.managedObjectContext];
+    [self addAudioFilesObject:audio];
+    audio.path = file;
+    NSError *error;
+    [delegate.managedObjectContext save:&error];
+    if(error){
+        NSLog(@"Error %@",error.debugDescription);
+        
     }
-    [self.audioPieces addObject:file];
-}
 
--(NSMutableArray *)getAudio;{
-
-    return self.audioPieces;
-}
--(NSMutableArray *)getVideo;{
-    
-    return self.moviePieces;
 }
 
 

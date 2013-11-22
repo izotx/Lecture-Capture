@@ -30,6 +30,8 @@
 #import "WebVideoView.h"
 #import "SlideAPI.h"
 #import "Slide.h"
+#import "Slide+Operations.h"
+
 
 #define FRAME_RATE 10
 
@@ -172,7 +174,7 @@
                 slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
                 NSError * error;
                 
-                slide.video = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:&error];
+                //slide.video = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:&error];
                 if(error){
                     NSLog(@"Error %@",error.debugDescription);
                     
@@ -188,7 +190,7 @@
         }
     }
     else{
-        [self dismissMe:nil];
+       // [self dismissMe:nil];
     }
 
 }
@@ -619,10 +621,11 @@
         }
         else{
             
-            [self.currentSlide addAudioFilesObject:<#(AudioFile *)#> addAudioPiece: ar.recorderFilePath];
+            [self.currentSlide addAudioPiece:ar.recorderFilePath];
         }
         
-        lastObject = [[self.currentSlide getVideo]  lastObject];
+        lastObject = [self.currentSlide.videoFiles.allObjects   lastObject];
+        
         if([recordingScreenView.outputPath isEqualToString:lastObject])
         {
             //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
