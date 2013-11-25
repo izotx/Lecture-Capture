@@ -31,6 +31,8 @@
 #import "SlideAPI.h"
 #import "Slide.h"
 #import "Slide+Operations.h"
+#import "AudioFile.h"
+#import "VideoFile.h"
 
 
 #define FRAME_RATE 10
@@ -108,6 +110,13 @@
     
 }
 
+- (IBAction)dismiss:(id)sender {
+    [self finishRecording:self];
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
 
 #pragma mark Lecture APIs
 //adds new slide
@@ -611,10 +620,9 @@
     recordingScreenView.recording = YES;
     
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
-        NSString * lastObject;
-        lastObject = [self.currentSlide.audioFiles.allObjects  lastObject];
+        AudioFile *  lastAudioObject = (AudioFile *) [self.currentSlide.audioFiles.allObjects  lastObject];
 
-        if([ar.recorderFilePath isEqualToString:lastObject])
+        if([ar.recorderFilePath isEqualToString:lastAudioObject.path])
         {
             
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
@@ -624,9 +632,9 @@
             [self.currentSlide addAudioPiece:ar.recorderFilePath];
         }
         
-        lastObject = [self.currentSlide.videoFiles.allObjects   lastObject];
+       VideoFile* lastVideoObject = [self.currentSlide.videoFiles.allObjects   lastObject];
         
-        if([recordingScreenView.outputPath isEqualToString:lastObject])
+        if([recordingScreenView.outputPath isEqualToString: lastVideoObject.path])
         {
             //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
         }

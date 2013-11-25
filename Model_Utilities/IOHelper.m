@@ -4,8 +4,8 @@
 
 
 #import "IOHelper.h"
-
-
+#import "AudioFile.h"
+#import "VideoFile.h"
 
 @implementation IOHelper
 
@@ -27,19 +27,18 @@
         NSFileManager * fm = [NSFileManager defaultManager];
         NSString * movieFilePath;
         NSString * audioFilePath;
-        movieFilePath = [videoPieces objectAtIndex:i];
-        audioFilePath = [audioPieces objectAtIndex:i];
-        
+        movieFilePath = [(VideoFile *) [videoPieces objectAtIndex:i] path];
+        audioFilePath = [(AudioFile *) [audioPieces objectAtIndex:i] path];
         
         if(![fm fileExistsAtPath:movieFilePath]){
-           // NSLog(@"Movie doesn't exist %@ ",movieFilePath);
+            NSLog(@"Movie doesn't exist %@ ",movieFilePath);
         }
         else{
-           // NSLog(@"Movie exist %@ ",movieFilePath);
+           
         }
         
         if(![fm fileExistsAtPath:audioFilePath]){
-            //NSLog(@"Audio doesn't exist %@ ",audioFilePath);
+            NSLog(@"Audio doesn't exist %@ ",audioFilePath);
         }
         else{
             //NSLog(@"Audio exists %@ ",audioFilePath);
