@@ -6,6 +6,7 @@
 #import "IOHelper.h"
 #import "AudioFile.h"
 #import "VideoFile.h"
+#import "Slide.h"
 
 @implementation IOHelper
 
@@ -95,6 +96,7 @@
             case AVAssetExportSessionStatusCompleted:
             {
                 CMTime duration = mixComposition.duration;
+                slide.video = [NSData dataWithContentsOfURL:movieURL];                
                 block(true,duration,slide,path);
                 [self cleanFiles:audioPieces];
                 [self cleanFiles:videoPieces];
@@ -108,8 +110,19 @@
 -(void)cleanFiles:(NSArray *)files{
     NSFileManager * fm = [NSFileManager  defaultManager];
     NSError * error = nil;
-    for(NSString * path in files){
-        [fm removeItemAtPath:path error:&error];
+    
+    
+    for(NSManagedObject * file in files){
+        
+        if([file isKindOfClass:[AudioFile class]]){
+           AudioFile * afile = (AudioFile *)file;
+            [fm removeItemAtPath:afile.path error:&error];
+        }
+        if([file isKindOfClass:[VideoFile class]]){
+            AudioFile * vfile = (AudioFile *)file;
+            [fm removeItemAtPath:vfile.path error:&error];
+        }
+       
     }
     if(error){
         NSLog(@"Error While deleting file pieces: %@",[error debugDescription]);

@@ -23,7 +23,9 @@
 -(void)configureWithSlide:(Slide  *)slide;{
     self.slidePreviewImage.image = [UIImage imageWithData:slide.thumbnail];
     self.slideDurationLabel.text=  [NSString stringWithFormat:@"%@", slide.duration];
+    
     self.backgroundColor = [UIColor purpleColor];
+    
 }
 
 /*

@@ -43,7 +43,7 @@
 
 + (id)saveLecture:(Lecture*)lecture;{
     //opens lecture for editing
-    AppDelegate * delegate = (AppDelegate *)[UIApplication sharedApplication];
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     NSError *error;
     [delegate.managedObjectContext save:&error];
     if(error){

@@ -4,17 +4,7 @@
 //
 //  Created by DJMobile INC on 4/27/12.
 //
-/*
-    P L A N
 
-    1. When Start - create a part + randomName
-    2. Store it in movieNameArray
-    3. Pause -> save a part
-    4. Create a new part
-    5 End - Combine all movies sounds
- 
- 
-*/
 
 
 #import "RecorderViewController.h"
@@ -33,7 +23,7 @@
 #import "Slide+Operations.h"
 #import "AudioFile.h"
 #import "VideoFile.h"
-
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 #define FRAME_RATE 10
 
@@ -50,15 +40,15 @@
     UIImageView * preview;
 
     BOOL interrupted;
-    BOOL recordingStarted;
+   
     BOOL paused;
     BOOL ready;
+    
+    
     
     int frameCounter;
     __weak IBOutlet UILabel *durationLabel;
     NSMutableArray * scrollViewScreenshots;
-   // NSMutableArray * moviePieces;
-   // NSMutableArray * audioPieces;
     
     UIView * recordingStartView;
     
@@ -73,9 +63,10 @@
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UILabel *informationLabel;
 @property(strong,nonatomic) Slide * currentSlide;
+@property(strong,nonatomic) SlideAPI * slideAPI;
 @property(strong,nonatomic) WebVideoView * webVideoView;
+@property(assign,nonatomic) BOOL recording;
 
-- (NSString* ) timeConverter:(int)durationInSeconds;
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
 - (IBAction)makeScreenShot:(id)sender;
@@ -88,10 +79,6 @@
 @implementation RecorderViewController
 
 
-#pragma mark helper
--(NSString* ) timeConverter:(int)durationInSeconds{
-    return [Utilities timeConverter:durationInSeconds];
-}
 
 -(void)configureFetchedController{
   AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -107,6 +94,7 @@
     
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;
+    _slideAPI = [[SlideAPI alloc]init];
     
 }
 
@@ -182,13 +170,11 @@
                                
                 slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
                 NSError * error;
-                
                 //slide.video = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:&error];
                 if(error){
                     NSLog(@"Error %@",error.debugDescription);
-                    
                 }
-                [LectureAPI saveLecture:self.lecture];
+                [_slideAPI save];
 
             }
             else{
@@ -206,18 +192,18 @@
 
 -(IBAction)startRecording:(id)sender
 {
-    if(paused==YES||recordingStarted==NO){
-     if(!ready)
+    if(paused==YES)//||recordingStarted==NO){
+    {
+        if(!ready)
       {
         self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
           NSLog(@"Not ready yet");
       }
      else
         {
-          
             [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
             [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
-            recordingStarted = YES;
+            _recording = YES;
             paused = NO;
             ready = NO;
             
@@ -248,20 +234,21 @@
 
 -(IBAction)pauseRecording:(id)sender
 {
-    if(recordingStarted){
+    //if(recordingStarted){
     if(!paused){
         [recordingScreenView performSelector:@selector(stopRecording)];
         [ar performSelector:@selector(stopRecording)];
         [self.view addSubview:self.informationLabel];
-        self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+
         paused = YES;
+        _recording = NO;
         if([durationTimer isValid]){
             [durationTimer invalidate];
             durationLabel.text = @"Recording Paused";
         }
         [self dismiss];
         }
-    }
+    //}
 }
 
 -(void) durationTimerCallback{
@@ -616,7 +603,7 @@
 
 
 - (void) recordingStartedNotification{
-    NSLog(@"Recording Started ");
+
     recordingScreenView.recording = YES;
     
     if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
@@ -683,12 +670,25 @@
 {
     [super viewDidLoad];
     
+    
+    [RACObserve(self, self.recording)subscribeNext:^(id x) {
+        [self.view addSubview:self.informationLabel];
+        self.informationLabel.backgroundColor = [UIColor redColor];
+        self.informationLabel.textColor = [UIColor whiteColor];
+        if (x) {
+            self.informationLabel.text = @"";
+        }
+        else{
+        self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+        }
+    }];
+    
     _photoPicker = [[ImagePhotoPicker alloc]init];
     frameCounter =0;
     documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     scrollViewScreenshots =[[NSMutableArray alloc]initWithCapacity:0];
     recordingScreenView.delegate=self;
-    recordingStarted = NO;
+    _recording= NO;
     
     [scrollView setContentSize:scrollView.frame.size];
     ar = [[AudioRecorder alloc]init];
@@ -699,13 +699,15 @@
     
     _webVideoView = [[WebVideoView alloc]initWithFrame:recordingScreenView.frame];
     
-   // moviePieces = [[NSMutableArray alloc]initWithCapacity:0];
-   // audioPieces=  [[NSMutableArray alloc]initWithCapacity:0];
     
     [self configureFetchedController];
     
     ready = YES;
     paused = NO;
+    
+    
+    
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated
