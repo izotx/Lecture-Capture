@@ -91,12 +91,12 @@ AVAudioRecorder * recorder;
     
     [recorder stop];
     
-    NSURL *url = [NSURL fileURLWithPath: self.recorderFilePath];
-    NSError *err = nil;
-    NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
-    
-    if(!audioData)
-        NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+//NSURL *url = [NSURL fileURLWithPath: self.recorderFilePath];
+//    NSError *err = nil;
+//    NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
+//    
+//    if(!audioData)
+//        NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
 }
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag

@@ -56,6 +56,8 @@
     ILColorPickerDualExampleController * cp;
     VideoPreview * vp;
     IOHelper * ioHelper;
+    
+    
 }
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
@@ -66,6 +68,9 @@
 @property(strong,nonatomic) SlideAPI * slideAPI;
 @property(strong,nonatomic) WebVideoView * webVideoView;
 @property(assign,nonatomic) BOOL recording;
+@property(assign,nonatomic) BOOL stopped;
+@property (strong,nonatomic) UIActionSheet *actionSheet;
+@property (strong,nonatomic) NSOperationQueue* queue;
 
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
@@ -132,71 +137,98 @@
 -(void)loadSlide{
    //if slide contains video, display it
     
-    
    //if slide contains audio display it as well
-    
-    
-    
     
 }
 
 
+
+
+
+//Finish recording slide.
 -(IBAction)finishRecording:(id)sender
 {
+    
+    self.recording = NO;
+    [self addNewSlide:nil];
+    
 
-    if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
-        if([durationTimer isValid]){
-          [durationTimer invalidate];
-          durationTimer =NULL;
+    if(!_queue){
+        _queue = [[NSOperationQueue alloc]init];
     }
-    [recordingScreenView performSelector:@selector(stopRecording)];
-    [ar performSelector:@selector(stopRecording)];
+    //[_queue addOperationWithBlock:^{
+        if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
+            if([durationTimer isValid]){
+                [durationTimer invalidate];
+                durationTimer =NULL;
+            }
+            if(!_stopped){
+                [recordingScreenView performSelector:@selector(stopRecording)];
+                [ar performSelector:@selector(stopRecording)];
+                
+                //
+                recordingScreenView.outputPath = nil;
+                ar.recorderFilePath =nil;
 
-    if(ready==NO){
-        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
-
-    }
-    else{
-
-        if(!ioHelper){
-            ioHelper  = [[IOHelper alloc]init];
+            }
+                _stopped = YES;
             
-        }
-        __block NSString * path = [ioHelper getRandomFilePath];
-        [ioHelper putTogetherVideo:[self.currentSlide.videoFiles allObjects] andAudioPieces:self.currentSlide.audioFiles.allObjects andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
-
-            NSString * message;
-            if(success){
-                               
-                slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
-                NSError * error;
-                //slide.video = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:&error];
-                if(error){
-                    NSLog(@"Error %@",error.debugDescription);
-                }
-                [_slideAPI save];
-
+            if(ready==NO){
+                [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
+                
             }
             else{
-                message = @"Movie wasn't successfully saved.";                
+                
+                if(!ioHelper){
+                    ioHelper  = [[IOHelper alloc]init];
+                    
+                }
+                 __block NSString * path = [ioHelper getRandomFilePath];
+                NSArray * video = [self.currentSlide.videoFiles allObjects];
+                NSArray * audio = [self.currentSlide.audioFiles allObjects];
+                
+                
+                if(video.count >0 && audio.count >0 &&video.count == audio.count){
+                    [ioHelper putTogetherVideo:video andAudioPieces:audio andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
+                        
+                        
+                        NSString * message;
+                        if(success){
+                            
+                            slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
+                            
+                            NSError * error;
+                            if(error){
+                                NSLog(@"Error %@",error.debugDescription);
+                            }
+                            
+                            [_slideAPI save];
+                            [self.collectionView reloadData];
+                            
+                        }
+                        else{
+                            message = @"Movie wasn't successfully saved.";
+                        }
+                    } forSlide:self.currentSlide saveAtPath:path];
+                }
+
+                
             }
-            } forSlide:self.currentSlide saveAtPath:path];
-      
         }
-    }
-    else{
-       // [self dismissMe:nil];
-    }
+   // }];
+    
+    
+
 
 }
 
 -(IBAction)startRecording:(id)sender
 {
-    if(paused==YES)//||recordingStarted==NO){
+    if(paused==YES||_recording==NO){
     {
         if(!ready)
       {
-        self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
+         self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
           NSLog(@"Not ready yet");
       }
      else
@@ -230,7 +262,7 @@
   
         }
      }
-}
+    }}
 
 -(IBAction)pauseRecording:(id)sender
 {
@@ -420,7 +452,7 @@
   }
 
 
--(void) colorPicked: (UIColor *) color forView: (int) viewIndex;
+-(void) colorPicked: (UIColor *) color forView: (int) viewIndex
 {
     UIButton * but =( UIButton *) [self.view viewWithTag:viewIndex];
     [but setBackgroundColor:color];
@@ -670,17 +702,21 @@
 {
     [super viewDidLoad];
     
-    
+    _stopped = NO;
     [RACObserve(self, self.recording)subscribeNext:^(id x) {
         [self.view addSubview:self.informationLabel];
         self.informationLabel.backgroundColor = [UIColor redColor];
         self.informationLabel.textColor = [UIColor whiteColor];
         if (x) {
             self.informationLabel.text = @"";
+            [self.informationLabel removeFromSuperview];
         }
         else{
-        self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+            self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+            [self.view addSubview:self.informationLabel];
         }
+        self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
+        
     }];
     
     _photoPicker = [[ImagePhotoPicker alloc]init];
