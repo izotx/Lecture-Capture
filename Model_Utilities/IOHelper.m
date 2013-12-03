@@ -95,9 +95,9 @@
                 break;}
             case AVAssetExportSessionStatusCompleted:
             {
-                CMTime duration = mixComposition.duration;
                 slide.video = [NSData dataWithContentsOfURL:movieURL];                
                 block(true,duration,slide,path);
+                NSLog(@"Seconds %f",CMTimeGetSeconds(duration));
                 [self cleanFiles:audioPieces];
                 [self cleanFiles:videoPieces];
                  

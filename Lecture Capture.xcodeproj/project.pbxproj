@@ -49,9 +49,7 @@
 		4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D5183FB58F004C5607 /* WebVideoView.m */; };
 		4F65E1D9183FCB60004C5607 /* SlideAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D8183FCB60004C5607 /* SlideAPI.m */; };
 		4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1DB18400A1B004C5607 /* Lecture.m */; };
-		4F65E1DF18400A1C004C5607 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1DE18400A1C004C5607 /* Project.m */; };
 		4F65E1FB18400B22004C5607 /* AudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1FA18400B22004C5607 /* AudioFile.m */; };
-		4F65E1FE18400B22004C5607 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1FD18400B22004C5607 /* Slide.m */; };
 		4F65E20118400B23004C5607 /* VideoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E20018400B23004C5607 /* VideoFile.m */; };
 		4F864BC7183BFA6200C888B8 /* controlsButtonRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */; };
 		4F864BCA183BFC8900C888B8 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC8183BFC8900C888B8 /* addButton.png */; };
@@ -142,6 +140,7 @@
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
+		82F215CA184D858100406EDC /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 82F215C9184D858100406EDC /* Slide.m */; };
 		B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7AC82781835FC9300FAF74F /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
@@ -191,12 +190,8 @@
 		4F65E1D8183FCB60004C5607 /* SlideAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideAPI.m; sourceTree = "<group>"; };
 		4F65E1DA18400A1B004C5607 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
 		4F65E1DB18400A1B004C5607 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
-		4F65E1DD18400A1C004C5607 /* Project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Project.h; sourceTree = "<group>"; };
-		4F65E1DE18400A1C004C5607 /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Project.m; sourceTree = "<group>"; };
 		4F65E1F918400B22004C5607 /* AudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFile.h; sourceTree = "<group>"; };
 		4F65E1FA18400B22004C5607 /* AudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFile.m; sourceTree = "<group>"; };
-		4F65E1FC18400B22004C5607 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
-		4F65E1FD18400B22004C5607 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
 		4F65E1FF18400B23004C5607 /* VideoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFile.h; sourceTree = "<group>"; };
 		4F65E20018400B23004C5607 /* VideoFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoFile.m; sourceTree = "<group>"; };
 		4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = controlsButtonRight.png; path = Images/controlsButtonRight.png; sourceTree = "<group>"; };
@@ -328,6 +323,8 @@
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
+		82F215C8184D858100406EDC /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
+		82F215C9184D858100406EDC /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
 		A562FF8AB3444BAAB852EED7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		B7AC82781835FC9300FAF74F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D8C37B7E03D6432B8FD7DF0A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -430,13 +427,11 @@
 			children = (
 				4F65E1FF18400B23004C5607 /* VideoFile.h */,
 				4F65E20018400B23004C5607 /* VideoFile.m */,
-				4F65E1FC18400B22004C5607 /* Slide.h */,
-				4F65E1FD18400B22004C5607 /* Slide.m */,
 				4F65E1F918400B22004C5607 /* AudioFile.h */,
 				4F65E1FA18400B22004C5607 /* AudioFile.m */,
 				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
-				4F65E1DD18400A1C004C5607 /* Project.h */,
-				4F65E1DE18400A1C004C5607 /* Project.m */,
+				82F215C8184D858100406EDC /* Slide.h */,
+				82F215C9184D858100406EDC /* Slide.m */,
 				4F65E1DA18400A1B004C5607 /* Lecture.h */,
 				4F65E1DB18400A1B004C5607 /* Lecture.m */,
 			);
@@ -890,7 +885,6 @@
 				4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */,
 				4F9D596718205B91000A004F /* ILColorPickerDualExampleController.m in Sources */,
 				4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */,
-				4F65E1DF18400A1C004C5607 /* Project.m in Sources */,
 				4F9D593918205AFB000A004F /* Utilities.m in Sources */,
 				4F45454C1635F1040091F335 /* AppDelegate.m in Sources */,
 				4F45454F1635F12B0091F335 /* ViewController.m in Sources */,
@@ -927,7 +921,7 @@
 				4F9D593818205AFB000A004F /* IOHelper.m in Sources */,
 				4F9D595518205B72000A004F /* AFPropertyListRequestOperation.m in Sources */,
 				4F9D595018205B72000A004F /* AFHTTPClient.m in Sources */,
-				4F65E1FE18400B22004C5607 /* Slide.m in Sources */,
+				82F215CA184D858100406EDC /* Slide.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

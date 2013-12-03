@@ -47,7 +47,7 @@ __weak IBOutlet UIActivityIndicatorView *activityIndicator;
 - (IBAction)undoAction:(id)sender;
 
 -(void)resizeMe;
--(void)dismiss;
+-(void)dismissPreview;
 
 
 @end

@@ -36,15 +36,10 @@
     NSMutableArray * imagesNames;
     NSString *documentsDirectory;
     NSTimer * durationTimer;
-
     UIImageView * preview;
 
     BOOL interrupted;
-   
-    BOOL paused;
     BOOL ready;
-    
-    
     
     int frameCounter;
     __weak IBOutlet UILabel *durationLabel;
@@ -71,6 +66,8 @@
 @property(assign,nonatomic) BOOL stopped;
 @property (strong,nonatomic) UIActionSheet *actionSheet;
 @property (strong,nonatomic) NSOperationQueue* queue;
+@property   BOOL paused;
+
 
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
@@ -114,11 +111,13 @@
 #pragma mark Lecture APIs
 //adds new slide
 - (IBAction)addNewSlide:(id)sender {
+    //mark previous slide as unselected
+    _currentSlide.selected = @0;
+    
     Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
     _currentSlide = slide;
+    _currentSlide.selected = @1;
 }
-
-
 
 -(void)setLecture:(Lecture *)lecture{
     //loading current slides and etc.
@@ -131,33 +130,25 @@
     else{
         
     }
-    
 }
 
 -(void)loadSlide{
    //if slide contains video, display it
     
    //if slide contains audio display it as well
-    
 }
-
-
-
-
 
 //Finish recording slide.
 -(IBAction)finishRecording:(id)sender
 {
-    
     self.recording = NO;
-    [self addNewSlide:nil];
+   // [self addNewSlide:nil];
     
-
     if(!_queue){
         _queue = [[NSOperationQueue alloc]init];
     }
     //[_queue addOperationWithBlock:^{
-        if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
+       // if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
             if([durationTimer isValid]){
                 [durationTimer invalidate];
                 durationTimer =NULL;
@@ -202,7 +193,7 @@
                                 NSLog(@"Error %@",error.debugDescription);
                             }
                             
-                            [_slideAPI save];
+                            [SlideAPI save];
                             [self.collectionView reloadData];
                             
                         }
@@ -214,17 +205,37 @@
 
                 
             }
-        }
-   // }];
-    
-    
-
+      //  }
 
 }
 
 -(IBAction)startRecording:(id)sender
 {
-    if(paused==YES||_recording==NO){
+    
+    if(self.currentSlide.videoFiles.count >0){
+    UIAlertView * alertV = [[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"This slide contains the video, what would you like to do? " delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Overwrite it with a new recording", nil];
+   
+    [[alertV rac_buttonClickedSignal]subscribeNext:^(NSNumber * x) {
+        NSLog(@"%@",x);
+        if(x.integerValue==0){
+            return;
+        }
+        //remove the video and audio objects from the current slide
+        [self.currentSlide removeAudioFiles:self.currentSlide.audioFiles];
+        [self.currentSlide removeVideoFiles:self.currentSlide.videoFiles];
+        self.currentSlide.audio = nil;
+        self.currentSlide.video = nil;
+        self.currentSlide.duration =@0;
+        self.currentSlide.size=@0;
+        self.currentSlide.thumbnail = nil;
+        [SlideAPI save];
+  
+    }];
+     [alertV show];
+    }
+    
+    
+    if(_paused==YES||_recording==NO){
     {
         if(!ready)
       {
@@ -236,16 +247,15 @@
             [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
             [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
             _recording = YES;
-            paused = NO;
+            _paused = NO;
             ready = NO;
             
            recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
            recordingStartView.backgroundColor = [UIColor darkGrayColor];
             
            UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(281,10,553,40)];
-
            [label setFont:[UIFont systemFontOfSize:20]];
-           [label setText:@"Setting up your recording."];
+           [label setText:@""];
            
            label.backgroundColor =  [UIColor darkGrayColor];
            label.textColor = [UIColor lightGrayColor];
@@ -259,28 +269,26 @@
            [self.view addSubview: recordingStartView];
            [recordingStartView addSubview:activityIndicator];
            [activityIndicator startAnimating];
-  
         }
      }
-    }}
+    }
+}
 
 -(IBAction)pauseRecording:(id)sender
 {
     //if(recordingStarted){
-    if(!paused){
+    if(!_paused){
         [recordingScreenView performSelector:@selector(stopRecording)];
         [ar performSelector:@selector(stopRecording)];
         [self.view addSubview:self.informationLabel];
 
-        paused = YES;
+        _paused = YES;
         _recording = NO;
         if([durationTimer isValid]){
             [durationTimer invalidate];
-            durationLabel.text = @"Recording Paused";
         }
-        [self dismiss];
         }
-    //}
+ 
 }
 
 -(void) durationTimerCallback{
@@ -571,7 +579,7 @@
 }
 
 #pragma mark preview
--(void)dismiss{
+-(void)dismissPreview{
     NSLog(@" Dismiss Me Recorder ");
     [vp removeFromSuperview];
     //stop session and etc.
@@ -690,8 +698,10 @@
 }
 
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    self.currentSlide.selected = @0;
     //show slide on the screen
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
+    self.currentSlide.selected = @1;
     
 }
 
@@ -703,6 +713,8 @@
     [super viewDidLoad];
     
     _stopped = NO;
+    _paused = NO;
+    
     [RACObserve(self, self.recording)subscribeNext:^(id x) {
         [self.view addSubview:self.informationLabel];
         self.informationLabel.backgroundColor = [UIColor redColor];
@@ -718,6 +730,26 @@
         self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
         
     }];
+    
+    [RACObserve(self, self.paused)subscribeNext:^(id x) {
+        [self.view addSubview:self.informationLabel];
+        self.informationLabel.backgroundColor = [UIColor redColor];
+        self.informationLabel.textColor = [UIColor whiteColor];
+        if (x) {
+            self.informationLabel.text = @"";
+            [self.informationLabel removeFromSuperview];
+        }
+        else{
+            self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+            [self.view addSubview:self.informationLabel];
+        }
+        self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
+        
+    }];
+
+    
+    
+    
     
     _photoPicker = [[ImagePhotoPicker alloc]init];
     frameCounter =0;
@@ -739,7 +771,7 @@
     [self configureFetchedController];
     
     ready = YES;
-    paused = NO;
+
     
     
     

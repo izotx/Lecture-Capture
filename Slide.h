@@ -2,7 +2,7 @@
 //  Slide.h
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 11/22/13.
+//  Created by sadmin on 12/2/13.
 //
 //
 
@@ -19,8 +19,9 @@
 @property (nonatomic, retain) NSNumber * size;
 @property (nonatomic, retain) NSData * thumbnail;
 @property (nonatomic, retain) NSData * video;
-@property (nonatomic, retain) Lecture *lecture;
+@property (nonatomic, retain) NSNumber * selected;
 @property (nonatomic, retain) NSSet *audioFiles;
+@property (nonatomic, retain) Lecture *lecture;
 @property (nonatomic, retain) NSSet *videoFiles;
 @end
 

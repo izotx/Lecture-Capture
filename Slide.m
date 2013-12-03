@@ -2,7 +2,7 @@
 //  Slide.m
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 11/22/13.
+//  Created by sadmin on 12/2/13.
 //
 //
 
@@ -20,8 +20,9 @@
 @dynamic size;
 @dynamic thumbnail;
 @dynamic video;
-@dynamic lecture;
+@dynamic selected;
 @dynamic audioFiles;
+@dynamic lecture;
 @dynamic videoFiles;
 
 @end

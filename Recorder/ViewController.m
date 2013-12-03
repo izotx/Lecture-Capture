@@ -82,17 +82,6 @@
 
 #pragma mark files operations
 
-
--(void)deleteFileAtPath:(NSString *)path{
-  if(!_iohelper)
-  {
-      _iohelper = [[IOHelper alloc]init];
-  }
-    [_iohelper deletePath:path];
-    
-}
-
-
 -(void)postMovie:(NSString * )filePath{
 if(manager.userId){
     if(filePath.length==0)
@@ -288,8 +277,6 @@ if(manager.userId){
                                                     name:MPMoviePlayerPlaybackDidFinishNotification
                                                   object:moviePlayerController];
     [moviePlayerController.view removeFromSuperview];
-    
-    
 }
 
 
@@ -316,7 +303,7 @@ if(manager.userId){
    
     CustomTableButton *cb =   (CustomTableButton *)sender;
      NSLog(@"Upload %@ ",cb);
-    //   Video * v =
+
     NSIndexPath *indexPath = [(CustomTableButton *) sender indexPath];
     Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
     videoPath = info.video_path;
@@ -385,7 +372,6 @@ if(manager.userId){
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [tableView beginUpdates];
-   // NSLog(@" Will Change");
 }
 
 
@@ -506,7 +492,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         
         [tableView setEditing:NO animated:YES];
         NSError * error;
-        [self deleteFileAtPath:v.video_path];
+      
         [context save:&error];
         
         if(error)

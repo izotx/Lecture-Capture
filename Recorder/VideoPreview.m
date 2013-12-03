@@ -43,7 +43,7 @@ int smallHeight = 344;
     UIBarButtonItem * resize = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"resizeBtn"] style:UIBarButtonItemStylePlain target:self.target action:@selector(resizeMe)];
     UIBarButtonItem * switchCamera = [[UIBarButtonItem alloc]initWithTitle:@"Switch" style:UIBarButtonItemStyleBordered target:self.target action:@selector(switchCamera)];
     
-    UIBarButtonItem * dismiss = [[UIBarButtonItem alloc]initWithTitle:@"Dismiss" style:UIBarButtonItemStyleBordered target:self.target action:@selector(dismiss)];
+    UIBarButtonItem * dismiss = [[UIBarButtonItem alloc]initWithTitle:@"Dismiss" style:UIBarButtonItemStyleBordered target:self.target action:@selector(dismissPreview)];
     UIBarButtonItem * flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     NSArray * items = [NSArray arrayWithObjects:resize,flex,switchCamera, dismiss, nil];

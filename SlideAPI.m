@@ -22,10 +22,8 @@
 }
 
 
--(void)save;{
++(void)save;{
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-//    Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
-//    [lecture addSlidesObject:slide];
     NSError *error;
     [delegate.managedObjectContext save:&error];
     if(error){
