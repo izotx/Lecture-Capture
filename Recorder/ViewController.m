@@ -119,8 +119,6 @@ if(manager.userId){
     }
 }
 
-
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //Executed when Next button is clicked.
    
@@ -238,6 +236,11 @@ if(manager.userId){
 }
 
 #pragma mark notifications and Loading video
+- (IBAction)showPreviousSlide:(id)sender {
+}
+
+- (IBAction)showNextSlide:(id)sender {
+}
 
 
 

@@ -82,6 +82,7 @@
 
 
 
+
 -(void)configureFetchedController{
   AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
