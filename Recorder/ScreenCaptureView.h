@@ -11,9 +11,10 @@
 @protocol ScreenCaptureViewDelegate <NSObject>
 - (void) recordingFinished:(BOOL)success;
 - (void) recordingInterrupted;
-- (void) recordingStartedNotification;
+
 @optional
 -(void)previewUpdated:(UIImage *)img;
+- (void) recordingStartedNotification;
 @end
 
 
@@ -51,7 +52,9 @@
 @property CGRect  videoPreviewFrame;
 @property BOOL fullScreen;
 @property BOOL rotatePreview;
+@property BOOL ready;
 @property BOOL recording;
+@property BOOL completed;
 
 
 @end

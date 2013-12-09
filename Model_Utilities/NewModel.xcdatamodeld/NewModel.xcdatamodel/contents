@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A598" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A603" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AudioFile" representedClassName="AudioFile" syncable="YES">
         <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="slide" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slide" inverseName="audioFiles" inverseEntity="Slide" syncable="YES"/>
@@ -24,6 +24,7 @@
         <attribute name="selected" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="video" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="audioFiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AudioFile" inverseName="slide" inverseEntity="AudioFile" syncable="YES"/>
         <relationship name="lecture" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Lecture" inverseName="slides" inverseEntity="Lecture" syncable="YES"/>

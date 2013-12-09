@@ -14,7 +14,7 @@ typedef void (^ CompletionBlock)(BOOL success, CMTime duration, Slide *slide, NS
 
 -(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block forSlide:(Slide *)slide saveAtPath:(NSString *)path;
 
--(NSString*)getRandomFilePath;
++(NSString*)getRandomFilePath;
 -(void)deletePath:(NSString *)path;
 -(void)saveToLibraryFileAtPath:(NSString*)path;
 

@@ -58,8 +58,9 @@
     _destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
     _destContext = CGLayerGetContext(_destLayer);
     CGContextScaleCTM(_destContext, contentScale, contentScale);
+
     _layerReady = NO;
-    
+    _ready = YES;
   
     
 }
@@ -241,7 +242,7 @@
 	}
     [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationWillResignActiveNotification object:nil];
-    NSLog(@"Clean Up Writer");
+     NSLog(@"Clean Up Writer");
 }
 
 - (void)dealloc {
@@ -295,7 +296,7 @@
 	[videoWriter addInput:videoWriterInput];
 	[videoWriter startWriting];
 	[videoWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
-	[delegate recordingStartedNotification];
+
 	return YES;
 }
 
@@ -321,19 +322,17 @@
 		[NSThread sleepForTimeInterval:0.1f];
 		 status = videoWriter.status;
 	}
-        //[videoWriter endSessionAtSourceTime:currentCMTime];
+
 	[videoWriter finishWritingWithCompletionHandler:^{
         [self cleanupWriter];
-        id delegateObj = self.delegate;
-     
         
         if(videoWriter.status == AVAssetWriterStatusFailed)
         {
             NSLog(@"Video Writer Failed");
         }
-            
-        if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
-            [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:nil waitUntilDone:YES];
+        else{
+            _completed = YES;
+            _ready = YES;
         }
         
         }];
@@ -343,7 +342,8 @@
 
 
 - (bool) startRecording {
- 
+    _completed = NO;
+     _ready = NO;
 	bool result = NO;
 	@synchronized(self) {
 		if (! _recording) {

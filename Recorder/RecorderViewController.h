@@ -23,7 +23,7 @@
 {
     IBOutlet UIImageView *backgroundView;
     
-__weak IBOutlet ScreenCaptureView *recordingScreenView;
+//__weak IBOutlet ScreenCaptureView *recordingScreenView;
 __weak IBOutlet UIScrollView *scrollView;
 __weak IBOutlet UIActivityIndicatorView *activityIndicator;
     UIPopoverController * colorPopover;
@@ -35,7 +35,7 @@ __weak IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *colorBarButton;
 @property (strong, nonatomic) Lecture * lecture;
-
+@property (strong, nonatomic) IBOutlet ScreenCaptureView *recordingScreenView;
 @property BOOL eraseMode;
 
 - (IBAction)changeBrushSize:(id)sender;

@@ -308,9 +308,6 @@ If you have any questions about our policy or the security of Screen Capture app
                                                 </button>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="els-1i-Bum" kind="modal" identifier="Edit" id="1zN-gq-dAU"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -413,6 +410,9 @@ If you have any questions about our policy or the security of Screen Capture app
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <segue destination="els-1i-Bum" kind="modal" identifier="Edit" id="wcs-tp-LSY"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="oI7-y1-zNS">
                                 <rect key="frame" x="310" y="550" width="189" height="34"/>
@@ -930,7 +930,7 @@ If you have any questions about our policy or the security of Screen Capture app
                     </state>
                 </button>
             </objects>
-            <point key="canvasLocation" x="-547" y="-672"/>
+            <point key="canvasLocation" x="-1159" y="-920"/>
         </scene>
         <!--Login Register View Controller - Login Popover-->
         <scene sceneID="HTG-yH-l9f">
@@ -988,6 +988,6 @@ If you have any questions about our policy or the security of Screen Capture app
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="1zN-gq-dAU"/>
+        <segue reference="wcs-tp-LSY"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -7,45 +7,80 @@
 //
 
 #import "AudioRecorder.h"
-
+@interface AudioRecorder()
+@property(nonatomic,strong) NSMutableDictionary * recordSetting;
+@property(nonatomic,strong) AVAudioRecorder * recorder;
+@property(nonatomic,strong)  AVAudioSession *audioSession;
+@end
 
 @implementation AudioRecorder
 @synthesize recorderFilePath;
 
-NSMutableDictionary * recordSetting;
-AVAudioRecorder * recorder;
+-(instancetype)init{
+
+    if(self){
+        _audioSession = [AVAudioSession sharedInstance];
+        NSError *err = nil;
+        [_audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
+        if(err){
+            NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+           
+        }
+        [_audioSession setActive:YES error:&err];
+        err = nil;
+        if(err){
+            NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+           
+        }
+        // Different Settings for Recording
+        _recordSetting = [[NSMutableDictionary alloc] init];
+        
+        [_recordSetting setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+        [_recordSetting setValue:[NSNumber numberWithFloat:32000.0] forKey:AVSampleRateKey];
+        [_recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
+        
+        BOOL audioHWAvailable = false;
+        
+        if([_audioSession respondsToSelector:@selector(isInputAvailable)])
+        {
+            audioHWAvailable = _audioSession.inputAvailable;
+            self.ready = YES;
+        }
+        
+        
+        
+        if (! audioHWAvailable) {
+            UIAlertView *cantRecordAlert =
+            [[UIAlertView alloc] initWithTitle: @"Warning"
+                                       message: @"Audio input hardware not available"
+                                      delegate: nil
+                             cancelButtonTitle:@"OK"
+                             otherButtonTitles:nil];
+            [cantRecordAlert show];
+            self.ready = NO;
+            
+        }
+
+        
+        
+        
+    }
+    return self;
+}
 
 - (void) startRecording{
     self.ready = NO;
-    NSLog(@"Audio Session Started ");
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSError *err = nil;
-    [audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
-    if(err){
-        NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-        return;
-    }
-    [audioSession setActive:YES error:&err];
-    err = nil;
-    if(err){
-        NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-        return;
-    }
-    // Different Settings for Recording
-    recordSetting = [[NSMutableDictionary alloc] init];
-
-    [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
-    [recordSetting setValue:[NSNumber numberWithFloat:32000.0] forKey:AVSampleRateKey];
-    [recordSetting setValue:[NSNumber numberWithInt: 1] forKey:AVNumberOfChannelsKey];
+    self.completed = NO;
+    self.isRecording = YES;
     
     //File Path
     int random = arc4random()%100 * arc4random();
     self.recorderFilePath = [NSString stringWithFormat:@"%@/%@%d.caf", DOCUMENTS_FOLDER,@"audio_piece",random];
     
     NSURL *url = [NSURL fileURLWithPath:self.recorderFilePath];
-    err = nil;
-    recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
-    if(!recorder){
+    NSError * err = nil;
+    _recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:_recordSetting error:&err];
+    if(!_recorder){
         NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
         UIAlertView *alert =
         [[UIAlertView alloc] initWithTitle: @"Warning"
@@ -57,47 +92,21 @@ AVAudioRecorder * recorder;
         return;
     }
     
-    //prepare to record
-    
-    
-    BOOL audioHWAvailable = false;
-
-    if([audioSession respondsToSelector:@selector(isInputAvailable)])
-    {
-        audioHWAvailable = audioSession.inputAvailable;
-    }
-   
-  
-
-    if (! audioHWAvailable) {
-        UIAlertView *cantRecordAlert =
-        [[UIAlertView alloc] initWithTitle: @"Warning"
-                                   message: @"Audio input hardware not available"
-                                  delegate: nil
-                         cancelButtonTitle:@"OK"
-                         otherButtonTitles:nil];
-        [cantRecordAlert show];
-    
-        return;
-    }
-    [recorder setDelegate:self];
+    [_recorder setDelegate:self];
     //[recorder prepareToRecord];
-    recorder.meteringEnabled = YES;
+    _recorder.meteringEnabled = YES;
 
-    [recorder record];
+    [_recorder record];
 }
 
 - (void) stopRecording{
     
-    [recorder stop];
-    
-//NSURL *url = [NSURL fileURLWithPath: self.recorderFilePath];
-//    NSError *err = nil;
-//    NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
-//    
-//    if(!audioData)
-//        NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+    [_recorder stop];
+    self.isRecording = NO;
 }
+
+
+
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag
 {
@@ -105,7 +114,18 @@ AVAudioRecorder * recorder;
     NSLog (@"audioRecorderDidFinishRecording:successfully: %d",flag);
 
     self.ready = YES;
+    self.completed = YES;
     
 }
+
+-(void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder error:(NSError *)error{
+    
+}
+
+-(void)audioRecorderBeginInterruption:(AVAudioRecorder *)recorder{
+    self.isRecording = NO;
+}
+
+
 
 @end

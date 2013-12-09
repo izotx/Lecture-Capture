@@ -23,15 +23,14 @@
 -(void)configureWithSlide:(Slide  *)slide;{
     self.slidePreviewImage.image = [UIImage imageWithData:slide.thumbnail];
     self.slideDurationLabel.text=  [NSString stringWithFormat:@"%@", slide.duration];
-    NSLog(@"Configure Cell Called %@",slide);
+
     if([slide.selected  isEqual:@1]){
         self.backgroundColor = [UIColor purpleColor];
     }
     else{
         self.backgroundColor = [UIColor blueColor];
     }
-    
-    
+   
 }
 
 /*

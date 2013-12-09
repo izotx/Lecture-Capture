@@ -13,7 +13,8 @@
 #import "LectureAPI.h"
 #import "IOHelper.h"
 #import "WebVideoView.h"
-
+#import "AppDelegate.h"
+#import "Slide.h"
 @interface ViewController ()
 {
    NSMutableArray * compileVideoListArray;
@@ -280,6 +281,8 @@ if(manager.userId){
                                                     name:MPMoviePlayerPlaybackDidFinishNotification
                                                   object:moviePlayerController];
     [moviePlayerController.view removeFromSuperview];
+
+
 }
 
 
@@ -437,19 +440,22 @@ if(manager.userId){
 -(void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
     if([_tableView isEqual:tableView]){
-//    Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
-//
-//    NSFileManager * fileManager = [NSFileManager defaultManager];
-//    if([fileManager fileExistsAtPath:v.video_path])
-//    {
-//        videoPath =v.video_path;
-//    }
-//    else{
-//        videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], v.video_path];
-//    }
-//    
-// 	NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
-//    
+        // load the first slide
+        Lecture * l =[_fetchedResultsController objectAtIndexPath:indexPath];
+        if(l.slides.count>0){
+            NSSortDescriptor * ns = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
+            //[request setSortDescriptors:@[ns]];
+            Slide * slide = [[[l.slides allObjects]sortedArrayUsingDescriptors:@[ns]]objectAtIndex:0];
+            //load slide
+            NSData * data = slide.video;
+            if(data){
+                NSString * _videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], [IOHelper  getRandomFilePath]];
+                [data writeToFile:_videoPath atomically:YES];
+                NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
+                [self loadVideoWithURL:outputURL];
+            }
+        }
+
 //    videoTitleLabel.text= v.title;
 //   [self loadVideoWithURL:outputURL];
 //    currentVideo=v;
@@ -746,5 +752,13 @@ else
     NSLog(@"Memory Management s");
 
 }
+
+
+- (IBAction)editRecording:(id)sender {
+    
+}
+
+
+
 
 @end

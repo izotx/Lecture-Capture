@@ -16,6 +16,10 @@
 @synthesize userId;
 static Manager* sharedInstance = nil;
 
+-(AppDelegate *)getAppDelegate{
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    return delegate;
+}
 
 +(Manager *)sharedInstance
 {

@@ -24,5 +24,6 @@
 @dynamic audioFiles;
 @dynamic lecture;
 @dynamic videoFiles;
+@dynamic url;
 
 @end

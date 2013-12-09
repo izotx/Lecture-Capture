@@ -3,9 +3,6 @@
 //  Recorder
 //
 //  Created by DJMobile INC on 4/27/12.
-//
-
-
 
 #import "RecorderViewController.h"
 #import "AppDelegate.h"
@@ -39,15 +36,11 @@
     UIImageView * preview;
 
     BOOL interrupted;
-    BOOL ready;
-    
+  
     int frameCounter;
     __weak IBOutlet UILabel *durationLabel;
     NSMutableArray * scrollViewScreenshots;
     
-    UIView * recordingStartView;
-    
-    AudioRecorder * ar;
     ILColorPickerDualExampleController * cp;
     VideoPreview * vp;
     IOHelper * ioHelper;
@@ -56,17 +49,25 @@
 }
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
-@property(strong,nonatomic) NSFetchedResultsController * fetchedController;
-@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (strong, nonatomic) IBOutlet UILabel *informationLabel;
+
 @property(strong,nonatomic) Slide * currentSlide;
 @property(strong,nonatomic) SlideAPI * slideAPI;
 @property(strong,nonatomic) WebVideoView * webVideoView;
-@property(assign,nonatomic) BOOL recording;
-@property(assign,nonatomic) BOOL stopped;
+@property(strong,nonatomic) AudioRecorder * ar;
+@property (strong, nonatomic) UIView * recordingStartView;
+
+@property BOOL recording;
+@property BOOL ready;
+@property BOOL paused;
+@property BOOL finishRecording;
+@property BOOL puttingTogether;
+
 @property (strong,nonatomic) UIActionSheet *actionSheet;
 @property (strong,nonatomic) NSOperationQueue* queue;
-@property   BOOL paused;
+@property(strong,nonatomic) NSFetchedResultsController * fetchedController;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) IBOutlet UILabel *informationLabel;
+@property (strong,nonatomic) NSString * testString;
 
 
 - (IBAction)eraseRecording:(id)sender;
@@ -75,18 +76,18 @@
 - (IBAction)finishRecording:(id)sender;
 - (IBAction)addVideoPreview:(id)sender;
 - (IBAction)addNewSlide:(id)sender;
-
+-(void)finishAndPutTogether;
 @end
 
 @implementation RecorderViewController
-
+@synthesize recordingScreenView = recordingScreenView;
 
 
 
 -(void)configureFetchedController{
   AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
-    [frequest setEntity: [NSEntityDescription entityForName: @"Slide" inManagedObjectContext:appDelegate.managedObjectContext ]];
+    [frequest setEntity: [NSEntityDescription entityForName:  @"Slide" inManagedObjectContext:appDelegate.managedObjectContext ]];
     [frequest setPredicate: [NSPredicate predicateWithFormat: @"lecture == %@", self.lecture
                              ]];
     NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
@@ -129,7 +130,7 @@
         [self addNewSlide:nil];
     }
     else{
-        
+        [self loadSlide];
     }
 }
 
@@ -139,81 +140,66 @@
    //if slide contains audio display it as well
 }
 
+
+-(void)finishAndPutTogether{
+    
+   recordingScreenView.outputPath = nil;
+    _ar.recorderFilePath =nil;
+    
+   
+    __block NSString * path = [IOHelper getRandomFilePath];
+    NSArray * video = [self.currentSlide.videoFiles allObjects];
+    NSArray * audio = [self.currentSlide.audioFiles allObjects];
+
+    [ioHelper putTogetherVideo:video andAudioPieces:audio andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
+            
+            
+            NSString * message;
+            if(success){
+                
+                slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
+                
+                NSError * error;
+                if(error){
+                    NSLog(@"Error %@",error.debugDescription);
+                }
+                
+                [SlideAPI save];
+                [self.collectionView reloadData];
+                
+            }
+            else{
+                message = @"Movie wasn't successfully saved.";
+            }
+        } forSlide:self.currentSlide saveAtPath:path];
+}
+
+
+
+-(void)stopRecording{
+    if([durationTimer isValid]){
+        [durationTimer invalidate];
+        durationTimer =NULL;
+    }
+    
+    [recordingScreenView performSelector:@selector(stopRecording)];
+    [_ar performSelector:@selector(stopRecording)];
+
+}
+
 //Finish recording slide.
 -(IBAction)finishRecording:(id)sender
 {
     self.recording = NO;
-   // [self addNewSlide:nil];
+    self.finishRecording = YES;
+    [self stopRecording];
     
-    if(!_queue){
-        _queue = [[NSOperationQueue alloc]init];
-    }
-    //[_queue addOperationWithBlock:^{
-       // if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
-            if([durationTimer isValid]){
-                [durationTimer invalidate];
-                durationTimer =NULL;
-            }
-            if(!_stopped){
-                [recordingScreenView performSelector:@selector(stopRecording)];
-                [ar performSelector:@selector(stopRecording)];
-                
-                //
-                recordingScreenView.outputPath = nil;
-                ar.recorderFilePath =nil;
-
-            }
-                _stopped = YES;
-            
-            if(ready==NO){
-                [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finishRecording:) userInfo:nil repeats:NO];
-                
-            }
-            else{
-                
-                if(!ioHelper){
-                    ioHelper  = [[IOHelper alloc]init];
-                    
-                }
-                 __block NSString * path = [ioHelper getRandomFilePath];
-                NSArray * video = [self.currentSlide.videoFiles allObjects];
-                NSArray * audio = [self.currentSlide.audioFiles allObjects];
-                
-                
-                if(video.count >0 && audio.count >0 &&video.count == audio.count){
-                    [ioHelper putTogetherVideo:video andAudioPieces:audio andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
-                        
-                        
-                        NSString * message;
-                        if(success){
-                            
-                            slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
-                            
-                            NSError * error;
-                            if(error){
-                                NSLog(@"Error %@",error.debugDescription);
-                            }
-                            
-                            [SlideAPI save];
-                            [self.collectionView reloadData];
-                            
-                        }
-                        else{
-                            message = @"Movie wasn't successfully saved.";
-                        }
-                    } forSlide:self.currentSlide saveAtPath:path];
-                }
-
-                
-            }
-      //  }
-
 }
 
 -(IBAction)startRecording:(id)sender
 {
     
-    if(self.currentSlide.videoFiles.count >0){
+    if(self.currentSlide.video.length >0){
     UIAlertView * alertV = [[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"This slide contains the video, what would you like to do? " delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Overwrite it with a new recording", nil];
    
     [[alertV rac_buttonClickedSignal]subscribeNext:^(NSNumber * x) {
@@ -238,21 +224,21 @@
     
     if(_paused==YES||_recording==NO){
     {
-        if(!ready)
+        if(!_ready)
       {
-         self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
+          self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
           NSLog(@"Not ready yet");
       }
      else
         {
             [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
-            [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
+            [_ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
             _recording = YES;
             _paused = NO;
-            ready = NO;
+            _ready = NO;
             
-           recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
-           recordingStartView.backgroundColor = [UIColor darkGrayColor];
+           _recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
+           _recordingStartView.backgroundColor = [UIColor darkGrayColor];
             
            UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(281,10,553,40)];
            [label setFont:[UIFont systemFontOfSize:20]];
@@ -262,14 +248,17 @@
            label.textColor = [UIColor lightGrayColor];
            label.lineBreakMode = NSLineBreakByWordWrapping;
            label.numberOfLines = 2;
-           label.center = recordingStartView.center;
+           label.center = _recordingStartView.center;
            label.contentMode = UIViewContentModeCenter;
            label.textAlignment = NSTextAlignmentCenter;
             
-           [recordingStartView addSubview:label];
-           [self.view addSubview: recordingStartView];
-           [recordingStartView addSubview:activityIndicator];
+           [_recordingStartView addSubview:label];
+           [self.view addSubview: _recordingStartView];
+           [_recordingStartView addSubview:activityIndicator];
            [activityIndicator startAnimating];
+            
+            
+            
         }
      }
     }
@@ -277,12 +266,10 @@
 
 -(IBAction)pauseRecording:(id)sender
 {
-    //if(recordingStarted){
+
     if(!_paused){
         [recordingScreenView performSelector:@selector(stopRecording)];
-        [ar performSelector:@selector(stopRecording)];
-        [self.view addSubview:self.informationLabel];
-
+        [_ar performSelector:@selector(stopRecording)];
         _paused = YES;
         _recording = NO;
         if([durationTimer isValid]){
@@ -632,63 +619,16 @@
 
 #pragma mark delegate
 - (void) recordingFinished:(BOOL)success{
-    ready = YES;
+    _ready = YES;
 }
 
 -(void)recordingInterrupted{
-    
     interrupted = YES;
     [self pauseRecording:nil];
-    
 }
 
 
-- (void) recordingStartedNotification{
-
-    recordingScreenView.recording = YES;
-    
-    if(ar.recorderFilePath!=nil && recordingScreenView.outputPath!=nil){
-        AudioFile *  lastAudioObject = (AudioFile *) [self.currentSlide.audioFiles.allObjects  lastObject];
-
-        if([ar.recorderFilePath isEqualToString:lastAudioObject.path])
-        {
-            
-            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
-        }
-        else{
-            
-            [self.currentSlide addAudioPiece:ar.recorderFilePath];
-        }
-        
-       VideoFile* lastVideoObject = [self.currentSlide.videoFiles.allObjects   lastObject];
-        
-        if([recordingScreenView.outputPath isEqualToString: lastVideoObject.path])
-        {
-            //  [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
-        }
-        else{
-            [self.currentSlide addMoviePiece: recordingScreenView.outputPath];
-        }
-        
-        if(![durationTimer isValid]){
-            durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
-            
-            NSRunLoop *runner = [NSRunLoop currentRunLoop];
-            [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
-            [self.informationLabel removeFromSuperview];
-        }
-        // Remove recording screen
-        [recordingStartView removeFromSuperview];
-        [activityIndicator stopAnimating];
-        
-    }
-    else{
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recordingStartedNotification) userInfo:nil repeats:NO];
-    }
-}
-
-
-#pragma mark - TJLFetchedResultsSourceDelegate & Collectiuon View
+#pragma mark - TJLFetchedResultsSourceDelegate & Collection View
 
 - (void)didInsertObjectAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionView *strongCollectionView = self.collectionView;
@@ -706,42 +646,116 @@
     
 }
 
+-(void)recordingStarted{
+
+    recordingScreenView.recording = YES;
+    AudioFile *  lastAudioObject = (AudioFile *) [self.currentSlide.audioFiles.allObjects  lastObject];
+    
+    if([_ar.recorderFilePath isEqualToString:lastAudioObject.path])
+    {
+        
+        
+    }
+    else{
+        
+        [self.currentSlide addAudioPiece:_ar.recorderFilePath];
+    }
+    
+    VideoFile* lastVideoObject = [self.currentSlide.videoFiles.allObjects   lastObject];
+    
+    if([recordingScreenView.outputPath isEqualToString: lastVideoObject.path])
+    {
+    
+    }
+    else{
+        [self.currentSlide addMoviePiece: recordingScreenView.outputPath];
+    }
+    
+    if(![durationTimer isValid]){
+        durationTimer=[NSTimer timerWithTimeInterval:1 target:self selector:@selector(durationTimerCallback) userInfo:nil repeats:YES];
+        
+        NSRunLoop *runner = [NSRunLoop currentRunLoop];
+        [runner addTimer:durationTimer forMode: NSDefaultRunLoopMode];
+        [self.informationLabel removeFromSuperview];
+    }
+    // Remove recording screen
+    [_recordingStartView removeFromSuperview];
+    [activityIndicator stopAnimating];
+
+}
 
 
 #pragma mark view management
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    _stopped = NO;
+
     _paused = NO;
+    _recording= NO;
+
+    ioHelper  = [[IOHelper alloc]init];
+    _ar = [[AudioRecorder alloc]init];
+
+  // is it ready to record?
+ RAC(self, ready) =[RACSignal
+                       combineLatest:@[RACObserve(self, recordingScreenView.ready),RACObserve(self, ar.ready)]
+                       reduce:^(NSNumber *ar, NSNumber *mp) {
+                           BOOL k = ar.boolValue & mp.boolValue;
+                            
+                           return [NSNumber numberWithBool:k] ;
+                       }];
     
-    [RACObserve(self, self.recording)subscribeNext:^(id x) {
-        [self.view addSubview:self.informationLabel];
-        self.informationLabel.backgroundColor = [UIColor redColor];
-        self.informationLabel.textColor = [UIColor whiteColor];
-        if (x) {
-            self.informationLabel.text = @"";
-            [self.informationLabel removeFromSuperview];
-        }
-        else{
-            self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
-            [self.view addSubview:self.informationLabel];
-        }
-        self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
+//Preparing to finish recording and put files together we are using dummy bool for now
+RAC(self, puttingTogether) =[RACSignal
+                       combineLatest:@[RACObserve(self, recordingScreenView.completed),RACObserve(self, ar.completed)]
+                       reduce:^(NSNumber *ar, NSNumber *mp) {
+                           BOOL k = ar.boolValue & mp.boolValue;
+
+                           if(self.finishRecording & k){
+                               [self finishAndPutTogether];
+
+                           }
+
+                           
+                           return [NSNumber numberWithBool:k] ;
+                       }];
+    
+//Starting Recording
+ RAC(self,testString)= [RACSignal
+     combineLatest:@[RACObserve(self, recordingScreenView.outputPath),RACObserve(self, ar.recorderFilePath)]
+     reduce:^(NSString *ar, NSString *mp) {
+      
+         if(ar && mp){
+             [self recordingStarted];
+         }
+
+
+         return  @"";
+     }];
+    
+//Monitoring Recording
+RAC(self,recording) =[RACSignal
+                          combineLatest:@[RACObserve(self, recordingScreenView.recording),RACObserve(self, ar.isRecording)]
+                          reduce:^(NSNumber *ar, NSNumber *mp) {
+                              BOOL k = ar.boolValue & mp.boolValue;
+                              NSLog(@"Recording is: %d",k);
+                              
+                              return [NSNumber numberWithBool:k] ;
+                          }];
+
+    
+//Reacting to changes
+    [RACObserve(self, self.recording)subscribeNext:^(NSNumber * x) {
         
-    }];
-    
-    [RACObserve(self, self.paused)subscribeNext:^(id x) {
-        [self.view addSubview:self.informationLabel];
         self.informationLabel.backgroundColor = [UIColor redColor];
         self.informationLabel.textColor = [UIColor whiteColor];
-        if (x) {
+      
+        if (x.boolValue) {
             self.informationLabel.text = @"";
             [self.informationLabel removeFromSuperview];
         }
         else{
-            self.informationLabel.text = @"Recording is Paused. Press on the Record button to start recording again or Finish button to stop.";
+            self.informationLabel.text = @"Press on the Record button to start recording.";
             [self.view addSubview:self.informationLabel];
         }
         self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
@@ -749,18 +763,15 @@
     }];
 
     
-    
-    
-    
     _photoPicker = [[ImagePhotoPicker alloc]init];
     frameCounter =0;
     documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     scrollViewScreenshots =[[NSMutableArray alloc]initWithCapacity:0];
     recordingScreenView.delegate=self;
-    _recording= NO;
+   
     
     [scrollView setContentSize:scrollView.frame.size];
-    ar = [[AudioRecorder alloc]init];
+   
     
     vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
@@ -771,7 +782,7 @@
     
     [self configureFetchedController];
     
-    ready = YES;
+    _ready = YES;
 
     
     

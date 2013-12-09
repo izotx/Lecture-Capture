@@ -17,7 +17,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-
     
     }
     return self;
@@ -25,17 +24,10 @@
 
 -(void)setupView{
     _webView = [[UIWebView alloc]initWithFrame:self.bounds];
+    _webView.delegate =self;
     [self addSubview:_webView];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 -(void) loadVideoWithURL:(NSURL *) url{
     //url = outputURL;
@@ -45,6 +37,25 @@
     _webView.opaque = NO;
     _webView.backgroundColor = [UIColor clearColor];
     [_webView loadHTMLString:videoHTML baseURL:nil];
+}
+
+-(void)doneButtonClick:(NSNotification*)aNotification{
+    
+}
+
+
+- (void)moviePlaybackChange:(NSNotification *)notification
+{
+    
+}
+
+- (void)moviePlaybackComplete:(NSNotification *)notification
+{
+    MPMoviePlayerController *moviePlayerController = [notification object];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:MPMoviePlayerPlaybackDidFinishNotification
+                                                  object:moviePlayerController];
+    [moviePlayerController.view removeFromSuperview];
 }
 
 

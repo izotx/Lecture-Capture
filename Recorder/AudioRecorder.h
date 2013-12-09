@@ -15,7 +15,12 @@
 }
 @property(nonatomic, retain) NSString *  recorderFilePath;
 @property BOOL ready;
+@property BOOL completed;
+@property BOOL isRecording;
+
 - (void) startRecording;
 - (void) stopRecording;
+
+
 
 @end

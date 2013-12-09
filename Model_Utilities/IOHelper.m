@@ -95,7 +95,9 @@
                 break;}
             case AVAssetExportSessionStatusCompleted:
             {
-                slide.video = [NSData dataWithContentsOfURL:movieURL];                
+                slide.video = [NSData dataWithContentsOfURL:movieURL];
+                slide.url = path;
+
                 block(true,duration,slide,path);
                 NSLog(@"Seconds %f",CMTimeGetSeconds(duration));
                 [self cleanFiles:audioPieces];
@@ -130,7 +132,7 @@
     
 }
 
--(NSString*)getRandomFilePath{
++(NSString*)getRandomFilePath{
     NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
     NSString *caldate = [now description];
     

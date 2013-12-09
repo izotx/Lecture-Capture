@@ -4,6 +4,7 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 
 #import <Foundation/Foundation.h>
+@class AppDelegate;
 @protocol LoginDelegate <NSObject>
 @required
 - (void)loginSuccess;
@@ -37,8 +38,10 @@
 @property(nonatomic, assign) id <LoginDelegate> loginDelegate;
 @property(nonatomic, assign) id <RegisterDelegate> registerDelegate;
 @property(nonatomic, assign) id <LogoutDelegate> logoutDelegate;
-@property(strong) NSNumber * userId;
 
+-(AppDelegate *)getAppDelegate;
+
+@property(strong) NSNumber * userId;
 @property(strong) NSURL * url;
 
 

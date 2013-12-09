@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSSet *audioFiles;
 @property (nonatomic, retain) Lecture *lecture;
 @property (nonatomic, retain) NSSet *videoFiles;
+@property (nonatomic, strong) NSString * url;
 @end
 
 @interface Slide (CoreDataGeneratedAccessors)

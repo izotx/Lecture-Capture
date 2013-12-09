@@ -12,8 +12,6 @@
 #import "Manager.h"
 #import "LoginRegisterViewController.h"
 
-
-
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate, PopoverDismissDelegate, LogoutDelegate>
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UILabel *movie_url_label;
@@ -23,7 +21,6 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *uploadingVideoActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *uploadingVideoLabel;
 @property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
-
 
 - (IBAction)copyURL:(id)sender;
 - (IBAction)shareURL:(id)sender;
