@@ -44,9 +44,8 @@
     ILColorPickerDualExampleController * cp;
     VideoPreview * vp;
     IOHelper * ioHelper;
-    
-    
 }
+
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
 
@@ -114,11 +113,10 @@
 //adds new slide
 - (IBAction)addNewSlide:(id)sender {
     //mark previous slide as unselected
-    _currentSlide.selected = @0;
     
     Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
-    _currentSlide = slide;
-    _currentSlide.selected = @1;
+    [self loadSlide:slide];
+    
 }
 
 -(void)setLecture:(Lecture *)lecture{
@@ -130,14 +128,33 @@
         [self addNewSlide:nil];
     }
     else{
-        [self loadSlide];
+        [self loadSlide:lecture.slides.allObjects.firstObject];
     }
 }
 
--(void)loadSlide{
+-(void)loadSlide:(Slide *)slide{
    //if slide contains video, display it
+    _currentSlide.selected = @0;
+    _currentSlide = slide;
+    _currentSlide.selected = @1;
     
-   //if slide contains audio display it as well
+    if(slide.video.length>0){
+        [self.view addSubview:self.webVideoView];
+        self.webVideoView.frame = self.recordingScreenView.frame;
+        NSLog(@"%@ %@",slide.url, slide);
+        
+        NSLog(@"%@",[NSURL fileURLWithPath: slide.url]);
+        //if it doesn't have url
+        
+        
+        
+        [self.webVideoView loadVideoWithURL:[NSURL fileURLWithPath: slide.url]];
+    }
+    else{
+        [self.webVideoView removeFromSuperview];
+    }
+
+    
 }
 
 
@@ -147,7 +164,7 @@
     _ar.recorderFilePath =nil;
     
    
-    __block NSString * path = [IOHelper getRandomFilePath];
+    NSString * path = [IOHelper getRandomFilePath];
     NSArray * video = [self.currentSlide.videoFiles allObjects];
     NSArray * audio = [self.currentSlide.audioFiles allObjects];
 
@@ -158,6 +175,7 @@
             if(success){
                 
                 slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
+                slide.url = path;
                 
                 NSError * error;
                 if(error){
@@ -167,6 +185,7 @@
                 [SlideAPI save];
                 [self.collectionView reloadData];
                 
+                //[self loadSlide:slide];
             }
             else{
                 message = @"Movie wasn't successfully saved.";
@@ -639,10 +658,16 @@
 }
 
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    self.currentSlide.selected = @0;
-    //show slide on the screen
-    self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
-    self.currentSlide.selected = @1;
+//    self.currentSlide.selected = @0;
+//    //show slide on the screen
+//    self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
+//    self.currentSlide.selected = @1;
+//
+    
+    //display warning???
+    
+    [self loadSlide:[_fetchedController objectAtIndexPath:indexPath]];
+
     
 }
 
@@ -708,9 +733,10 @@
 //Preparing to finish recording and put files together we are using dummy bool for now
 RAC(self, puttingTogether) =[RACSignal
                        combineLatest:@[RACObserve(self, recordingScreenView.completed),RACObserve(self, ar.completed)]
-                       reduce:^(NSNumber *ar, NSNumber *mp) {
+                       reduce:^(NSNumber *mp, NSNumber *ar) {
                            BOOL k = ar.boolValue & mp.boolValue;
-
+                           
+                           
                            if(self.finishRecording & k){
                                [self finishAndPutTogether];
 

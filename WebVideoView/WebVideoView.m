@@ -17,14 +17,14 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-    
+        [self setupView];
     }
     return self;
 }
 
 -(void)setupView{
     _webView = [[UIWebView alloc]initWithFrame:self.bounds];
-    _webView.delegate =self;
+   // _webView.delegate =self;
     [self addSubview:_webView];
 }
 

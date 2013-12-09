@@ -451,7 +451,7 @@ if(manager.userId){
             if(data){
                 NSString * _videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], [IOHelper  getRandomFilePath]];
                 [data writeToFile:_videoPath atomically:YES];
-                NSURL* outputURL = [NSURL fileURLWithPath:videoPath];
+                NSURL* outputURL = [NSURL fileURLWithPath:_videoPath];
                 [self loadVideoWithURL:outputURL];
             }
         }

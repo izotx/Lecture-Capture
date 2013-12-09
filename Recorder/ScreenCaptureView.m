@@ -331,8 +331,10 @@
             NSLog(@"Video Writer Failed");
         }
         else{
-            _completed = YES;
+            self.completed = YES;
             _ready = YES;
+            
+            
         }
         
         }];
