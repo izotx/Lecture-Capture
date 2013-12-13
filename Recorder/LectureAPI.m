@@ -15,6 +15,8 @@
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
     [lecture addSlidesObject:slide];
+    slide.order = [NSNumber numberWithInt:lecture.slides.count + 1];
+    
     NSError *error;
     [delegate.managedObjectContext save:&error];
     if(error){

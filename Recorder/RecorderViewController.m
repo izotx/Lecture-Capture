@@ -46,6 +46,7 @@
     IOHelper * ioHelper;
 }
 
+@property (strong, nonatomic) IBOutlet UIView *sideControls;
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
 
@@ -137,21 +138,19 @@
     _currentSlide.selected = @0;
     _currentSlide = slide;
     _currentSlide.selected = @1;
-    
+    [SlideAPI save];
     if(slide.video.length>0){
         [self.view addSubview:self.webVideoView];
         self.webVideoView.frame = self.recordingScreenView.frame;
-        NSLog(@"%@ %@",slide.url, slide);
-        
-        NSLog(@"%@",[NSURL fileURLWithPath: slide.url]);
-        //if it doesn't have url
-        
-        
-        
         [self.webVideoView loadVideoWithURL:[NSURL fileURLWithPath: slide.url]];
+        
+        
+        [self.view addSubview: self.sideControls];
+        
     }
     else{
         [self.webVideoView removeFromSuperview];
+        [self clearBoard:nil];
     }
 
     
@@ -212,75 +211,93 @@
     self.recording = NO;
     self.finishRecording = YES;
     [self stopRecording];
-    
 }
+
+
+-(void)record{
+    if(_paused==YES||_recording==NO){
+        {
+            if(!_ready)
+            {
+                self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
+                NSLog(@"Not ready yet");
+            }
+            else
+            {
+                [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
+                [_ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
+                _recording = YES;
+                _paused = NO;
+                _ready = NO;
+                
+                _recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
+                _recordingStartView.backgroundColor = [UIColor darkGrayColor];
+                
+                UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(281,10,553,40)];
+                [label setFont:[UIFont systemFontOfSize:20]];
+                [label setText:@""];
+                
+                label.backgroundColor =  [UIColor darkGrayColor];
+                label.textColor = [UIColor lightGrayColor];
+                label.lineBreakMode = NSLineBreakByWordWrapping;
+                label.numberOfLines = 2;
+                label.center = _recordingStartView.center;
+                label.contentMode = UIViewContentModeCenter;
+                label.textAlignment = NSTextAlignmentCenter;
+                
+                [_recordingStartView addSubview:label];
+                [self.view addSubview: _recordingStartView];
+                [_recordingStartView addSubview:activityIndicator];
+                [activityIndicator startAnimating];
+                
+                
+                
+            }
+        }
+    }
+
+
+}
+
 
 -(IBAction)startRecording:(id)sender
 {
-    
+    // so recording is about to start:
     if(self.currentSlide.video.length >0){
     UIAlertView * alertV = [[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"This slide contains the video, what would you like to do? " delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Overwrite it with a new recording", nil];
    
     [[alertV rac_buttonClickedSignal]subscribeNext:^(NSNumber * x) {
-        NSLog(@"%@",x);
+    
         if(x.integerValue==0){
+            
             return;
         }
-        //remove the video and audio objects from the current slide
-        [self.currentSlide removeAudioFiles:self.currentSlide.audioFiles];
-        [self.currentSlide removeVideoFiles:self.currentSlide.videoFiles];
-        self.currentSlide.audio = nil;
-        self.currentSlide.video = nil;
-        self.currentSlide.duration =@0;
-        self.currentSlide.size=@0;
-        self.currentSlide.thumbnail = nil;
-        [SlideAPI save];
+        else{
+            //remove the video and audio objects from the current slide
+            [self.currentSlide removeAudioFiles:self.currentSlide.audioFiles];
+            [self.currentSlide removeVideoFiles:self.currentSlide.videoFiles];
+            self.currentSlide.audio = nil;
+            self.currentSlide.video = nil;
+            self.currentSlide.duration =@0;
+            self.currentSlide.size=@0;
+            self.currentSlide.thumbnail = nil;
+            
+            [self.webVideoView removeFromSuperview];
+            
+            
+            [SlideAPI save];
+            [self record];
+        
+        }
   
     }];
      [alertV show];
+    }else{
+        [self record];
+
     }
+
     
-    
-    if(_paused==YES||_recording==NO){
-    {
-        if(!_ready)
-      {
-          self.informationLabel.text = @"Recorder is not ready yet.Please try again.";
-          NSLog(@"Not ready yet");
-      }
-     else
-        {
-            [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
-            [_ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
-            _recording = YES;
-            _paused = NO;
-            _ready = NO;
-            
-           _recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
-           _recordingStartView.backgroundColor = [UIColor darkGrayColor];
-            
-           UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(281,10,553,40)];
-           [label setFont:[UIFont systemFontOfSize:20]];
-           [label setText:@""];
-           
-           label.backgroundColor =  [UIColor darkGrayColor];
-           label.textColor = [UIColor lightGrayColor];
-           label.lineBreakMode = NSLineBreakByWordWrapping;
-           label.numberOfLines = 2;
-           label.center = _recordingStartView.center;
-           label.contentMode = UIViewContentModeCenter;
-           label.textAlignment = NSTextAlignmentCenter;
-            
-           [_recordingStartView addSubview:label];
-           [self.view addSubview: _recordingStartView];
-           [_recordingStartView addSubview:activityIndicator];
-           [activityIndicator startAnimating];
-            
-            
-            
-        }
-     }
-    }
 }
 
 -(IBAction)pauseRecording:(id)sender
@@ -508,6 +525,9 @@
 
 
 - (IBAction)changeBackground:(id)sender {
+#warning they can't do it if video is on.
+    
+    
     photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"Photo Background", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
     [photoAction showInView:self.view];
 }
@@ -721,7 +741,13 @@
     ioHelper  = [[IOHelper alloc]init];
     _ar = [[AudioRecorder alloc]init];
 
-  // is it ready to record?
+//does the slide contains video??
+// what now if so add video preview
+//disable current buttons but recording button
+    
+    
+ 
+// is it ready to record?
  RAC(self, ready) =[RACSignal
                        combineLatest:@[RACObserve(self, recordingScreenView.ready),RACObserve(self, ar.ready)]
                        reduce:^(NSNumber *ar, NSNumber *mp) {
@@ -764,7 +790,7 @@ RAC(self,recording) =[RACSignal
                           combineLatest:@[RACObserve(self, recordingScreenView.recording),RACObserve(self, ar.isRecording)]
                           reduce:^(NSNumber *ar, NSNumber *mp) {
                               BOOL k = ar.boolValue & mp.boolValue;
-                              NSLog(@"Recording is: %d",k);
+                              //NSLog(@"Recording is: %d",k);
                               
                               return [NSNumber numberWithBool:k] ;
                           }];

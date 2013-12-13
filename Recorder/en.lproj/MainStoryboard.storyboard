@@ -617,37 +617,40 @@ If you have any questions about our policy or the security of Screen Capture app
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" id="Srp-Tv-WxZ" customClass="ScreenCaptureView">
-                                <rect key="frame" x="1" y="0.0" width="1024" height="579"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="580"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="whiteLarge" id="wbX-Lp-bOu">
                                         <rect key="frame" x="483" y="321" width="37" height="37"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </activityIndicatorView>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Display Time" minimumFontSize="17" id="Kqn-Gc-ZDr">
-                                        <rect key="frame" x="32" y="53" width="138" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Double tap on the slide to display it on the screen" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="AHv-mb-RH8">
-                                <rect key="frame" x="366" y="624" width="279" height="16"/>
+                                <rect key="frame" x="366" y="590" width="279" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" id="H7E-6f-T4k">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Duration:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="usg-yV-9o4">
+                                <rect key="frame" x="406" y="374" width="212" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                                <color key="shadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <size key="shadowOffset" width="2" height="2"/>
+                            </label>
+                            <view contentMode="scaleToFill" id="H7E-6f-T4k" userLabel="Side Controls">
                                 <rect key="frame" x="932" y="184" width="92" height="189"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="controlsButtonRight.png" id="SMN-04-pP5">
+                                    <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" image="controlsButtonRight.png" id="SMN-04-pP5">
                                         <rect key="frame" x="0.0" y="0.0" width="92" height="189"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Czb-BX-eM3">
                                         <rect key="frame" x="33" y="130" width="41" height="37"/>
@@ -697,73 +700,6 @@ If you have any questions about our policy or the security of Screen Capture app
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Vop-Tz-4js">
-                                <rect key="frame" x="1" y="724" width="1024" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <items>
-                                    <barButtonItem image="man_24.png" style="plain" id="vgc-C9-XLl">
-                                        <connections>
-                                            <action selector="addVideoPreview:" destination="els-1i-Bum" id="yTI-9A-qc6"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem width="32" style="plain" systemItem="fixedSpace" id="VPb-sL-IyO"/>
-                                    <barButtonItem image="illus.png" style="plain" id="kGQ-T3-KO8">
-                                        <connections>
-                                            <action selector="changeBackground:" destination="els-1i-Bum" id="vkm-Y3-KdO"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem width="46" style="plain" systemItem="fixedSpace" id="4HI-Gx-KXF"/>
-                                    <barButtonItem style="plain" id="tg9-mG-cay">
-                                        <button key="customView" opaque="NO" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="HXz-ko-WJa">
-                                            <rect key="frame" x="164" y="11" width="39" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <state key="normal">
-                                                <color key="titleColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
-                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <state key="highlighted">
-                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="pickColorFor:" destination="els-1i-Bum" eventType="touchUpInside" id="7E5-er-HOX"/>
-                                            </connections>
-                                        </button>
-                                    </barButtonItem>
-                                    <barButtonItem width="26" style="plain" systemItem="fixedSpace" id="5wG-Rg-iqO"/>
-                                    <barButtonItem style="plain" id="NFa-3h-nTp">
-                                        <slider key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="25" id="CL7-Jq-3rp">
-                                            <rect key="frame" x="239" y="5" width="87" height="34"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <connections>
-                                                <action selector="changeBrushSize:" destination="els-1i-Bum" eventType="valueChanged" id="nPd-re-KSK"/>
-                                            </connections>
-                                        </slider>
-                                    </barButtonItem>
-                                    <barButtonItem width="360" style="plain" systemItem="fixedSpace" id="mYC-7Q-c6P"/>
-                                    <barButtonItem style="plain" systemItem="undo" id="tXK-Em-GqX">
-                                        <color key="tintColor" red="0.1637635523" green="0.1637635523" blue="0.1637635523" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <action selector="undoAction:" destination="els-1i-Bum" id="2uy-2C-tgg"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem width="23" style="plain" systemItem="fixedSpace" id="NB9-WS-VZV"/>
-                                    <barButtonItem image="delete_24.png" style="plain" id="c9w-Kb-wLB">
-                                        <color key="tintColor" red="0.1637635523" green="0.1637635523" blue="0.1637635523" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <action selector="eraserOnOff:" destination="els-1i-Bum" id="UWK-B3-FMu"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem width="23" style="plain" systemItem="fixedSpace" id="pT4-eE-d4e"/>
-                                    <barButtonItem title="Clear Board" id="tmh-gD-TzQ">
-                                        <color key="tintColor" red="0.1637635523" green="0.1637635523" blue="0.1637635523" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <action selector="clearBoard:" destination="els-1i-Bum" id="Esx-g0-yBt"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="rRd-Ng-qZD">
                                 <rect key="frame" x="0.0" y="608" width="1024" height="109"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -802,104 +738,176 @@ If you have any questions about our policy or the security of Screen Capture app
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Video" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="bln-4x-NoI">
-                                <rect key="frame" x="9" y="752" width="42" height="16"/>
+                            <view contentMode="scaleToFill" id="J9v-u0-wcz" userLabel="Bottom Controls">
+                                <rect key="frame" x="1" y="724" width="1024" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="controlsButtonBack.png" id="iTs-so-EIg">
-                                <rect key="frame" x="392" y="694" width="287" height="77"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="La3-xy-BMC">
-                                <rect key="frame" x="604" y="719" width="41" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Button" image="doneButton.png">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="finishRecording:" destination="els-1i-Bum" eventType="touchUpInside" id="S7L-52-qpD"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Brush" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="x32-AC-noc">
-                                <rect key="frame" x="214" y="752" width="83" height="16"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Vop-Tz-4js">
+                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <items>
+                                            <barButtonItem image="man_24.png" style="plain" id="vgc-C9-XLl">
+                                                <connections>
+                                                    <action selector="addVideoPreview:" destination="els-1i-Bum" id="yTI-9A-qc6"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem width="32" style="plain" systemItem="fixedSpace" id="VPb-sL-IyO"/>
+                                            <barButtonItem image="illus.png" style="plain" id="kGQ-T3-KO8">
+                                                <connections>
+                                                    <action selector="changeBackground:" destination="els-1i-Bum" id="vkm-Y3-KdO"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem width="46" style="plain" systemItem="fixedSpace" id="4HI-Gx-KXF"/>
+                                            <barButtonItem style="plain" id="tg9-mG-cay">
+                                                <button key="customView" opaque="NO" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="HXz-ko-WJa">
+                                                    <rect key="frame" x="164" y="11" width="39" height="23"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <state key="normal">
+                                                        <color key="titleColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <state key="highlighted">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="pickColorFor:" destination="els-1i-Bum" eventType="touchUpInside" id="7E5-er-HOX"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                            <barButtonItem width="26" style="plain" systemItem="fixedSpace" id="5wG-Rg-iqO"/>
+                                            <barButtonItem style="plain" id="NFa-3h-nTp">
+                                                <slider key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="25" id="CL7-Jq-3rp">
+                                                    <rect key="frame" x="239" y="5" width="87" height="34"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <connections>
+                                                        <action selector="changeBrushSize:" destination="els-1i-Bum" eventType="valueChanged" id="nPd-re-KSK"/>
+                                                    </connections>
+                                                </slider>
+                                            </barButtonItem>
+                                            <barButtonItem width="360" style="plain" systemItem="fixedSpace" id="mYC-7Q-c6P"/>
+                                            <barButtonItem style="plain" systemItem="undo" id="tXK-Em-GqX">
+                                                <color key="tintColor" red="0.1637635523" green="0.1637635523" blue="0.1637635523" alpha="1" colorSpace="calibratedRGB"/>
+                                                <connections>
+                                                    <action selector="undoAction:" destination="els-1i-Bum" id="2uy-2C-tgg"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem width="23" style="plain" systemItem="fixedSpace" id="NB9-WS-VZV"/>
+                                            <barButtonItem image="delete_24.png" style="plain" id="c9w-Kb-wLB">
+                                                <color key="tintColor" red="0.1637635523" green="0.1637635523" blue="0.1637635523" alpha="1" colorSpace="calibratedRGB"/>
+                                                <connections>
+                                                    <action selector="eraserOnOff:" destination="els-1i-Bum" id="UWK-B3-FMu"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem width="23" style="plain" systemItem="fixedSpace" id="pT4-eE-d4e"/>
+                                            <barButtonItem title="Clear Board" id="tmh-gD-TzQ">
+                                                <color key="tintColor" red="0.1637635523" green="0.1637635523" blue="0.1637635523" alpha="1" colorSpace="calibratedRGB"/>
+                                                <connections>
+                                                    <action selector="clearBoard:" destination="els-1i-Bum" id="Esx-g0-yBt"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </items>
+                                    </toolbar>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Video" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="bln-4x-NoI">
+                                        <rect key="frame" x="7" y="28" width="42" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Brush" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="x32-AC-noc">
+                                        <rect key="frame" x="179" y="28" width="83" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Eraser" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="7Tn-fC-uML">
+                                        <rect key="frame" x="785" y="26" width="56" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Background" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="xiB-6A-V4w">
+                                        <rect key="frame" x="64" y="28" width="83" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" id="rU4-m2-T27">
+                                <rect key="frame" x="348" y="690" width="327" height="97"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Eraser" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="7Tn-fC-uML">
-                                <rect key="frame" x="829" y="751" width="56" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Background" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="xiB-6A-V4w">
-                                <rect key="frame" x="98" y="752" width="83" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hsj-uL-vWt">
-                                <rect key="frame" x="488" y="711" width="58" height="52"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Button" image="recordButton.png">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="startRecording:" destination="els-1i-Bum" eventType="touchUpInside" id="xV9-27-SVJ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="3pk-Cq-fMf">
-                                <rect key="frame" x="554" y="711" width="58" height="52"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Save">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="jjs-dc-M1Y">
-                                <rect key="frame" x="432" y="715" width="48" height="43"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Button" image="pauseButton.png">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="pauseRecording:" destination="els-1i-Bum" eventType="touchUpInside" id="kbC-oi-wfC"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Duration:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="usg-yV-9o4">
-                                <rect key="frame" x="33" y="17" width="212" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                                <color key="shadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <size key="shadowOffset" width="2" height="2"/>
-                            </label>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="controlsButtonBack.png" id="iTs-so-EIg">
+                                        <rect key="frame" x="20" y="0.0" width="287" height="77"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="La3-xy-BMC">
+                                        <rect key="frame" x="237" y="30" width="41" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Button" image="doneButton.png">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="finishRecording:" destination="els-1i-Bum" eventType="touchUpInside" id="S7L-52-qpD"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hsj-uL-vWt">
+                                        <rect key="frame" x="134" y="22" width="58" height="52"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Button" image="recordButton.png">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="startRecording:" destination="els-1i-Bum" eventType="touchUpInside" id="xV9-27-SVJ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="3pk-Cq-fMf">
+                                        <rect key="frame" x="184" y="23" width="58" height="52"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Save">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="jjs-dc-M1Y">
+                                        <rect key="frame" x="62" y="27" width="48" height="43"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Button" image="pauseButton.png">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="pauseRecording:" destination="els-1i-Bum" eventType="touchUpInside" id="kbC-oi-wfC"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -913,6 +921,7 @@ If you have any questions about our policy or the security of Screen Capture app
                         <outlet property="durationLabel" destination="usg-yV-9o4" id="icl-SQ-pbv"/>
                         <outlet property="informationLabel" destination="6le-Be-ZSf" id="ooD-U9-Ksx"/>
                         <outlet property="recordingScreenView" destination="Srp-Tv-WxZ" id="UQE-KK-791"/>
+                        <outlet property="sideControls" destination="H7E-6f-T4k" id="BZy-mc-l3m"/>
                         <outlet property="toolbar" destination="Vop-Tz-4js" id="xjX-m7-ZDH"/>
                     </connections>
                 </viewController>
