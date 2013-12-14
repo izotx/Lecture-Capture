@@ -16,6 +16,7 @@
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
     [lecture addSlidesObject:slide];
     slide.order = [NSNumber numberWithInt:lecture.slides.count + 1];
+    slide.lecture = lecture;
     
     NSError *error;
     [delegate.managedObjectContext save:&error];

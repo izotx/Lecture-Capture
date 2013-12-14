@@ -39,7 +39,7 @@
     self.currentScreen = nil;
 	self.frameRate = 10;     //frames per second
 	
-	videoWriter = nil;
+	_videoWriter = nil;
 	videoWriterInput = nil;
 	avAdaptor = nil;
 	startedAt = nil;
@@ -52,6 +52,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pauseAction:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activeAction:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
+    
+    
     //Preparing for drawing in background
     CGFloat contentScale = [[UIScreen mainScreen]scale];
     CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
@@ -61,9 +63,19 @@
 
     _layerReady = NO;
     _ready = YES;
-  
-    
+
 }
+
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"Dictionary Change :%@",change);
+}
+
+-(void)statusChanged:(NSNotification *)notification{
+    NSLog(@"Notification %@",notification);
+}
+
 
 -(void)pauseAction:(NSNotification * )notification{
     if(_recording){
@@ -231,7 +243,7 @@
 
 	avAdaptor = nil;
 	videoWriterInput = nil;
-    videoWriter = nil;
+    _videoWriter = nil;
 	startedAt = nil;
     
     [[csm captureSession]stopRunning];
@@ -269,10 +281,14 @@
 }
 
 -(BOOL) setUpWriter {
-    NSLog(@"Set Up Writer");
+  //  NSLog(@"Set Up Writer");
 	NSError* error = nil;
-	videoWriter = [[AVAssetWriter alloc] initWithURL:[self tempFileURL] fileType:AVFileTypeQuickTimeMovie error:&error];
-	NSParameterAssert(videoWriter);
+	self.videoWriter = [[AVAssetWriter alloc] initWithURL:[self tempFileURL] fileType:AVFileTypeQuickTimeMovie error:&error];
+	NSParameterAssert(_videoWriter);
+    
+    
+    [_videoWriter addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    
 	
 	//Configure video
 	NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -296,9 +312,9 @@
 	avAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes];
 	
 	//add input
-	[videoWriter addInput:videoWriterInput];
-	[videoWriter startWriting];
-	[videoWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
+	[_videoWriter addInput:videoWriterInput];
+	[_videoWriter startWriting];
+	[_videoWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
 
 	return YES;
 }
@@ -320,26 +336,27 @@
 
         
     // Wait for the video
-	int status = videoWriter.status;
+	int status = _videoWriter.status;
     while (status == AVAssetWriterStatusUnknown) {
 		[NSThread sleepForTimeInterval:0.1f];
-		 status = videoWriter.status;
+		 status = _videoWriter.status;
 	}
 
-	[videoWriter finishWritingWithCompletionHandler:^{
+	[_videoWriter finishWritingWithCompletionHandler:^{
        
-        
-        if(videoWriter.status == AVAssetWriterStatusFailed)
+     
+        if(_videoWriter.status == AVAssetWriterStatusFailed)
         {
             NSLog(@"Video Writer Failed");
         }
-        else{
+        if(_videoWriter.status == AVAssetWriterStatusCompleted){
+            NSLog(@"Video Finished Writing. Completed ");
             self.completed = YES;
             _ready = YES;
-             self.outputPath = nil;
-            NSLog(@"Video Finished Writing. Completed ");
+             //[self cleanupWriter];
         }
-         [self cleanupWriter];
+        
+        
         }];
 	}
 }
@@ -377,8 +394,8 @@
 			self.captureTimer = nil;
 			
 			_recording = false;
-            if([videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
-                NSLog(@" Complete Recording session");
+            if([_videoWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
+            
                 [self completeRecordingSession];
             }
         }

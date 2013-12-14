@@ -116,8 +116,19 @@
     //mark previous slide as unselected
     
     Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
-    [self loadSlide:slide];
+    _currentSlide.selected = @0;
+    [SlideAPI save];
+    _currentSlide = slide;
+    _currentSlide.selected = @1;
     
+
+    [self.lecture.slides enumerateObjectsUsingBlock:^(Slide * obj, BOOL *stop) {
+        NSLog(@"%@ %@",obj.selected,obj.order);
+    }];
+    
+    
+    [self performSelectorOnMainThread:@selector(loadSlide:) withObject:slide waitUntilDone:NO];
+
     
 }
 
@@ -141,6 +152,7 @@
     _currentSlide = slide;
     _currentSlide.selected = @1;
     [SlideAPI save];
+    
     [self.collectionView reloadData];
   
     NSLog(@"Current Slide: %@",slide.selected);
@@ -185,13 +197,13 @@
                 }
                 [ioHelper cleanFiles:slide.videoFiles.allObjects];
                 [ioHelper cleanFiles:slide.audioFiles.allObjects];
-                //slide.videoFiles = nil;
-                //slide.audioFiles = nil;
+                slide.videoFiles = nil;
+                slide.audioFiles = nil;
                 
                 [SlideAPI save];
-                [self.collectionView reloadData];
-                
-                [self loadSlide:slide];
+               
+                [self performSelectorOnMainThread:@selector(loadSlide:) withObject:slide waitUntilDone:NO];
+
             }
             else{
                 message = @"Movie wasn't successfully saved.";
@@ -632,6 +644,9 @@
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     self.currentSlide.selected = @0;
     //show slide on the screen
+   Slide * s = [_fetchedController objectAtIndexPath:indexPath];
+    NSLog(@"Slide %@ %@",s.selected,s.order);
+    
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
     
@@ -708,15 +723,20 @@
                        }];
     
 //Preparing to finish recording and put files together we are using dummy bool for now
+    @weakify(self);
 RAC(self, puttingTogether) =[RACSignal
-                       combineLatest:@[RACObserve(self, recordingScreenView.completed),RACObserve(self, ar.completed)]
-                       reduce:^(NSNumber *mp, NSNumber *ar) {
-                           BOOL k = ar.boolValue & mp.boolValue;
+                       combineLatest:@[RACObserve(recordingScreenView, videoWriter.status),RACObserve(_ar, completed)]
+                       reduce:^(NSNumber *mp, NSNumber *ar){
+                           @strongify(self);
                            
+                         //  NSLog(@" MP is %@",mp);
+                         // NSLog(@" AR is %@",ar);
+                           BOOL k = ar.boolValue==true && mp.integerValue==AVAssetWriterStatusCompleted;
                            
-                           if(self.finishRecording & k){
+                           if(self.finishRecording && k){
+                           //    NSLog(@"Calling finish and put together %@ %@",_ar,recordingScreenView);
+                               self.finishRecording = NO;
                                [self finishAndPutTogether];
-                             
                            }
                            
                            return [NSNumber numberWithBool:k] ;
@@ -735,7 +755,7 @@ RAC(self, puttingTogether) =[RACSignal
          return  @"";
      }];
 
-@weakify(self)
+
 //Monitoring Recording
 RAC(self,recording) =[RACSignal
                           combineLatest:@[RACObserve(self, recordingScreenView.recording),RACObserve(self, ar.isRecording)]
@@ -747,8 +767,9 @@ RAC(self,recording) =[RACSignal
 
     
 //Reacting to changes
+
     [RACObserve(self, self.recording)subscribeNext:^(NSNumber * x) {
-        
+        @strongify(self);
         self.informationLabel.backgroundColor = [UIColor redColor];
         self.informationLabel.textColor = [UIColor whiteColor];
       
@@ -761,7 +782,7 @@ RAC(self,recording) =[RACSignal
             [self.view addSubview:self.informationLabel];
         }
         self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
-        
+       
     }];
 
     

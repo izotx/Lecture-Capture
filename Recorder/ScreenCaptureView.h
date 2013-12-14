@@ -20,7 +20,7 @@
 
 @interface ScreenCaptureView : UIView<AVCaptureVideoDataOutputSampleBufferDelegate, UIGestureRecognizerDelegate> {
 	//video writing
-	AVAssetWriter *videoWriter;
+
 	AVAssetWriterInput *videoWriterInput;
 	AVAssetWriterInputPixelBufferAdaptor *avAdaptor;
 	
@@ -46,7 +46,7 @@
 @property(nonatomic,retain) NSString *outputPath;
 @property(nonatomic,strong) PaintView * paintView;
 @property(nonatomic,strong) UIImage * vi;//video preview
-
+@property (nonatomic, strong)AVAssetWriter *videoWriter;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property(nonatomic,strong) CaptureSessionManager * csm;
 @property CGRect  videoPreviewFrame;

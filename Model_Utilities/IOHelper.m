@@ -21,7 +21,9 @@
     AVMutableCompositionTrack *audioCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
     videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    
+                              
+   // NSLog(@"Put Together Video just got called ");
+                              
     NSError * error;
     for(int i=0;i<videoPieces.count;i++)
     {
@@ -35,14 +37,14 @@
             NSLog(@"Movie doesn't exist %@ ",movieFilePath);
         }
         else{
-           NSLog(@"Audio exists %@ ",movieFilePath);
+         //  NSLog(@"Audio exists %@ ",movieFilePath);
         }
         
         if(![fm fileExistsAtPath:audioFilePath]){
             NSLog(@"Audio doesn't exist %@ ",audioFilePath);
         }
         else{
-            NSLog(@"Audio exists %@ ",audioFilePath);
+           // NSLog(@"Audio exists %@ ",audioFilePath);
         }
         
         
@@ -77,7 +79,7 @@
     exporter.shouldOptimizeForNetworkUse=YES;
     
     CMTimeValue val = mixComposition.duration.value;
-   // NSLog(@"Seconds %f",CMTimeGetSeconds(mixComposition.duration));
+    NSLog(@"Seconds %f",CMTimeGetSeconds(mixComposition.duration));
 
     CMTime start=CMTimeMake(0, 600);
     CMTime duration=CMTimeMake(val, 600);
@@ -116,11 +118,11 @@
         
         if([file isKindOfClass:[AudioFile class]]){
            AudioFile * afile = (AudioFile *)file;
-            //[fm removeItemAtPath:afile.path error:&error];
+            [fm removeItemAtPath:afile.path error:&error];
         }
         if([file isKindOfClass:[VideoFile class]]){
             AudioFile * vfile = (AudioFile *)file;
-           // [fm removeItemAtPath:vfile.path error:&error];
+           [fm removeItemAtPath:vfile.path error:&error];
         }
        
     }
