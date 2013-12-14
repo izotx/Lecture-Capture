@@ -114,17 +114,17 @@
 //adds new slide
 - (IBAction)addNewSlide:(id)sender {
     //mark previous slide as unselected
+    [self.lecture.slides enumerateObjectsUsingBlock:^(Slide * obj, BOOL *stop) {
+        obj.selected =@0;
+         [SlideAPI save];
+        
+    }];
+   
     
     Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
-    _currentSlide.selected = @0;
-    [SlideAPI save];
-    _currentSlide = slide;
-    _currentSlide.selected = @1;
-    
+    [self.collectionView reloadData];
 
-    [self.lecture.slides enumerateObjectsUsingBlock:^(Slide * obj, BOOL *stop) {
-        NSLog(@"%@ %@",obj.selected,obj.order);
-    }];
+    
     
     
     [self performSelectorOnMainThread:@selector(loadSlide:) withObject:slide waitUntilDone:NO];
@@ -148,20 +148,16 @@
 -(void)loadSlide:(Slide *)slide{
    //if slide contains video, display it
     _currentSlide.selected = @0;
-     [SlideAPI save];
+    slide.selected= @1;
     _currentSlide = slide;
-    _currentSlide.selected = @1;
     [SlideAPI save];
     
     [self.collectionView reloadData];
-  
-    NSLog(@"Current Slide: %@",slide.selected);
     
     if(slide.video.length>0){
         [self.view addSubview:self.webVideoView];
         self.webVideoView.frame = self.recordingScreenView.frame;
         [self.webVideoView loadVideoWithURL:[NSURL fileURLWithPath: slide.url]];
-        
         
         [self.view addSubview: self.sideControls];
         
@@ -642,11 +638,11 @@
 }
 
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    self.currentSlide.selected = @0;
+    
     //show slide on the screen
    Slide * s = [_fetchedController objectAtIndexPath:indexPath];
     NSLog(@"Slide %@ %@",s.selected,s.order);
-    
+    self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
     
