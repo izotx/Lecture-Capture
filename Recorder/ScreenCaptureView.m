@@ -240,6 +240,8 @@
 		free(bitmapData);
 		bitmapData = NULL;
 	}
+   
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name: UIApplicationWillResignActiveNotification object:nil];
      NSLog(@"Clean Up Writer");
@@ -247,6 +249,7 @@
 
 - (void)dealloc {
 	[self cleanupWriter];
+    
    
 }
 
@@ -324,7 +327,7 @@
 	}
 
 	[videoWriter finishWritingWithCompletionHandler:^{
-        [self cleanupWriter];
+       
         
         if(videoWriter.status == AVAssetWriterStatusFailed)
         {
@@ -333,10 +336,10 @@
         else{
             self.completed = YES;
             _ready = YES;
-            
-            
+             self.outputPath = nil;
+            NSLog(@"Video Finished Writing. Completed ");
         }
-        
+         [self cleanupWriter];
         }];
 	}
 }

@@ -102,7 +102,8 @@
 - (void) stopRecording{
     
     [_recorder stop];
-    self.isRecording = NO;
+    
+  
 }
 
 
@@ -115,7 +116,8 @@
 
     self.ready = YES;
     self.completed = YES;
-    
+    self.isRecording = NO;
+    self.recorderFilePath = nil;
 }
 
 -(void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder error:(NSError *)error{

@@ -35,14 +35,14 @@
             NSLog(@"Movie doesn't exist %@ ",movieFilePath);
         }
         else{
-           
+           NSLog(@"Audio exists %@ ",movieFilePath);
         }
         
         if(![fm fileExistsAtPath:audioFilePath]){
             NSLog(@"Audio doesn't exist %@ ",audioFilePath);
         }
         else{
-            //NSLog(@"Audio exists %@ ",audioFilePath);
+            NSLog(@"Audio exists %@ ",audioFilePath);
         }
         
         
@@ -77,7 +77,8 @@
     exporter.shouldOptimizeForNetworkUse=YES;
     
     CMTimeValue val = mixComposition.duration.value;
-    
+   // NSLog(@"Seconds %f",CMTimeGetSeconds(mixComposition.duration));
+
     CMTime start=CMTimeMake(0, 600);
     CMTime duration=CMTimeMake(val, 600);
     CMTimeRange range=CMTimeRangeMake(start, duration);
@@ -100,9 +101,7 @@
 
                 block(true,duration,slide,path);
                 NSLog(@"Seconds %f",CMTimeGetSeconds(duration));
-                [self cleanFiles:audioPieces];
-                [self cleanFiles:videoPieces];
-                 
+                
             }
         }}];
 }
@@ -113,24 +112,26 @@
     NSFileManager * fm = [NSFileManager  defaultManager];
     NSError * error = nil;
     
-    
     for(NSManagedObject * file in files){
         
         if([file isKindOfClass:[AudioFile class]]){
            AudioFile * afile = (AudioFile *)file;
-            [fm removeItemAtPath:afile.path error:&error];
+            //[fm removeItemAtPath:afile.path error:&error];
         }
         if([file isKindOfClass:[VideoFile class]]){
             AudioFile * vfile = (AudioFile *)file;
-            [fm removeItemAtPath:vfile.path error:&error];
+           // [fm removeItemAtPath:vfile.path error:&error];
         }
        
     }
     if(error){
         NSLog(@"Error While deleting file pieces: %@",[error debugDescription]);
     }
-    
 }
+
+
+
+
 
 +(NSString*)getRandomFilePath{
     NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];

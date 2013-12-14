@@ -21,7 +21,7 @@
 #import "AudioFile.h"
 #import "VideoFile.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
-
+#import <RACEXTScope.h>
 #define FRAME_RATE 10
 
 @interface RecorderViewController ()<TJLFetchedResultsSourceDelegate, UICollectionViewDelegate>
@@ -118,6 +118,7 @@
     Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
     [self loadSlide:slide];
     
+    
 }
 
 -(void)setLecture:(Lecture *)lecture{
@@ -136,9 +137,14 @@
 -(void)loadSlide:(Slide *)slide{
    //if slide contains video, display it
     _currentSlide.selected = @0;
+     [SlideAPI save];
     _currentSlide = slide;
     _currentSlide.selected = @1;
     [SlideAPI save];
+    [self.collectionView reloadData];
+  
+    NSLog(@"Current Slide: %@",slide.selected);
+    
     if(slide.video.length>0){
         [self.view addSubview:self.webVideoView];
         self.webVideoView.frame = self.recordingScreenView.frame;
@@ -159,17 +165,14 @@
 
 -(void)finishAndPutTogether{
     
-   recordingScreenView.outputPath = nil;
-    _ar.recorderFilePath =nil;
-    
-   
     NSString * path = [IOHelper getRandomFilePath];
     NSArray * video = [self.currentSlide.videoFiles allObjects];
     NSArray * audio = [self.currentSlide.audioFiles allObjects];
-
-    [ioHelper putTogetherVideo:video andAudioPieces:audio andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
-            
-            
+    //self.currentSlide.se
+      frameCounter=0;
+    //finish it only if video and audio exist
+    if(video.count> 0 && audio.count>0){
+        [ioHelper putTogetherVideo:video andAudioPieces:audio andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
             NSString * message;
             if(success){
                 
@@ -180,17 +183,25 @@
                 if(error){
                     NSLog(@"Error %@",error.debugDescription);
                 }
+                [ioHelper cleanFiles:slide.videoFiles.allObjects];
+                [ioHelper cleanFiles:slide.audioFiles.allObjects];
+                //slide.videoFiles = nil;
+                //slide.audioFiles = nil;
                 
                 [SlideAPI save];
                 [self.collectionView reloadData];
                 
-                //[self loadSlide:slide];
+                [self loadSlide:slide];
             }
             else{
                 message = @"Movie wasn't successfully saved.";
             }
         } forSlide:self.currentSlide saveAtPath:path];
-}
+    
+    }
+    
+   
+   }
 
 
 
@@ -208,7 +219,7 @@
 //Finish recording slide.
 -(IBAction)finishRecording:(id)sender
 {
-    self.recording = NO;
+   
     self.finishRecording = YES;
     [self stopRecording];
 }
@@ -283,8 +294,7 @@
             self.currentSlide.thumbnail = nil;
             
             [self.webVideoView removeFromSuperview];
-            
-            
+
             [SlideAPI save];
             [self record];
         
@@ -304,14 +314,9 @@
 {
 
     if(!_paused){
-        [recordingScreenView performSelector:@selector(stopRecording)];
-        [_ar performSelector:@selector(stopRecording)];
+        [self stopRecording];
         _paused = YES;
-        _recording = NO;
-        if([durationTimer isValid]){
-            [durationTimer invalidate];
-        }
-        }
+     }
  
 }
 
@@ -383,59 +388,6 @@
 }
 
 
-
-//Save to Core Data
--(BOOL)saveData:(CMTime)d ofPath:(NSString * )pathToSave{
-    [LectureAPI saveLecture:self.lecture];
-    
-    /*
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    if(!self.managedObjectContext)
-    {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        self.managedObjectContext=appDelegate.managedObjectContext;
-    }
-    int durationInSeconds = CMTimeGetSeconds(d);
-    NSString* time =    [self timeConverter:durationInSeconds];
-    //Calculating size
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:pathToSave error:nil];
-    NSString *fileSize;
-    if(fileAttributes != nil)
-    {
-        fileSize = [fileAttributes objectForKey:NSFileSize];
-        float fileSizeMB = [fileSize intValue]/1024.0/1024.0;
-       // NSLog(@"File Size is: %@ %f",fileSize,fileSizeMB);
-        fileSize=[NSString stringWithFormat:@"%.1f MB",fileSizeMB];
-    }
-    else{
-        fileSize=@"";
-    }
-    
-    
-    Video * videoObject= [NSEntityDescription insertNewObjectForEntityForName:@"Video" inManagedObjectContext:self.managedObjectContext];
-    videoObject.video_path= pathToSave;
-    videoObject.title=self.movie_title;
-    videoObject.duration =time;
-    videoObject.video_size=fileSize;
-    
-    
-    NSError * error=nil;
-    [self.managedObjectContext save:&error];
-    if(error==nil)
-    {
-        NSLog(@"Data Saved");
-        return YES;
-    }
-    else{
-        NSLog(@"Error %@",[error debugDescription]);
-        return NO;
-    }
-  */
-    return YES;
-    
-}
 
 -(void)dismissMe:(NSString *) message{
     [activityIndicator stopAnimating];
@@ -678,13 +630,12 @@
 }
 
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-//    self.currentSlide.selected = @0;
-//    //show slide on the screen
-//    self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
-//    self.currentSlide.selected = @1;
-//
+    self.currentSlide.selected = @0;
+    //show slide on the screen
+    self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
+    self.currentSlide.selected = @1;
     
-    //display warning???
+    [SlideAPI save];
     
     [self loadSlide:[_fetchedController objectAtIndexPath:indexPath]];
 
@@ -765,9 +716,8 @@ RAC(self, puttingTogether) =[RACSignal
                            
                            if(self.finishRecording & k){
                                [self finishAndPutTogether];
-
+                             
                            }
-
                            
                            return [NSNumber numberWithBool:k] ;
                        }];
@@ -784,14 +734,14 @@ RAC(self, puttingTogether) =[RACSignal
 
          return  @"";
      }];
-    
+
+@weakify(self)
 //Monitoring Recording
 RAC(self,recording) =[RACSignal
                           combineLatest:@[RACObserve(self, recordingScreenView.recording),RACObserve(self, ar.isRecording)]
                           reduce:^(NSNumber *ar, NSNumber *mp) {
                               BOOL k = ar.boolValue & mp.boolValue;
-                              //NSLog(@"Recording is: %d",k);
-                              
+                            
                               return [NSNumber numberWithBool:k] ;
                           }];
 
