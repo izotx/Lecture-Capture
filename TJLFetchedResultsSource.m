@@ -37,6 +37,15 @@ self = [super init];
    // _user = user;
     _objectChanges = [NSMutableArray new];
     _fetchedResultsController = controller;
+    [self updateContent];
+    _fetchedResultsController.delegate = self;
+    _delegate = delegate;
+
+   
+    return self;
+}
+
+-(void)updateContent;{
     NSError *error = nil;
     if(![_fetchedResultsController performFetch:&error]) {
         // Replace this implementation with code to handle the error appropriately.
@@ -45,11 +54,8 @@ self = [super init];
         abort();
     }
 
-    _fetchedResultsController.delegate = self;
-    _delegate = delegate;
-
-    return self;
 }
+
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
     return [self.fetchedResultsController objectAtIndexPath:indexPath];

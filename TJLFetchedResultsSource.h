@@ -22,6 +22,7 @@
 
 @interface TJLFetchedResultsSource : NSObject <UICollectionViewDataSource, NSFetchedResultsControllerDelegate>
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)controller delegate:(id <TJLFetchedResultsSourceDelegate>)delegate;// user:(MPCUser *)user;
+-(void)updateContent;
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
 

@@ -85,21 +85,27 @@
 
 
 -(void)configureFetchedController{
-  AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
+
+    
     [frequest setEntity: [NSEntityDescription entityForName:  @"Slide" inManagedObjectContext:appDelegate.managedObjectContext ]];
     [frequest setPredicate: [NSPredicate predicateWithFormat: @"lecture == %@", self.lecture
                              ]];
     NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
     [frequest setSortDescriptors:@[sd]];
-    
+    _fetchedController = nil;
     _fetchedController = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
     _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self];
     
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;
     _slideAPI = [[SlideAPI alloc]init];
+
+
     
+   
 }
 
 - (IBAction)dismiss:(id)sender {
@@ -115,18 +121,14 @@
 - (IBAction)addNewSlide:(id)sender {
     //mark previous slide as unselected
     [self.lecture.slides enumerateObjectsUsingBlock:^(Slide * obj, BOOL *stop) {
-        obj.selected =@0;
-         [SlideAPI save];
         
     }];
-   
-    
-    Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
-    [self.collectionView reloadData];
+    for(int i=0; i<self.lecture.slides.count;i++){
+        [(Slide *) self.lecture.slides.allObjects[i] setSelected: @0];
+        [SlideAPI save];
 
-    
-    
-    
+    }
+    Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
     [self performSelectorOnMainThread:@selector(loadSlide:) withObject:slide waitUntilDone:NO];
 
     
@@ -145,14 +147,17 @@
     }
 }
 
+
+
+
 -(void)loadSlide:(Slide *)slide{
    //if slide contains video, display it
     _currentSlide.selected = @0;
     slide.selected= @1;
     _currentSlide = slide;
     [SlideAPI save];
-    
-    [self.collectionView reloadData];
+
+    [self.datasource updateContent];
     
     if(slide.video.length>0){
         [self.view addSubview:self.webVideoView];
@@ -629,6 +634,13 @@
 
 #pragma mark - TJLFetchedResultsSourceDelegate & Collection View
 
+-(void)didUpdateObjectAtIndexPath:(NSIndexPath *)indexPath{
+    UICollectionView *strongCollectionView = self.collectionView;
+    [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
+    
+    
+}
+
 - (void)didInsertObjectAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionView *strongCollectionView = self.collectionView;
     [strongCollectionView insertItemsAtIndexPaths:@[indexPath]];
@@ -640,7 +652,7 @@
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     //show slide on the screen
-   Slide * s = [_fetchedController objectAtIndexPath:indexPath];
+    Slide * s = [_fetchedController objectAtIndexPath:indexPath];
     NSLog(@"Slide %@ %@",s.selected,s.order);
     self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
