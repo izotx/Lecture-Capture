@@ -6,13 +6,6 @@
 // project.
 
 
-// LXReorderableCollectionViewFlowLayout
-#define COCOAPODS_POD_AVAILABLE_LXReorderableCollectionViewFlowLayout
-// This library does not follow semantic-versioning,
-// so we were not able to define version macros.
-// Please contact the author.
-// Version: 0.1.0.beta1.
-
 // ReactiveCocoa
 #define COCOAPODS_POD_AVAILABLE_ReactiveCocoa
 #define COCOAPODS_VERSION_MAJOR_ReactiveCocoa 2

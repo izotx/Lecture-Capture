@@ -196,7 +196,7 @@
     //finish it only if video and audio exist
     if(video.count> 0 && audio.count>0){
         [ioHelper putTogetherVideo:video andAudioPieces:audio andCompletionBlock:^(BOOL success,CMTime duration, Slide *slide, NSString * path) {
-            NSString * message;
+          
             if(success){
                 
                 slide.duration = [NSNumber numberWithInt:CMTimeGetSeconds(duration)] ;
@@ -217,7 +217,7 @@
 
             }
             else{
-                message = @"Movie wasn't successfully saved.";
+          
             }
         } forSlide:self.currentSlide saveAtPath:path];
     
@@ -333,9 +333,17 @@
     
 }
 - (IBAction)changeLayout:(id)sender {
-    self.collectionView.frame = self.view.frame;
+   
     
     
+    if(CGRectEqualToRect(self.collectionView.frame,defaultRect)){
+        self.collectionView.frame = self.recordingScreenView.frame;
+    }
+    else{
+        self.collectionView.frame = defaultRect;
+    }
+    
+      [self.view addSubview: self.sideControls];
     
 }
 
@@ -482,8 +490,7 @@
 #pragma mark adding image
 - (void)showImagePicker {
     [self.photoPicker showImagePickerForPhotoPicker:self withCompletionBlock:^(UIImage *img) {
-      //  self.currentImage = img;
-        if(img){
+         if(img){
           UIImage *resizeImage = [img imageByScalingProportionallyToSize:recordingScreenView.frame.size];
           [self performSelectorInBackground:@selector(useImage:) withObject:resizeImage];
         }
@@ -651,8 +658,8 @@
 #pragma mark - TJLFetchedResultsSourceDelegate & Collection View
 
 -(void)didUpdateObjectAtIndexPath:(NSIndexPath *)indexPath{
-   // UICollectionView *strongCollectionView = self.collectionView;
-   // [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
+    UICollectionView *strongCollectionView = self.collectionView;
+    [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
     [self.collectionView reloadData];
     
 }
@@ -661,7 +668,7 @@
     UICollectionView *strongCollectionView = self.collectionView;
     [strongCollectionView insertItemsAtIndexPaths:@[indexPath]];
     if(indexPath.row != 0) {
-        [strongCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        [strongCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     }
 }
 
@@ -669,7 +676,6 @@
     
     //show slide on the screen
     Slide * s = [_fetchedController objectAtIndexPath:indexPath];
-    NSLog(@"Slide %@ %@",s.selected,s.order);
     self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
@@ -719,7 +725,7 @@
 
 }
 
-
+CGRect defaultRect;
 #pragma mark view management
 - (void)viewDidLoad
 {
@@ -728,7 +734,7 @@
     _paused = NO;
     _recording= NO;
     self.collectionView.draggable = YES;
-    
+    defaultRect = self.collectionView.frame;
     ioHelper  = [[IOHelper alloc]init];
     _ar = [[AudioRecorder alloc]init];
 
