@@ -22,6 +22,9 @@
 #import "VideoFile.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <RACEXTScope.h>
+#import "UICollectionView+Draggable.h"
+#import "UICollectionViewDataSource_Draggable.h"
+
 #define FRAME_RATE 10
 
 @interface RecorderViewController ()<TJLFetchedResultsSourceDelegate, UICollectionViewDelegate>
@@ -49,7 +52,6 @@
 @property (strong, nonatomic) IBOutlet UIView *sideControls;
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
-
 @property(strong,nonatomic) Slide * currentSlide;
 @property(strong,nonatomic) SlideAPI * slideAPI;
 @property(strong,nonatomic) WebVideoView * webVideoView;
@@ -68,6 +70,7 @@
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UILabel *informationLabel;
 @property (strong,nonatomic) NSString * testString;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *collectionViewDisplayMode;
 
 
 - (IBAction)eraseRecording:(id)sender;
@@ -88,8 +91,7 @@
     
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
-
-    
+    [frequest setFetchBatchSize:20];
     [frequest setEntity: [NSEntityDescription entityForName:  @"Slide" inManagedObjectContext:appDelegate.managedObjectContext ]];
     [frequest setPredicate: [NSPredicate predicateWithFormat: @"lecture == %@", self.lecture
                              ]];
@@ -98,14 +100,11 @@
     _fetchedController = nil;
     _fetchedController = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
     _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self];
-    
+
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;
     _slideAPI = [[SlideAPI alloc]init];
 
-
-    
-   
 }
 
 - (IBAction)dismiss:(id)sender {
@@ -120,18 +119,29 @@
 //adds new slide
 - (IBAction)addNewSlide:(id)sender {
     //mark previous slide as unselected
-    [self.lecture.slides enumerateObjectsUsingBlock:^(Slide * obj, BOOL *stop) {
-        
-    }];
+//    dispatch_queue_t mySerialDispatchQueue = dispatch_queue_create("com.example.gcd.MySerialDispatchQueue", NULL);
+//    dispatch_async(mySerialDispatchQueue, ^{
+//        Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture afterSlide:self.currentSlide];
+//        for(int i=0; i<self.lecture.slides.count;i++){
+//            [(Slide *) self.lecture.slides.allObjects[i] setSelected: @0];
+//            [SlideAPI save];
+//            
+//        }
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self loadSlide:slide];
+//            
+//        });
+//        
+//    });
+//    
+    Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture afterSlide:self.currentSlide];
     for(int i=0; i<self.lecture.slides.count;i++){
         [(Slide *) self.lecture.slides.allObjects[i] setSelected: @0];
         [SlideAPI save];
-
+        
     }
-    Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture];
-    [self performSelectorOnMainThread:@selector(loadSlide:) withObject:slide waitUntilDone:NO];
-
-    
+     [self loadSlide:slide];
+   
 }
 
 -(void)setLecture:(Lecture *)lecture{
@@ -320,6 +330,12 @@
 
     }
 
+    
+}
+- (IBAction)changeLayout:(id)sender {
+    self.collectionView.frame = self.view.frame;
+    
+    
     
 }
 
@@ -635,9 +651,9 @@
 #pragma mark - TJLFetchedResultsSourceDelegate & Collection View
 
 -(void)didUpdateObjectAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionView *strongCollectionView = self.collectionView;
-    [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
-    
+   // UICollectionView *strongCollectionView = self.collectionView;
+   // [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
+    [self.collectionView reloadData];
     
 }
 
@@ -711,7 +727,8 @@
 
     _paused = NO;
     _recording= NO;
-
+    self.collectionView.draggable = YES;
+    
     ioHelper  = [[IOHelper alloc]init];
     _ar = [[AudioRecorder alloc]init];
 

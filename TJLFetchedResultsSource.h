@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UICollectionViewDataSource_Draggable.h"
 
 @protocol TJLFetchedResultsSourceDelegate <NSObject>
 @optional
@@ -20,7 +21,7 @@
 
 @end
 
-@interface TJLFetchedResultsSource : NSObject <UICollectionViewDataSource, NSFetchedResultsControllerDelegate>
+@interface TJLFetchedResultsSource : NSObject <NSFetchedResultsControllerDelegate, UICollectionViewDataSource_Draggable>
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)controller delegate:(id <TJLFetchedResultsSourceDelegate>)delegate;// user:(MPCUser *)user;
 -(void)updateContent;
 

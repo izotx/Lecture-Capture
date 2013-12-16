@@ -17,7 +17,7 @@
 
 #import "Slide.h"
 #import "SlideCell.h"
-
+#import "AppDelegate.h"
 @interface TJLFetchedResultsSource ()
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property(strong, nonatomic) NSMutableArray *objectChanges;
@@ -34,7 +34,7 @@ self = [super init];
 
     _dateFormatter = [[NSDateFormatter alloc]init];
     [_dateFormatter setDateFormat:@"MM/dd/yyyy : h:m:s"];
-   // _user = user;
+
     _objectChanges = [NSMutableArray new];
     _fetchedResultsController = controller;
     [self updateContent];
@@ -63,7 +63,9 @@ self = [super init];
 
 #pragma mark - UICollectionView Datasource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    [collectionView.collectionViewLayout invalidateLayout];
     return 1;
+    
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section; {
@@ -104,6 +106,56 @@ self = [super init];
     [self.objectChanges addObject:change];
 }
 
+
+- (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    // Prevent item from being moved to index 0
+    //    if (toIndexPath.item == 0) {
+    //        return NO;
+    //    }
+    return YES;
+}
+
+- (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+   Slide * s1  = [self.fetchedResultsController objectAtIndexPath:fromIndexPath];
+   Slide * s2 = [self.fetchedResultsController objectAtIndexPath:toIndexPath];
+
+    NSLog(@"S1: %@, S2: %@",s1.order,s2.order);
+    NSLog(@"%d %d %d %d",fromIndexPath.row,fromIndexPath.section,toIndexPath.row,toIndexPath.section);
+    
+    AppDelegate * sh = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    
+  //update all objects after the slide.
+    int so = s2.order.integerValue;
+    s1.order =s2.order;
+    s2.order = [NSNumber numberWithInteger:so +1];
+    
+    
+    
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"order > %@",s2.order];
+    
+    NSArray * array =   [self.fetchedResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    
+    for(Slide * s in array){
+        
+    }
+    
+    
+    
+    //save context
+    NSError * error;
+    [sh.managedObjectContext save:&error];
+    if(error){
+        NSLog(@"Error %@",error.debugDescription);
+    }
+}
+
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     id<TJLFetchedResultsSourceDelegate>strongDelegate = self.delegate;
     for(NSDictionary *change in self.objectChanges) {
@@ -122,6 +174,8 @@ self = [super init];
                     }
                 }
                     break;
+               
+                    
                 case NSFetchedResultsChangeUpdate: {
                     if([strongDelegate respondsToSelector:@selector(didUpdateObjectAtIndexPath:)]) {
                         [strongDelegate didUpdateObjectAtIndexPath:obj];

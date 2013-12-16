@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A598" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="2">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
@@ -703,7 +703,7 @@ If you have any questions about our policy or the security of Screen Capture app
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="rRd-Ng-qZD">
                                 <rect key="frame" x="0.0" y="608" width="1024" height="109"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QuT-Xg-ifK">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QuT-Xg-ifK" customClass="DraggableCollectionViewFlowLayout">
                                     <size key="itemSize" width="107" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -711,7 +711,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="wU2-qe-91L" customClass="SlideCell">
-                                        <rect key="frame" x="0.0" y="5" width="107" height="100"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="107" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="107" height="100"/>
@@ -908,6 +908,17 @@ If you have any questions about our policy or the security of Screen Capture app
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="N4b-F1-ko6">
+                                <rect key="frame" x="881" y="578" width="123" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="changeLayout:" destination="els-1i-Bum" eventType="valueChanged" id="eI2-7C-vRi"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -917,6 +928,7 @@ If you have any questions about our policy or the security of Screen Capture app
                         <outlet property="activityIndicator" destination="wbX-Lp-bOu" id="4PC-DD-q0x"/>
                         <outlet property="cameraBarButton" destination="kGQ-T3-KO8" id="e5N-1T-WPN"/>
                         <outlet property="collectionView" destination="rRd-Ng-qZD" id="a09-hJ-L6G"/>
+                        <outlet property="collectionViewDisplayMode" destination="N4b-F1-ko6" id="cCy-I4-V74"/>
                         <outlet property="colorBarButton" destination="tg9-mG-cay" id="JFd-CW-cjY"/>
                         <outlet property="durationLabel" destination="usg-yV-9o4" id="icl-SQ-pbv"/>
                         <outlet property="informationLabel" destination="6le-Be-ZSf" id="ooD-U9-Ksx"/>

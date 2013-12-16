@@ -1,4 +1,5 @@
 PODS:
+  - LXReorderableCollectionViewFlowLayout (0.1.0.beta1)
   - ReactiveCocoa (2.1.6):
     - ReactiveCocoa/Core
     - ReactiveCocoa/no-arc
@@ -7,9 +8,11 @@ PODS:
   - ReactiveCocoa/no-arc (2.1.6)
 
 DEPENDENCIES:
+  - LXReorderableCollectionViewFlowLayout (~> 0.1.0.beta1)
   - ReactiveCocoa (= 2.1.6)
 
 SPEC CHECKSUMS:
+  LXReorderableCollectionViewFlowLayout: b4696ccd964061262bb314b88272a7b1110ec00b
   ReactiveCocoa: 72490a0bf36762de33fef925db520b91afbdcfa7
 
-COCOAPODS: 0.23.0
+COCOAPODS: 0.28.0

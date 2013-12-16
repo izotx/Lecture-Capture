@@ -23,7 +23,10 @@
 -(void)configureWithSlide:(Slide  *)slide;{
     self.slidePreviewImage.image = [UIImage imageWithData:slide.thumbnail];
     self.slideDurationLabel.text=  [NSString stringWithFormat:@"%@", slide.duration];
-
+    self.opaque = YES;
+    self.layer.shouldRasterize = YES;
+    self.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    
     if([slide.selected  isEqual:@1]){
         self.backgroundColor = [UIColor purpleColor];
     }

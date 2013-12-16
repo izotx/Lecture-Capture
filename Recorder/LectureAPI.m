@@ -11,11 +11,11 @@
 #import "AppDelegate.h"
 #import "Slide.h"
 @implementation LectureAPI
-+ (Slide *)addNewSlideToLecture:(Lecture *)lecture{
++ (Slide *)addNewSlideToLecture:(Lecture *)lecture afterSlide:(Slide*)previousSlide{
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
     [lecture addSlidesObject:slide];
-    slide.order = [NSNumber numberWithInt:lecture.slides.count + 1];
+    slide.order = [NSNumber numberWithInt:previousSlide.order.intValue + 1];
     slide.selected = @1;
     slide.lecture = lecture;
     NSError *error;

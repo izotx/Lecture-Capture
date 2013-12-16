@@ -139,6 +139,10 @@
 		6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C37B7E03D6432B8FD7DF0A /* libPods.a */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
+		82EA442A185E8BC6007FBC6E /* LSCollectionViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */; };
+		82EA442B185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4422185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m */; };
+		82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4425185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m */; };
+		82EA442D185E8BC6007FBC6E /* UICollectionView+Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4427185E8BC6007FBC6E /* UICollectionView+Draggable.m */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
 		82F215CA184D858100406EDC /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 82F215C9184D858100406EDC /* Slide.m */; };
 		B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7AC82781835FC9300FAF74F /* QuartzCore.framework */; };
@@ -321,6 +325,16 @@
 		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomTableButton.h; path = Recorder/CustomTableButton.h; sourceTree = "<group>"; };
 		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomTableButton.m; path = Recorder/CustomTableButton.m; sourceTree = "<group>"; };
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		82EA441F185E8BC6007FBC6E /* LSCollectionViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewHelper.h; sourceTree = "<group>"; };
+		82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSCollectionViewHelper.m; sourceTree = "<group>"; };
+		82EA4421185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewLayoutHelper.h; sourceTree = "<group>"; };
+		82EA4422185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSCollectionViewLayoutHelper.m; sourceTree = "<group>"; };
+		82EA4424185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		82EA4425185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraggableCollectionViewFlowLayout.m; sourceTree = "<group>"; };
+		82EA4426185E8BC6007FBC6E /* UICollectionView+Draggable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+Draggable.h"; sourceTree = "<group>"; };
+		82EA4427185E8BC6007FBC6E /* UICollectionView+Draggable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Draggable.m"; sourceTree = "<group>"; };
+		82EA4428185E8BC6007FBC6E /* UICollectionViewDataSource_Draggable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewDataSource_Draggable.h; sourceTree = "<group>"; };
+		82EA4429185E8BC6007FBC6E /* UICollectionViewLayout_Warpable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewLayout_Warpable.h; sourceTree = "<group>"; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
 		82F215C8184D858100406EDC /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
@@ -476,6 +490,7 @@
 				4F864BDA183C094500C888B8 /* Slide+Operations.m */,
 				4F65E1D7183FCB60004C5607 /* SlideAPI.h */,
 				4F65E1D8183FCB60004C5607 /* SlideAPI.m */,
+				82EA441D185E8BC6007FBC6E /* DraggableCollectionView */,
 				4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */,
 				4F9D58E818203765000A004F /* Recording */,
 				4F9D58E9182037A3000A004F /* CoreData */,
@@ -671,6 +686,39 @@
 				4F9D594F18205B72000A004F /* UIImageView+AFNetworking.m */,
 			);
 			name = AFNetworking;
+			sourceTree = "<group>";
+		};
+		82EA441D185E8BC6007FBC6E /* DraggableCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				82EA441E185E8BC6007FBC6E /* Helpers */,
+				82EA4423185E8BC6007FBC6E /* Layout */,
+				82EA4426185E8BC6007FBC6E /* UICollectionView+Draggable.h */,
+				82EA4427185E8BC6007FBC6E /* UICollectionView+Draggable.m */,
+				82EA4428185E8BC6007FBC6E /* UICollectionViewDataSource_Draggable.h */,
+				82EA4429185E8BC6007FBC6E /* UICollectionViewLayout_Warpable.h */,
+			);
+			path = DraggableCollectionView;
+			sourceTree = "<group>";
+		};
+		82EA441E185E8BC6007FBC6E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				82EA441F185E8BC6007FBC6E /* LSCollectionViewHelper.h */,
+				82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */,
+				82EA4421185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.h */,
+				82EA4422185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		82EA4423185E8BC6007FBC6E /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				82EA4424185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.h */,
+				82EA4425185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m */,
+			);
+			path = Layout;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -873,6 +921,7 @@
 				4F65E20118400B23004C5607 /* VideoFile.m in Sources */,
 				4F9D595718205B72000A004F /* AFXMLRequestOperation.m in Sources */,
 				4F9D595118205B72000A004F /* AFHTTPRequestOperation.m in Sources */,
+				82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */,
 				4F9D593A18205AFB000A004F /* Video.m in Sources */,
 				4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */,
 				4F9D595818205B72000A004F /* UIImageView+AFNetworking.m in Sources */,
@@ -887,6 +936,7 @@
 				4F864BDB183C094500C888B8 /* Slide+Operations.m in Sources */,
 				4F9D593918205AFB000A004F /* Utilities.m in Sources */,
 				4F45454C1635F1040091F335 /* AppDelegate.m in Sources */,
+				82EA442D185E8BC6007FBC6E /* UICollectionView+Draggable.m in Sources */,
 				4F45454F1635F12B0091F335 /* ViewController.m in Sources */,
 				4F9D597F18205C43000A004F /* CameraPicker.m in Sources */,
 				4F9D597518205C17000A004F /* UIImageAddition.m in Sources */,
@@ -908,8 +958,10 @@
 				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,
 				4F9D596B18205B91000A004F /* ILSaturationBrightnessPickerView.m in Sources */,
 				4F9D595418205B72000A004F /* AFNetworkActivityIndicatorManager.m in Sources */,
+				82EA442B185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m in Sources */,
 				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,
 				4F9D596C18205B91000A004F /* UIColor+GetHSB.m in Sources */,
+				82EA442A185E8BC6007FBC6E /* LSCollectionViewHelper.m in Sources */,
 				4F9D596618205B91000A004F /* ILView.m in Sources */,
 				4F864C00183D73C100C888B8 /* SlideCell.m in Sources */,
 				4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */,
