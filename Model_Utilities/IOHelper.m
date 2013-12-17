@@ -79,10 +79,13 @@
     exporter.shouldOptimizeForNetworkUse=YES;
     
     CMTimeValue val = mixComposition.duration.value;
-    NSLog(@"Seconds %f",CMTimeGetSeconds(mixComposition.duration));
+    NSLog(@"Mix Composition Seconds %f",CMTimeGetSeconds(mixComposition.duration));
 
     CMTime start=CMTimeMake(0, 600);
     CMTime duration=CMTimeMake(val, 600);
+    
+    NSLog(@"Exporter Seconds %f",CMTimeGetSeconds(duration));
+    
     CMTimeRange range=CMTimeRangeMake(start, duration);
     exporter.timeRange=range;
     
@@ -100,10 +103,7 @@
             {
                 slide.video = [NSData dataWithContentsOfURL:movieURL];
                 slide.url = path;
-
-                block(true,duration,slide,path);
-                NSLog(@"Seconds %f",CMTimeGetSeconds(duration));
-                
+                block(true, mixComposition.duration,slide,path);
             }
         }}];
 }

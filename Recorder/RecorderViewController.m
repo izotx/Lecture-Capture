@@ -675,7 +675,7 @@
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     //show slide on the screen
-    Slide * s = [_fetchedController objectAtIndexPath:indexPath];
+   // Slide * s = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
