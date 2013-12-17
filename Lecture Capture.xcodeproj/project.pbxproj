@@ -143,6 +143,7 @@
 		82EA442B185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4422185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m */; };
 		82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4425185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m */; };
 		82EA442D185E8BC6007FBC6E /* UICollectionView+Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4427185E8BC6007FBC6E /* UICollectionView+Draggable.m */; };
+		82EA443018600B59007FBC6E /* NewRecordingScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA442F18600B59007FBC6E /* NewRecordingScreenViewController.m */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
 		82F215CA184D858100406EDC /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 82F215C9184D858100406EDC /* Slide.m */; };
 		B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7AC82781835FC9300FAF74F /* QuartzCore.framework */; };
@@ -335,6 +336,8 @@
 		82EA4427185E8BC6007FBC6E /* UICollectionView+Draggable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Draggable.m"; sourceTree = "<group>"; };
 		82EA4428185E8BC6007FBC6E /* UICollectionViewDataSource_Draggable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewDataSource_Draggable.h; sourceTree = "<group>"; };
 		82EA4429185E8BC6007FBC6E /* UICollectionViewLayout_Warpable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewLayout_Warpable.h; sourceTree = "<group>"; };
+		82EA442E18600B59007FBC6E /* NewRecordingScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewRecordingScreenViewController.h; sourceTree = "<group>"; };
+		82EA442F18600B59007FBC6E /* NewRecordingScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewRecordingScreenViewController.m; sourceTree = "<group>"; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
 		82F215C8184D858100406EDC /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
@@ -478,6 +481,8 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				82EA442E18600B59007FBC6E /* NewRecordingScreenViewController.h */,
+				82EA442F18600B59007FBC6E /* NewRecordingScreenViewController.m */,
 				4F65E1D4183FB58F004C5607 /* WebVideoView.h */,
 				4F65E1D5183FB58F004C5607 /* WebVideoView.m */,
 				4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */,
@@ -924,6 +929,7 @@
 				82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */,
 				4F9D593A18205AFB000A004F /* Video.m in Sources */,
 				4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */,
+				82EA443018600B59007FBC6E /* NewRecordingScreenViewController.m in Sources */,
 				4F9D595818205B72000A004F /* UIImageView+AFNetworking.m in Sources */,
 				4FD48DAE154AC95D007880C2 /* main.m in Sources */,
 				4F9D596918205B91000A004F /* ILColorPickerView.m in Sources */,

@@ -737,6 +737,10 @@ CGRect defaultRect;
     defaultRect = self.collectionView.frame;
     ioHelper  = [[IOHelper alloc]init];
     _ar = [[AudioRecorder alloc]init];
+    
+    self.navigationController.navigationBar.translucent = YES;
+    self.edgesForExtendedLayout = UIRectEdgeAll;
+    
 
 //does the slide contains video??
 // what now if so add video preview
@@ -832,16 +836,10 @@ RAC(self,recording) =[RACSignal
     cp.delegate = self;
     
     _webVideoView = [[WebVideoView alloc]initWithFrame:recordingScreenView.frame];
-    
-    
     [self configureFetchedController];
     
     _ready = YES;
-
-    
-    
-    
-    
+  
 }
 
 - (void)viewDidDisappear:(BOOL)animated
