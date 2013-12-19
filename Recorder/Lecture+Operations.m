@@ -9,11 +9,15 @@
 #import "Lecture+Operations.h"
 #import "AppDelegate.h"
 
-
-
-
 @implementation Lecture (Operations)
 
+- (id)initLectureWithName:(NSString *)name;{
+    self = [super init];
+    if(self){
+        
+    }
+    return self;
+}
 
 - (void)removeLecture;
 {
@@ -35,6 +39,8 @@
     
 }
 
-
+-(id)reorderSlides;{
+        return nil;
+}
 
 @end

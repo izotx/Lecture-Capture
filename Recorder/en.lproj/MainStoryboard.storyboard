@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A598" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="2">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
@@ -182,6 +182,12 @@ If you have any questions about our policy or the security of Screen Capture app
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
+                            <webView contentMode="scaleAspectFit" id="AYe-xP-NWF">
+                                <rect key="frame" x="289" y="48" width="730" height="494"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <dataDetectorType key="dataDetectorTypes"/>
+                            </webView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="MB6-hw-dBj">
                                 <rect key="frame" x="725" y="622" width="189" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -249,7 +255,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="58" sectionHeaderHeight="45" sectionFooterHeight="22" id="zxE-tY-RXK">
-                                <rect key="frame" x="0.0" y="97" width="281" height="627"/>
+                                <rect key="frame" x="0.0" y="44" width="281" height="680"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -335,9 +341,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                     <barButtonItem title="+New Recording" id="KQx-xk-vtW">
                                         <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
-                                            <segue destination="psh-k6-9wg" kind="popover" identifier="showNewScreen" popoverAnchorBarButtonItem="KQx-xk-vtW" id="Jr1-3k-JSV">
-                                                <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                            </segue>
+                                            <action selector="createNewRecording:" destination="2" id="d1B-Jj-fdM"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="101" style="plain" systemItem="fixedSpace" id="VU3-bw-kbF"/>
@@ -418,11 +422,6 @@ If you have any questions about our policy or the security of Screen Capture app
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
-                            <view contentMode="scaleToFill" id="TnF-1X-Uby">
-                                <rect key="frame" x="310" y="53" width="688" height="476"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -437,8 +436,8 @@ If you have any questions about our policy or the security of Screen Capture app
                         <outlet property="tableView" destination="zxE-tY-RXK" id="Bwl-ai-LCr"/>
                         <outlet property="uploadingVideoActivityIndicator" destination="TbU-CF-Xfd" id="jx9-9k-rYg"/>
                         <outlet property="uploadingVideoLabel" destination="rJs-bP-9fc" id="HsR-XS-8d3"/>
-                        <outlet property="videoPlaceholder" destination="TnF-1X-Uby" id="aRV-gj-pm8"/>
                         <outlet property="videoTitleLabel" destination="aEM-7r-3XB" id="obx-DL-kHi"/>
+                        <outlet property="webView" destination="AYe-xP-NWF" id="e8X-vj-wca"/>
                         <segue destination="ZZK-Lk-Pyp" kind="custom" identifier="PopoverSegue" customClass="ViewController" id="3MV-Wi-4eQ"/>
                     </connections>
                 </viewController>
@@ -487,6 +486,9 @@ If you have any questions about our policy or the security of Screen Capture app
                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <segue destination="els-1i-Bum" kind="modal" identifier="CreateNew" id="Ob2-9B-tzD"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="FaL-9f-2Sp">
                                     <rect key="frame" x="314" y="216" width="74" height="37"/>
@@ -555,14 +557,18 @@ If you have any questions about our policy or the security of Screen Capture app
             </objects>
             <point key="canvasLocation" x="-3408" y="-1087"/>
         </scene>
-        <!--New Recording Screen View Controller-->
+        <!--View Controller-->
         <scene sceneID="ulV-rx-qBJ">
             <objects>
-                <viewController id="psh-k6-9wg" customClass="NewRecordingScreenViewController" sceneMemberID="viewController">
+                <viewController id="psh-k6-9wg" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qgg-o4-R3G">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="440"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <pickerView contentMode="scaleToFill" id="1a3-XK-Og7">
+                                <rect key="frame" x="0.0" y="74" width="320" height="216"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
                             <navigationBar contentMode="scaleToFill" id="UyU-sm-Vdt">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -570,44 +576,20 @@ If you have any questions about our policy or the security of Screen Capture app
                                     <navigationItem title="New Recording" id="KHH-t1-QxF"/>
                                 </items>
                             </navigationBar>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Select title of your new recording." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YWw-IG-aYd">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Select folder for new recording." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YWw-IG-aYd">
                                 <rect key="frame" x="37" y="50" width="246" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Add a title" textAlignment="center" minimumFontSize="17" id="p8x-ZI-zSO">
-                                <rect key="frame" x="66" y="106" width="173" height="31"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="or create a new folder" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sRX-Z0-KCl">
+                                <rect key="frame" x="93" y="292" width="246" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="2" id="bbZ-RD-KxB"/>
-                                </connections>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="9Ua-wa-1qa">
-                                <rect key="frame" x="167" y="235" width="138" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Cancel" backgroundImage="buttonBack.png">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="cancel:" destination="psh-k6-9wg" eventType="touchUpInside" id="VGx-FZ-L4z"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="IRF-Ax-cG6">
-                                <rect key="frame" x="15" y="235" width="138" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="createNew" backgroundImage="buttonBack.png">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="createNew:" destination="psh-k6-9wg" eventType="touchUpInside" id="gNR-KO-JLl"/>
-                                </connections>
-                            </button>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -616,7 +598,7 @@ If you have any questions about our policy or the security of Screen Capture app
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fpA-Rj-lVc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1775" y="-502"/>
+            <point key="canvasLocation" x="-261" y="-1367"/>
         </scene>
         <!--Recorder View Controller-->
         <scene sceneID="5wm-lH-aNB">
@@ -624,7 +606,7 @@ If you have any questions about our policy or the security of Screen Capture app
                 <viewController storyboardIdentifier="RecorderViewController" id="els-1i-Bum" customClass="RecorderViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3Ni-L6-ptj">
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6le-Be-ZSf">
                                 <rect key="frame" x="287" y="157" width="392" height="188"/>
@@ -941,10 +923,6 @@ If you have any questions about our policy or the security of Screen Capture app
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <nil key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="activityIndicator" destination="wbX-Lp-bOu" id="4PC-DD-q0x"/>
@@ -973,7 +951,7 @@ If you have any questions about our policy or the security of Screen Capture app
                     </state>
                 </button>
             </objects>
-            <point key="canvasLocation" x="-1293" y="-864"/>
+            <point key="canvasLocation" x="-1159" y="-920"/>
         </scene>
         <!--Login Register View Controller - Login Popover-->
         <scene sceneID="HTG-yH-l9f">
@@ -1030,4 +1008,7 @@ If you have any questions about our policy or the security of Screen Capture app
         <simulatedOrientationMetrics key="orientation" orientation="landscapeRight"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="wcs-tp-LSY"/>
+    </inferredMetricsTieBreakers>
 </document>

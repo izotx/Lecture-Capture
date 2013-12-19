@@ -15,16 +15,18 @@
 #import "WebVideoView.h"
 #import "AppDelegate.h"
 #import "Slide.h"
-#import "NewRecordingScreenViewController.h"
-
 @interface ViewController ()
 {
-
+   NSMutableArray * compileVideoListArray;
     __weak IBOutlet UITableView *tableView;
+    IBOutlet UITableView *compileTableView;
+    __weak IBOutlet UIImageView *videoScreenshotImageView;
     __weak IBOutlet UILabel *videoTitleLabel;
+    __weak IBOutlet UITextView *videoDescriptionTextView;
     __weak IBOutlet UITextField *editTitleTextField;
     __weak IBOutlet UITextView *editDescriptionTextView;
     __weak IBOutlet UIView *informationAboutRecordingView;
+    __weak IBOutlet UIWebView *webView;
     
     CGRect recordingViewFrame;
     NSString* videoPath;
@@ -42,13 +44,8 @@
 - (IBAction)deleteVideo:(id)sender;
 - (IBAction)cancelAndDismissRecordingView:(id)sender;
 - (IBAction)contactSupport:(id)sender;
-- (void)loadVideoWithURL:(Slide *) slide;
+- (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
-
-@property (strong, nonatomic) IBOutlet UIView *videoPlaceholder;
-@property (strong,nonatomic) RecorderViewController *r1;
-@property (strong,nonatomic) NewRecordingScreenViewController *r;
-
 
 @property(nonatomic, strong) LectureAPI *lectureAPI;
 @property(nonatomic,strong) IOHelper * iohelper;
@@ -132,36 +129,23 @@ if(manager.userId){
          
          
      }
-    if ([segue.identifier isEqualToString:@"showNewScreen"]) {
+    
+    if ([segue.identifier isEqualToString:@"CreateNew"]) {
+        RecorderViewController *r = [segue destinationViewController];
+        informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);    
+        
+        [self textFieldShouldReturn:editTitleTextField];
+      //creating new lecture
+        NSString *title = (editTitleTextField.text.length>0)?editTitleTextField.text:@"Untitled";
         
         
-        _r = [segue destinationViewController];
-        
-        void (^action)(BOOL b, NSString * title,Lecture * lecture)=^(BOOL b, NSString * title,Lecture * lecture){
-            if(b){
-                //instantiate
-                _r1 = [self.storyboard instantiateViewControllerWithIdentifier:@"RecorderViewController"];
-                _r1.lecture = lecture;
-                
-                [self presentViewController:_r1 animated:YES completion:^{
-                    
-                }];
-            }
-            else{
-                [_r dismissViewControllerAnimated:YES completion:nil];
-
-            }
-        };
-        
-        [_r actionWithBlock:action];
+        Lecture * lecture = [LectureAPI createLectureWithName:title];
+        r.lecture = lecture;
         
         
+        [self loadVideoWithURL:nil];
     }
-
-    
-    
-    
-    if ([segue.identifier isEqualToString:@"Popover"]) {
+     if ([segue.identifier isEqualToString:@"Popover"]) {
          LoginRegisterViewController * r =[segue destinationViewController];
          r.loginBarButton=self.loginBarButton;
        
@@ -220,7 +204,8 @@ if(manager.userId){
     [super viewDidLoad];
 
     //Array that is storing vidoes
-      networkHelper = [[NetworkHelper alloc]init];
+    compileVideoListArray =[[NSMutableArray alloc]initWithCapacity:0];
+    networkHelper = [[NetworkHelper alloc]init];
     
     self.uploadingVideoLabel.hidden=YES;
     self.uploadingVideoActivityIndicator.hidden=YES;
@@ -233,12 +218,13 @@ if(manager.userId){
 
     recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
-    
+    compileTableView.dataSource = self;
+    compileTableView.delegate = self;
     
     self.lectureAPI =[LectureAPI new];
     
     [self fetchedResultsController];
-   // [self loadVideoWithURL:nil];
+    [self loadVideoWithURL:nil];
 }
 
 -(void)refactorCoreData{
@@ -266,28 +252,14 @@ if(manager.userId){
 }
 
 #warning TO DO DELETE THE Load Video url and figure out why the notifications are here
-
--(void) loadVideoWithURL:(Slide *)slide{
+-(void) loadVideoWithURL:(NSURL *) url{
+       //url = outputURL;
     
-    if(slide.video.length>0){
-        [self.view addSubview:self.webVideoView];
-        self.webVideoView.frame = self.videoPlaceholder.frame;
-        [self.webVideoView loadVideoWithURL:[NSURL fileURLWithPath: slide.url]];
-    }
-    else{
-        [self.webVideoView removeFromSuperview];
+    NSString *videoHTML = [NSString stringWithFormat: @"<html><head><style></style></head><body><video id='video_with_controls' height='%f' width='%f' controls autobuffer autoplay='false'><source src='%@' title='' poster='icon2.png' type='video/mp4' durationHint='durationofvideo'/></video><ul></body></html>",webView.frame.size.height,webView.frame.size.width, url];
     
-    }
-    
-//url = outputURL;
-//    
-//    NSString *videoHTML = [NSString stringWithFormat: @"<html><head><style></style></head><body><video id='video_with_controls' height='%f' width='%f' controls autobuffer autoplay='false'><source src='%@' title='' poster='icon2.png' type='video/mp4' durationHint='durationofvideo'/></video><ul></body></html>",webView.frame.size.height,webView.frame.size.width, url];
-//    
-//    webView.opaque = NO;
-//    webView.backgroundColor = [UIColor clearColor];
-//    [webView loadHTMLString:videoHTML baseURL:nil];
-
-
+    webView.opaque = NO;
+    webView.backgroundColor = [UIColor clearColor];
+    [webView loadHTMLString:videoHTML baseURL:nil];
 }
 
 
@@ -354,8 +326,10 @@ if(manager.userId){
 
 - (BOOL)tableView:(UITableView *)_tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-   
-    return NO;
+    if(_tableView==compileTableView){
+    return YES;
+    }
+    else return NO;
 }
 
 
@@ -380,15 +354,22 @@ if(manager.userId){
     return [sectionInfo numberOfObjects];
 
     }
-        return 0;
+    if([_tableView isEqual:compileTableView]){
+        return compileVideoListArray.count;
+    }
+    return 0;
 }
     
 - (NSString *)tableView:(UITableView *)_tableView titleForHeaderInSection:(NSInteger)section{
     if([_tableView isEqual:tableView]){
         return @"Recordings";
     }
-    return  @"";
+    if([_tableView isEqual:compileTableView]){
+        return @"Compile Video";
+    }
+        return @"";
 }
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
@@ -465,17 +446,14 @@ if(manager.userId){
             NSSortDescriptor * ns = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
             //[request setSortDescriptors:@[ns]];
             Slide * slide = [[[l.slides allObjects]sortedArrayUsingDescriptors:@[ns]]objectAtIndex:0];
-            [self loadVideoWithURL:slide];
-            
-            
             //load slide
-//            NSData * data = slide.video;
-//            if(data){
-//                NSString * _videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], [IOHelper  getRandomFilePath]];
-//                [data writeToFile:_videoPath atomically:YES];
-//                NSURL* outputURL = [NSURL fileURLWithPath:_videoPath];
-//                [self loadVideoWithURL:outputURL];
-//            }
+            NSData * data = slide.video;
+            if(data){
+                NSString * _videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], [IOHelper  getRandomFilePath]];
+                [data writeToFile:_videoPath atomically:YES];
+                NSURL* outputURL = [NSURL fileURLWithPath:_videoPath];
+                [self loadVideoWithURL:outputURL];
+            }
         }
 
 //    videoTitleLabel.text= v.title;
@@ -565,7 +543,26 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 
 
+//Shows the new recording view
+- (IBAction)createNewRecording:(id)sender {
 
+    [UIView beginAnimations:@"" context:nil];
+    [UIView setAnimationDuration:1];
+  
+    informationAboutRecordingView.frame=recordingViewFrame;
+  
+    [UIView commitAnimations];
+
+    [self.view addSubview:informationAboutRecordingView];
+    [self.view bringSubviewToFront:informationAboutRecordingView];
+    
+    NSArray * subviews =informationAboutRecordingView.subviews;
+    for (UIView * v in subviews)
+    {
+        [informationAboutRecordingView bringSubviewToFront:v];
+         
+    }
+}
 
 - (IBAction)shareMovie:(id)sender {
     uploadAlert =[[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"You are about to upload video to the remote server in order to obtain a link that you can share with other people. It might be time consuming operation. It's recommended to perform the operation whenever your device is connected to WiFi network. Are you sure that you want to continue?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];

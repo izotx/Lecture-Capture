@@ -9,9 +9,13 @@
 #import "Lecture.h"
 
 @interface Lecture (Operations)
+-(id)addSlide;
+-(id)removeSlide;
+-(id)reorderSlides;
 
--(void)removeLecture;
--(void)compile;
+- (id)initLectureWithName:(NSString *)name;
 
+- (void)removeLecture;
+- (void)compile;
 
 @end

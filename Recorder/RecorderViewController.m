@@ -675,7 +675,7 @@
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     //show slide on the screen
-   // Slide * s = [_fetchedController objectAtIndexPath:indexPath];
+    Slide * s = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
@@ -737,10 +737,6 @@ CGRect defaultRect;
     defaultRect = self.collectionView.frame;
     ioHelper  = [[IOHelper alloc]init];
     _ar = [[AudioRecorder alloc]init];
-    
-    self.navigationController.navigationBar.translucent = YES;
-    self.edgesForExtendedLayout = UIRectEdgeAll;
-    
 
 //does the slide contains video??
 // what now if so add video preview
@@ -836,10 +832,16 @@ RAC(self,recording) =[RACSignal
     cp.delegate = self;
     
     _webVideoView = [[WebVideoView alloc]initWithFrame:recordingScreenView.frame];
+    
+    
     [self configureFetchedController];
     
     _ready = YES;
-  
+
+    
+    
+    
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated

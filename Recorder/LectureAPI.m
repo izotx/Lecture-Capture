@@ -10,27 +10,7 @@
 #import "Lecture.h"
 #import "AppDelegate.h"
 #import "Slide.h"
-@interface LectureAPI()
-@property int index;
-@property (nonatomic,strong) NSArray * orderedSlides;
-@end
-
 @implementation LectureAPI
-
- -(id)initWithLecture:(Lecture *)lecture;
-{
-    if(self = [super init]){
-        self.currentLecture = lecture;
-        NSSortDescriptor * ns = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
-        _orderedSlides = [[lecture.slides allObjects]sortedArrayUsingDescriptors:@[ns]];
-        self.currentSlide = [_orderedSlides objectAtIndex:0];
-        _index = 0;
-        
-    }
-    return self;
-}
-
-
 + (Slide *)addNewSlideToLecture:(Lecture *)lecture afterSlide:(Slide*)previousSlide{
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
@@ -52,8 +32,9 @@
  
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Lecture * lecture= [NSEntityDescription insertNewObjectForEntityForName:@"Lecture" inManagedObjectContext:delegate.managedObjectContext];
+    
+    
     lecture.name  = name;
-  
     NSError *error;
     [delegate.managedObjectContext save:&error];
     if(error){
@@ -94,24 +75,9 @@
     //get all slides
     
     //convert them into video
+    
+    
+    
 }
-
--(id) next;{
-    if(_index+1<self.orderedSlides.count){
-        _index++;
-        self.currentSlide = self.orderedSlides[_index];
-
-    }
-    return self.currentSlide;
-}
-
--(id) previous;{
-    if(_index-1>=0){
-        _index--;
-        self.currentSlide = self.orderedSlides[_index];
-    }
-    return self.currentSlide;
-}
-
 
 @end
