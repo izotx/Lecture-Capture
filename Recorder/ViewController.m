@@ -15,17 +15,16 @@
 #import "WebVideoView.h"
 #import "AppDelegate.h"
 #import "Slide.h"
+#import "PDFImporterViewController.h"
+
 @interface ViewController ()
 {
    NSMutableArray * compileVideoListArray;
     __weak IBOutlet UITableView *tableView;
-    IBOutlet UITableView *compileTableView;
     __weak IBOutlet UIImageView *videoScreenshotImageView;
     __weak IBOutlet UILabel *videoTitleLabel;
     __weak IBOutlet UITextView *videoDescriptionTextView;
-    __weak IBOutlet UITextField *editTitleTextField;
     __weak IBOutlet UITextView *editDescriptionTextView;
-    __weak IBOutlet UIView *informationAboutRecordingView;
     __weak IBOutlet UIWebView *webView;
     
     CGRect recordingViewFrame;
@@ -42,14 +41,19 @@
 }
 - (IBAction)saveToLibrary:(id)sender;
 - (IBAction)deleteVideo:(id)sender;
-- (IBAction)cancelAndDismissRecordingView:(id)sender;
 - (IBAction)contactSupport:(id)sender;
+
 - (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
+
+- (IBAction)showLectures:(id)sender;
+- (IBAction)showPDF:(id)sender;
 
 @property(nonatomic, strong) LectureAPI *lectureAPI;
 @property(nonatomic,strong) IOHelper * iohelper;
 @property(nonatomic,strong) WebVideoView *webVideoView;
+@property(nonatomic,strong) PDFImporterViewController * importer;
+
 @end
 
 @implementation ViewController
@@ -120,6 +124,16 @@ if(manager.userId){
     }
 }
 
+- (IBAction)showLectures:(id)sender {
+  self.fetchedResultsController =  [self prepareLectureFetchedResultsController];
+    [tableView reloadData];
+}
+
+- (IBAction)showPDF:(id)sender {
+    self.fetchedResultsController = [self preparePDFFetchedResultsController];
+        [tableView reloadData];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     //Executed when Next button is clicked.
    
@@ -130,16 +144,11 @@ if(manager.userId){
          
      }
     
-    if ([segue.identifier isEqualToString:@"CreateNew"]) {
+    if ([segue.identifier isEqualToString:@"Create"]) {
         RecorderViewController *r = [segue destinationViewController];
-        informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);    
+       
         
-        [self textFieldShouldReturn:editTitleTextField];
-      //creating new lecture
-        NSString *title = (editTitleTextField.text.length>0)?editTitleTextField.text:@"Untitled";
-        
-        
-        Lecture * lecture = [LectureAPI createLectureWithName:title];
+        Lecture * lecture = [LectureAPI createLectureWithName:@"Untitled"];
         r.lecture = lecture;
         
         
@@ -153,12 +162,8 @@ if(manager.userId){
 }
 
 #pragma mark Fetching
-- (NSFetchedResultsController *)fetchedResultsController {
+- (NSFetchedResultsController *)prepareLectureFetchedResultsController {
     
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
-    }
-  
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription
                                    entityForName:@"Lecture" inManagedObjectContext:self.managedObjectContext];
@@ -171,6 +176,41 @@ if(manager.userId){
     
     
      NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
+                                                   cacheName:@"Root"];
+    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController.delegate = self;
+    
+    NSError *error;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
+    
+    return _fetchedResultsController;
+    
+}
+
+- (NSFetchedResultsController *)preparePDFFetchedResultsController {
+    
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"PDF" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"filename" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    
+    
+    NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
                                                    cacheName:@"Root"];
@@ -217,15 +257,35 @@ if(manager.userId){
     videoTitleLabel.text=@"";
 
     recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
-    informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
-    compileTableView.dataSource = self;
-    compileTableView.delegate = self;
     
     self.lectureAPI =[LectureAPI new];
     
     [self fetchedResultsController];
     [self loadVideoWithURL:nil];
+
+    //PDF Notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PDFReceived:) name:PDFNotification object:nil];
 }
+
+-(void)PDFReceived:(NSNotification *)n{
+    NSURL *url = [n object];
+  
+    UIStoryboard *st =    [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    if(!_importer){
+        
+        _importer = [st instantiateViewControllerWithIdentifier:@"PDFImporterViewController"];
+    }
+    [_importer parsePDF:url];
+    
+        UINavigationController * nav =(UINavigationController *)[ st instantiateInitialViewController ];
+    [nav pushViewController:_importer animated:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PDFNotification object:url]];
+
+    
+}
+
+
 
 -(void)refactorCoreData{
     //get all videos.
@@ -290,19 +350,25 @@ if(manager.userId){
 #pragma mark table view
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    Lecture *lecture =[_fetchedResultsController objectAtIndexPath:indexPath];
-    UILabel * titleLabel =  (UILabel *)[cell viewWithTag:10];
-    UILabel * durationLabel =  (UILabel *)[cell viewWithTag:20];
-    UILabel * fileSizeLabel =  (UILabel *)[cell viewWithTag:30];
-    titleLabel.text = lecture.name;
-
-    durationLabel.text=[NSString stringWithFormat:@"Duration: %@",lecture.duration];
-    fileSizeLabel.text=[NSString stringWithFormat:@"%@",lecture.size];
+   
+    if([[_fetchedResultsController objectAtIndexPath:indexPath] isKindOfClass:[Lecture class] ]){
+        Lecture *lecture =[_fetchedResultsController objectAtIndexPath:indexPath];
+        UILabel * titleLabel =  (UILabel *)[cell viewWithTag:10];
+        UILabel * durationLabel =  (UILabel *)[cell viewWithTag:20];
+        UILabel * fileSizeLabel =  (UILabel *)[cell viewWithTag:30];
+        titleLabel.text = lecture.name;
+        
+        durationLabel.text=[NSString stringWithFormat:@"Duration: %@",lecture.duration];
+        fileSizeLabel.text=[NSString stringWithFormat:@"%@",lecture.size];
+        
+        
+        CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:80];
+        ctb.indexPath = indexPath;
+        [ctb addTarget:self action:@selector(uploadButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else{
+    }
     
-
-    CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:80];
-     ctb.indexPath = indexPath;
-    [ctb addTarget:self action:@selector(uploadButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)uploadButtonPressed:(id)sender{
@@ -326,10 +392,7 @@ if(manager.userId){
 
 - (BOOL)tableView:(UITableView *)_tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(_tableView==compileTableView){
-    return YES;
-    }
-    else return NO;
+   return NO;
 }
 
 
@@ -352,21 +415,15 @@ if(manager.userId){
     id  sectionInfo =
     [[_fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
-
     }
-    if([_tableView isEqual:compileTableView]){
-        return compileVideoListArray.count;
-    }
-    return 0;
+      return 0;
 }
     
 - (NSString *)tableView:(UITableView *)_tableView titleForHeaderInSection:(NSInteger)section{
     if([_tableView isEqual:tableView]){
         return @"Recordings";
     }
-    if([_tableView isEqual:compileTableView]){
-        return @"Compile Video";
-    }
+   
         return @"";
 }
 
@@ -534,35 +591,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
-- (IBAction)cancelAndDismissRecordingView:(id)sender {
-     informationAboutRecordingView.frame=CGRectMake(-1024, -800, 0, 0);
 
-    [self textFieldShouldReturn:editTitleTextField];
-}
-
-
-
-
-//Shows the new recording view
-- (IBAction)createNewRecording:(id)sender {
-
-    [UIView beginAnimations:@"" context:nil];
-    [UIView setAnimationDuration:1];
-  
-    informationAboutRecordingView.frame=recordingViewFrame;
-  
-    [UIView commitAnimations];
-
-    [self.view addSubview:informationAboutRecordingView];
-    [self.view bringSubviewToFront:informationAboutRecordingView];
-    
-    NSArray * subviews =informationAboutRecordingView.subviews;
-    for (UIView * v in subviews)
-    {
-        [informationAboutRecordingView bringSubviewToFront:v];
-         
-    }
-}
 
 - (IBAction)shareMovie:(id)sender {
     uploadAlert =[[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"You are about to upload video to the remote server in order to obtain a link that you can share with other people. It might be time consuming operation. It's recommended to perform the operation whenever your device is connected to WiFi network. Are you sure that you want to continue?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];

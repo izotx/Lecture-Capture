@@ -8,7 +8,10 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-
+#import "PDFImporterViewController.h"
+@interface AppDelegate()
+    @property(nonatomic,strong) PDFImporterViewController * importer;
+@end
 @implementation AppDelegate
 
 @synthesize window = _window;
@@ -16,13 +19,67 @@
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+    UIStoryboard *st =    [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    
+    if(!_importer){
+        
+        _importer = [st instantiateViewControllerWithIdentifier:@"PDFImporterViewController"];
+    }
+    [_importer parsePDF:url];
+    
+    UINavigationController * nav =(UINavigationController *)[ st instantiateInitialViewController ];
+     UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+    
+    [navigationController pushViewController:_importer animated:YES];
+//    
+//    [self.window makeKeyAndVisible];
+//    
+//    nav performSelectorOnMainThread:@selector(pushViewController:animated:) withObject:<#(id)#> waitUntilDone:<#(BOOL)#>
+//[nav.topViewController presentViewController:_importer animated:YES completion:^{
+//    
+//}];
+    NSLog(@"openURL");
+
+//    [self performSelectorOnMainThread:@selector(pushMyViewController:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:_importer,@"viewController", [NSNumber numberWithBool:NO], @"animated", nil] waitUntilDone:NO];
+ 
+    return YES;
+}
+
+- (void)pushMyViewController:(NSDictionary *)info
+{
+    UIStoryboard *st =    [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    UINavigationController * nav =(UINavigationController *)[ st instantiateInitialViewController ];
+///    [nav pushViewController:_importer animated:YES];
+    [nav pushViewController:[info valueForKey:@"viewController"] animated:[[info valueForKey:@"animated"] boolValue]];
+    
+    
+}
+
+
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-   ViewController *controller = (ViewController *)self.window.rootViewController;
+   ViewController *controller =(ViewController *) [(UINavigationController *) self.window.rootViewController viewControllers][0];
+    
    controller.managedObjectContext = self.managedObjectContext;
+    
+    
+    
    return YES;
+}
+
+-(NSManagedObjectContext*)backgroundManagedObjectContext{
+    if(!_backgroundManagedObjectContext){
+        _backgroundManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        _backgroundManagedObjectContext.parentContext = self.managedObjectContext;
+        
+    }
+    
+    return _backgroundManagedObjectContext;
+
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application

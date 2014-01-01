@@ -22,9 +22,11 @@
 @end
 
 @interface TJLFetchedResultsSource : NSObject <NSFetchedResultsControllerDelegate, UICollectionViewDataSource_Draggable>
-- (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)controller delegate:(id <TJLFetchedResultsSourceDelegate>)delegate;// user:(MPCUser *)user;
--(void)updateContent;
+- (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)controller delegate:(id <TJLFetchedResultsSourceDelegate>)delegate andCellID:(NSString *)cellId;
 
+
+
+-(void)updateContent;
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
 
 @property(weak, nonatomic) id <TJLFetchedResultsSourceDelegate> delegate;

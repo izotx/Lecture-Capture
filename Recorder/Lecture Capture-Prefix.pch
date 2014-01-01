@@ -21,7 +21,7 @@
 
     #define DEGREES(radians)((radians)*180/M_PI)
     #define RADIANS(degree)((degree)*M_PI/180)
-
+#define PDFNotification @"PDFNotification"
 
 #endif
 #define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]

@@ -138,6 +138,11 @@
 		4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD724FD174D6E870005D782 /* NetworkHelper.m */; };
 		6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C37B7E03D6432B8FD7DF0A /* libPods.a */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
+		82A046611868D77200AFDF88 /* PDFImporterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046601868D77200AFDF88 /* PDFImporterViewController.m */; };
+		82A0466418690B9800AFDF88 /* PDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0466318690B9800AFDF88 /* PDFParser.m */; };
+		82A046731869281B00AFDF88 /* PDF.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046721869281B00AFDF88 /* PDF.m */; };
+		82A046791869449000AFDF88 /* PDFCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046781869449000AFDF88 /* PDFCell.m */; };
+		82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0467B1869493B00AFDF88 /* PDFPage.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82EA442A185E8BC6007FBC6E /* LSCollectionViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */; };
 		82EA442B185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4422185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m */; };
@@ -324,6 +329,16 @@
 		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkHelper.m; path = Recorder/NetworkHelper.m; sourceTree = "<group>"; };
 		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomTableButton.h; path = Recorder/CustomTableButton.h; sourceTree = "<group>"; };
 		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomTableButton.m; path = Recorder/CustomTableButton.m; sourceTree = "<group>"; };
+		82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFImporterViewController.h; path = Recorder/PDFImporterViewController.h; sourceTree = "<group>"; };
+		82A046601868D77200AFDF88 /* PDFImporterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFImporterViewController.m; path = Recorder/PDFImporterViewController.m; sourceTree = "<group>"; };
+		82A0466218690B9800AFDF88 /* PDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFParser.h; sourceTree = "<group>"; };
+		82A0466318690B9800AFDF88 /* PDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFParser.m; sourceTree = "<group>"; };
+		82A046711869281B00AFDF88 /* PDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDF.h; sourceTree = "<group>"; };
+		82A046721869281B00AFDF88 /* PDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDF.m; sourceTree = "<group>"; };
+		82A046771869449000AFDF88 /* PDFCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFCell.h; sourceTree = "<group>"; };
+		82A046781869449000AFDF88 /* PDFCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFCell.m; sourceTree = "<group>"; };
+		82A0467A1869493B00AFDF88 /* PDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPage.h; sourceTree = "<group>"; };
+		82A0467B1869493B00AFDF88 /* PDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage.m; sourceTree = "<group>"; };
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82EA441F185E8BC6007FBC6E /* LSCollectionViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewHelper.h; sourceTree = "<group>"; };
 		82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSCollectionViewHelper.m; sourceTree = "<group>"; };
@@ -439,11 +454,17 @@
 		4F9D58E9182037A3000A004F /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				4F65E1CB183E71AB004C5607 /* TJLFetchedResultsSource.h */,
+				4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */,
 				4F65E1FF18400B23004C5607 /* VideoFile.h */,
 				4F65E20018400B23004C5607 /* VideoFile.m */,
 				4F65E1F918400B22004C5607 /* AudioFile.h */,
 				4F65E1FA18400B22004C5607 /* AudioFile.m */,
 				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
+				82A0467A1869493B00AFDF88 /* PDFPage.h */,
+				82A0467B1869493B00AFDF88 /* PDFPage.m */,
+				82A046711869281B00AFDF88 /* PDF.h */,
+				82A046721869281B00AFDF88 /* PDF.m */,
 				82F215C8184D858100406EDC /* Slide.h */,
 				82F215C9184D858100406EDC /* Slide.m */,
 				4F65E1DA18400A1B004C5607 /* Lecture.h */,
@@ -478,6 +499,10 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				82A0466218690B9800AFDF88 /* PDFParser.h */,
+				82A0466318690B9800AFDF88 /* PDFParser.m */,
+				82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */,
+				82A046601868D77200AFDF88 /* PDFImporterViewController.m */,
 				4F65E1D4183FB58F004C5607 /* WebVideoView.h */,
 				4F65E1D5183FB58F004C5607 /* WebVideoView.m */,
 				4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */,
@@ -552,6 +577,8 @@
 				4F45454E1635F12B0091F335 /* ViewController.m */,
 				4FD48DA8154AC95D007880C2 /* Supporting Files */,
 				4F864BFE183D73C100C888B8 /* SlideCell.h */,
+				82A046771869449000AFDF88 /* PDFCell.h */,
+				82A046781869449000AFDF88 /* PDFCell.m */,
 				4F864BFF183D73C100C888B8 /* SlideCell.m */,
 			);
 			path = Recorder;
@@ -571,8 +598,6 @@
 		4FD48DC8154ACC7A007880C2 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				4F65E1CB183E71AB004C5607 /* TJLFetchedResultsSource.h */,
-				4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */,
 				4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */,
 				4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */,
 				4F9D596D18205C17000A004F /* UIImageAddition.h */,
@@ -946,12 +971,16 @@
 				4F65E1FB18400B22004C5607 /* AudioFile.m in Sources */,
 				4F4545571635F14D0091F335 /* ScreenCaptureView.m in Sources */,
 				4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */,
+				82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */,
 				4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */,
 				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
+				82A046731869281B00AFDF88 /* PDF.m in Sources */,
+				82A046791869449000AFDF88 /* PDFCell.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,
 				4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */,
 				4F9D598018205C43000A004F /* AVCaptureHelper.m in Sources */,
 				4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */,
+				82A0466418690B9800AFDF88 /* PDFParser.m in Sources */,
 				4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */,
 				82EE2721164360F7008F99AE /* VideoPreview.m in Sources */,
 				4F9D598118205C43000A004F /* CaptureSessionManager.m in Sources */,
@@ -964,6 +993,7 @@
 				82EA442A185E8BC6007FBC6E /* LSCollectionViewHelper.m in Sources */,
 				4F9D596618205B91000A004F /* ILView.m in Sources */,
 				4F864C00183D73C100C888B8 /* SlideCell.m in Sources */,
+				82A046611868D77200AFDF88 /* PDFImporterViewController.m in Sources */,
 				4F864BE7183C1DFA00C888B8 /* ImagePhotoPicker.m in Sources */,
 				4F65E1CD183E71AB004C5607 /* TJLFetchedResultsSource.m in Sources */,
 				4F9D593B18205AFB000A004F /* Manager.m in Sources */,

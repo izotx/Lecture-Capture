@@ -20,7 +20,7 @@
 @property(strong, nonatomic) UIPopoverController* loginPopOver;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *uploadingVideoActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *uploadingVideoLabel;
-@property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController;
+@property(nonatomic,retain)NSFetchedResultsController * fetchedResultsController; 
 
 - (IBAction)copyURL:(id)sender;
 - (IBAction)shareURL:(id)sender;

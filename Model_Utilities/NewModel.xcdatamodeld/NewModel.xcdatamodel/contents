@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A603" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A598" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AudioFile" representedClassName="AudioFile" syncable="YES">
         <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="slide" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slide" inverseName="audioFiles" inverseEntity="Slide" syncable="YES"/>
@@ -11,6 +11,16 @@
         <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="video" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="slides" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Slide" inverseName="lecture" inverseEntity="Slide" syncable="YES"/>
+    </entity>
+    <entity name="PDF" representedClassName="PDF" syncable="YES">
+        <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="page" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PDFPage" inverseName="pdf" inverseEntity="PDFPage" syncable="YES"/>
+    </entity>
+    <entity name="PDFPage" representedClassName="PDFPage" syncable="YES">
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="pagenr" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="thumb" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <relationship name="pdf" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PDF" inverseName="page" inverseEntity="PDF" syncable="YES"/>
     </entity>
     <entity name="Project" representedClassName="Project" syncable="YES">
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -46,11 +56,13 @@
         <relationship name="slide" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slide" inverseName="videoFiles" inverseEntity="Slide" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AudioFile" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Lecture" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Project" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Slide" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Video" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="VideoFile" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AudioFile" positionX="0" positionY="0" width="128" height="75"/>
+        <element name="Lecture" positionX="18" positionY="144" width="128" height="135"/>
+        <element name="Project" positionX="178" positionY="360" width="128" height="90"/>
+        <element name="Slide" positionX="-423" positionY="81" width="128" height="210"/>
+        <element name="Video" positionX="205" positionY="72" width="128" height="180"/>
+        <element name="VideoFile" positionX="-252" positionY="-72" width="128" height="75"/>
+        <element name="PDF" positionX="-414" positionY="324" width="128" height="73"/>
+        <element name="PDFPage" positionX="-137" positionY="315" width="128" height="103"/>
     </elements>
 </model>

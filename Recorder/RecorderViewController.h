@@ -19,11 +19,9 @@
 @class Lecture;
 @class Slide;
 
-@interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ScreenShotDelegate,ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate>
+@interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ScreenShotDelegate,ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate, UITextFieldDelegate>
 {
     IBOutlet UIImageView *backgroundView;
-    
-//__weak IBOutlet ScreenCaptureView *recordingScreenView;
 __weak IBOutlet UIScrollView *scrollView;
 __weak IBOutlet UIActivityIndicatorView *activityIndicator;
     UIPopoverController * colorPopover;
@@ -37,6 +35,8 @@ __weak IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) Lecture * lecture;
 @property (strong, nonatomic) IBOutlet ScreenCaptureView *recordingScreenView;
 @property BOOL eraseMode;
+@property (strong, nonatomic) IBOutlet UITextField *lectureNameTextField;
+
 
 - (IBAction)changeBrushSize:(id)sender;
 - (IBAction)pickColorFor:(id)sender;

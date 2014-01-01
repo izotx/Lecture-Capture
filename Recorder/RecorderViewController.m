@@ -49,6 +49,7 @@
     IOHelper * ioHelper;
 }
 
+
 @property (strong, nonatomic) IBOutlet UIView *sideControls;
 @property (strong,nonatomic) TJLFetchedResultsSource * datasource;
 @property(strong, nonatomic) ImagePhotoPicker *photoPicker;
@@ -85,6 +86,10 @@
 @implementation RecorderViewController
 @synthesize recordingScreenView = recordingScreenView;
 
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+
+    return YES;
+}
 
 
 -(void)configureFetchedController{
@@ -99,7 +104,8 @@
     [frequest setSortDescriptors:@[sd]];
     _fetchedController = nil;
     _fetchedController = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
-    _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self];
+    _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self andCellID:@"cell"];
+    
 
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;
@@ -109,6 +115,8 @@
 
 - (IBAction)dismiss:(id)sender {
     [self finishRecording:self];
+    [self.navigationController popViewControllerAnimated:YES];
+    
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
@@ -434,10 +442,13 @@
     }
     if(interrupted){
         [self dismissViewControllerAnimated:NO completion:nil];
+    [self.navigationController popViewControllerAnimated:NO];
     }
     else{
         [self dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController popViewControllerAnimated:YES];
     }
+
 }
 
 #pragma mark screen shot delegate
@@ -675,7 +686,7 @@
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     //show slide on the screen
-    Slide * s = [_fetchedController objectAtIndexPath:indexPath];
+   // Slide * s = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
@@ -738,14 +749,8 @@ CGRect defaultRect;
     ioHelper  = [[IOHelper alloc]init];
     _ar = [[AudioRecorder alloc]init];
 
-//does the slide contains video??
-// what now if so add video preview
-//disable current buttons but recording button
-    
-    
- 
-// is it ready to record?
- RAC(self, ready) =[RACSignal
+    self.lectureNameTextField.delegate = self;
+    RAC(self, ready) =[RACSignal
                        combineLatest:@[RACObserve(self, recordingScreenView.ready),RACObserve(self, ar.ready)]
                        reduce:^(NSNumber *ar, NSNumber *mp) {
                            BOOL k = ar.boolValue & mp.boolValue;

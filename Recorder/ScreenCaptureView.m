@@ -7,7 +7,7 @@
 @interface ScreenCaptureView()
 @property BOOL paused;
 @property CMTime currentCMTime;
-//@property CGLayerRef destLayer;
+@property CGLayerRef destLayer;
 @property CGContextRef destContext;
 @property BOOL layerReady;
 @property NSTimer *captureTimer;
@@ -56,9 +56,9 @@
     
     //Preparing for drawing in background
     CGFloat contentScale = [[UIScreen mainScreen]scale];
-  //  CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
-  //  _destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
-   // _destContext = CGLayerGetContext(_destLayer);
+    CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
+    _destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
+    _destContext = CGLayerGetContext(_destLayer);
     CGContextScaleCTM(_destContext, contentScale, contentScale);
 
     _layerReady = NO;

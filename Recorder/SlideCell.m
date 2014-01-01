@@ -20,7 +20,10 @@
     return self;
 }
 
--(void)configureWithSlide:(Slide  *)slide;{
+
+-(void)configureCell:(Slide  *)slide{
+   
+    
     self.slidePreviewImage.image = [UIImage imageWithData:slide.thumbnail];
     self.slideDurationLabel.text=  [NSString stringWithFormat:@"%@", slide.duration];
     self.opaque = YES;

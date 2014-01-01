@@ -22,10 +22,12 @@
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property(strong, nonatomic) NSMutableArray *objectChanges;
 @property(strong, nonatomic) NSDateFormatter *dateFormatter;
+@property(strong,nonatomic) NSString * cellId;
+
 @end
 
 @implementation TJLFetchedResultsSource
-- (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)controller delegate:(id <TJLFetchedResultsSourceDelegate>)delegate;// user:(MPCUser *)user {
+- (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)controller delegate:(id <TJLFetchedResultsSourceDelegate>)delegate andCellID:(NSString *)cellId
 {
 self = [super init];
     if(!self) {
@@ -40,7 +42,7 @@ self = [super init];
     [self updateContent];
     _fetchedResultsController.delegate = self;
     _delegate = delegate;
-
+    self.cellId = cellId;
    
     return self;
 }
@@ -75,11 +77,14 @@ self = [super init];
 
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath; {
-   Slide * slide = [self itemAtIndexPath:indexPath];
-   SlideCell *cell;
 
-    cell = (SlideCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-    [cell configureWithSlide:slide];
+   id cell;
+    id object;
+    object = [self itemAtIndexPath:indexPath];
+    cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellId forIndexPath:indexPath];
+    [cell performSelector:@selector(configureCell:) withObject:object];
+    
+
     return cell;
 }
 
