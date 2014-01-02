@@ -21,8 +21,12 @@
 }
 
 
--(void)configureCell:(Slide  *)slide{
-   
+-(void)configureCellWithObject:(id)object{
+    NSIndexPath * _indexPath;
+    _indexPath = [(NSDictionary  *)object objectForKey:@"indexpath"];
+    
+    assert([[(NSDictionary  *)object objectForKey:@"object"] isKindOfClass:[Slide class]]);
+    Slide * slide = [(NSDictionary  *)object objectForKey:@"object"];
     
     self.slidePreviewImage.image = [UIImage imageWithData:slide.thumbnail];
     self.slideDurationLabel.text=  [NSString stringWithFormat:@"%@", slide.duration];

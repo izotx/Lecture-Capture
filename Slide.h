@@ -2,7 +2,7 @@
 //  Slide.h
 //  Lecture Capture
 //
-//  Created by sadmin on 12/2/13.
+//  Created by sadmin on 1/2/14.
 //
 //
 
@@ -16,14 +16,15 @@
 @property (nonatomic, retain) NSData * audio;
 @property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSNumber * order;
+@property (nonatomic, retain) NSNumber * selected;
 @property (nonatomic, retain) NSNumber * size;
 @property (nonatomic, retain) NSData * thumbnail;
+@property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) NSData * video;
-@property (nonatomic, retain) NSNumber * selected;
+@property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSSet *audioFiles;
 @property (nonatomic, retain) Lecture *lecture;
 @property (nonatomic, retain) NSSet *videoFiles;
-@property (nonatomic, strong) NSString * url;
 @end
 
 @interface Slide (CoreDataGeneratedAccessors)

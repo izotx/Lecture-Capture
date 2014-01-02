@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "PDFPage.h"
 
-@interface PDFCell : UICollectionViewCell
+@interface PDFPageCell : UICollectionViewCell
 @property (nonatomic,strong) IBOutlet UIImageView * thumbnail;
--(void)configureWithObject:(PDFPage *)page;
+
+-(void)configureCellWithObject:(id)object;
+
 
 @end

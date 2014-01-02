@@ -12,7 +12,10 @@
 #import "PDF.h"
 #import "PDFPage.h"
 #import "PDFParser.h"
-
+#import "LectureAPI.h"
+#import "Lecture.h"
+#import "Slide.h"
+#import  "RecorderViewController.h"
 
 
 @interface PDFImporterViewController ()<TJLFetchedResultsSourceDelegate, UICollectionViewDelegate>
@@ -25,10 +28,14 @@
 
 @implementation PDFImporterViewController
 
-
+- (IBAction)dismiss:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 -(void)parsePDF:(NSURL *)pdf;{
 
+    
     _parser = [[PDFParser alloc]initWithFilePath:[pdf path]];
     [_parser getPagesWithGeneratedPageHandler:^(UIImage *img, UIImage * thumb, int pageNr, float progress) {
         //Create page
@@ -46,6 +53,32 @@
     }];
 }
 
+- (IBAction)voiceOver:(id)sender {
+  
+    Lecture * lapi = [LectureAPI createLectureWithName:self.pdf.filename];
+    #warning finish it
+    //create new lecture
+    NSSortDescriptor * sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pagenr" ascending:YES];
+    // Order
+    NSArray * orderedPages = [self.pdf.page sortedArrayUsingDescriptors:@[sortDescriptor]];
+    //import pdf pages into new lecture
+    for(int i =0; i<orderedPages.count;i++){
+        Slide * slide = [LectureAPI addNewSlideToLecture:lapi afterSlide:nil];
+        PDFPage * page = orderedPages[i];
+        slide.order = [NSNumber numberWithInt:i+1];
+        slide.image= page.image;
+        slide.thumbnail =page.thumb;
+    }
+    UINavigationController * nav = self.navigationController;
+    [nav popViewControllerAnimated:NO];
+    
+    RecorderViewController *r=     [self.storyboard instantiateViewControllerWithIdentifier:@"RecorderViewController"];
+    r.lecture = lapi;
+    
+    [nav pushViewController:r animated:YES];
+    
+    
+}
 
 
 -(PDF *)createNewPDF{
@@ -80,16 +113,12 @@
     
 }
 
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+-(void)setup{
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
     [frequest setFetchBatchSize:20];
     [frequest setEntity: [NSEntityDescription entityForName:  @"PDFPage" inManagedObjectContext:appDelegate.managedObjectContext ]];
-   
+    
     //initialize pdf
     PDF * pdf =[NSEntityDescription insertNewObjectForEntityForName:@"PDF" inManagedObjectContext:appDelegate.managedObjectContext];
     [appDelegate.managedObjectContext insertObject:pdf];
@@ -106,12 +135,21 @@
     
     NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"pagenr" ascending:YES];
     [frequest setSortDescriptors:@[sd]];
-   
+    
     _fetchedController  = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
     _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self andCellID:@"pdfCell"];
     
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;
+
+}
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+       [self setup];
 
 }
 
@@ -135,13 +173,16 @@
 -(void)didUpdateObjectAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionView *strongCollectionView = self.collectionView;
     [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
-    [self.collectionView reloadData];
+    //[self.collectionView reloadData];
     
 }
 
 - (void)didInsertObjectAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionView *strongCollectionView = self.collectionView;
     [strongCollectionView insertItemsAtIndexPaths:@[indexPath]];
+   
+    [strongCollectionView  reloadItemsAtIndexPaths:@[indexPath]];
+    
     if(indexPath.row != 0) {
        // [strongCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     }

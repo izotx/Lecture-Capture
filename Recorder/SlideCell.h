@@ -12,6 +12,5 @@
 @interface SlideCell : UICollectionViewCell
 @property (strong, nonatomic) IBOutlet UIImageView *slidePreviewImage;
 @property (strong, nonatomic) IBOutlet UILabel *slideDurationLabel;
--(void)configureCell:(Slide  *)slide;
-
+-(void)configureCellWithObject:(id)object;
 @end

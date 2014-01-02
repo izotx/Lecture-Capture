@@ -2,21 +2,20 @@
 //  Lecture Capture
 //  Created by sadmin on 12/23/13
 
-#import "PDFCell.h"
+#import "PDFPageCell.h"
 
-@implementation PDFCell
+@implementation PDFPageCell
 
 
--(void)configureCell:(id)object{
-    [self configureWithObject:object];
-}
-
--(void)configureWithObject:(PDFPage *)page;{
-    if(!page.thumb){
+-(void)configureCellWithObject:(id)object{
+    NSIndexPath * _indexPath;
+    _indexPath = [(NSDictionary  *)object objectForKey:@"indexpath"];
+    id pdfpage =[(NSDictionary  *)object objectForKey:@"object"];
+    assert([pdfpage isKindOfClass:[PDFPage class]]);
+    self.thumbnail.image = [UIImage imageWithData:[(PDFPage *)pdfpage thumb]];
     
-    }
-    self.thumbnail.image = [UIImage imageWithData:page.thumb];
 }
+
 
 - (id)initWithFrame:(CGRect)frame
 {

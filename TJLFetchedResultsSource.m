@@ -7,14 +7,6 @@
 //
 
 #import "TJLFetchedResultsSource.h"
-/*
-#import "MPCMessageCollectionCell.h"
-#import "MPCMessageImageCollectionViewCell.h"
-#import "MPCoreMessage.h"
-#import "MPCUser.h"
-#import "MPCoreUser.h"
-*/
-
 #import "Slide.h"
 #import "SlideCell.h"
 #import "AppDelegate.h"
@@ -78,11 +70,14 @@ self = [super init];
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath; {
 
-   id cell;
+    id cell;
     id object;
     object = [self itemAtIndexPath:indexPath];
+    NSDictionary * dict = @{@"indexpath":indexPath, @"object" : object };
+    
+    
     cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellId forIndexPath:indexPath];
-    [cell performSelector:@selector(configureCell:) withObject:object];
+    [cell performSelector:@selector(configureCellWithObject:) withObject:dict];
     
 
     return cell;
@@ -112,10 +107,7 @@ self = [super init];
 }
 
 
-- (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
-}
+
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
@@ -126,6 +118,10 @@ self = [super init];
     return YES;
 }
 
+- (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
    Slide * s1  = [self.fetchedResultsController objectAtIndexPath:fromIndexPath];
@@ -142,16 +138,11 @@ self = [super init];
     s2.order = [NSNumber numberWithInteger:so +1];
     
     
-    
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"order > %@",s2.order];
-    
-    NSArray * array =   [self.fetchedResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
-    
-    for(Slide * s in array){
-        
-    }
-    
-    
+//    
+//    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"order > %@",s2.order];
+//
+//    NSArray * array =   [self.fetchedResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+//    
     
     //save context
     NSError * error;

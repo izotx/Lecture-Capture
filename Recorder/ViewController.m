@@ -10,12 +10,14 @@
 #import "NetworkHelper.h"
 #import "CustomTableButton.h"
 #import "Lecture.h"
+#import "PDF.h"
 #import "LectureAPI.h"
 #import "IOHelper.h"
 #import "WebVideoView.h"
 #import "AppDelegate.h"
 #import "Slide.h"
 #import "PDFImporterViewController.h"
+#import "AbstractCell.h"
 
 @interface ViewController ()
 {
@@ -25,7 +27,7 @@
     __weak IBOutlet UILabel *videoTitleLabel;
     __weak IBOutlet UITextView *videoDescriptionTextView;
     __weak IBOutlet UITextView *editDescriptionTextView;
-    __weak IBOutlet UIWebView *webView;
+ 
     
     CGRect recordingViewFrame;
     NSString* videoPath;
@@ -43,7 +45,6 @@
 - (IBAction)deleteVideo:(id)sender;
 - (IBAction)contactSupport:(id)sender;
 
-- (void)loadVideoWithURL:(NSURL *) url;
 - (void)postMovie:(NSString * )filePath;
 
 - (IBAction)showLectures:(id)sender;
@@ -58,6 +59,17 @@
 
 @implementation ViewController
 
+- (IBAction)contentTypeSegmentedControlChanged:(id)sender {
+    if( [(UISegmentedControl * )sender selectedSegmentIndex] == 0){
+        //load lecture
+        [self showLectures:nil];
+    }
+    else{
+        [self showPDF:nil];
+        
+    }
+    
+}
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(alertView==uploadLogin)
@@ -140,8 +152,6 @@ if(manager.userId){
      if ([segue.identifier isEqualToString:@"Edit"]) {
        RecorderViewController *r = [segue destinationViewController];
        r.lecture =[_fetchedResultsController objectAtIndexPath: [tableView indexPathForSelectedRow]];
-         
-         
      }
     
     if ([segue.identifier isEqualToString:@"Create"]) {
@@ -152,7 +162,7 @@ if(manager.userId){
         r.lecture = lecture;
         
         
-        [self loadVideoWithURL:nil];
+      
     }
      if ([segue.identifier isEqualToString:@"Popover"]) {
          LoginRegisterViewController * r =[segue destinationViewController];
@@ -178,7 +188,7 @@ if(manager.userId){
      NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:nil];
     self.fetchedResultsController = theFetchedResultsController;
     _fetchedResultsController.delegate = self;
     
@@ -195,9 +205,6 @@ if(manager.userId){
 
 - (NSFetchedResultsController *)preparePDFFetchedResultsController {
     
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
-    }
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription
@@ -213,7 +220,7 @@ if(manager.userId){
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:nil];
     self.fetchedResultsController = theFetchedResultsController;
     _fetchedResultsController.delegate = self;
     
@@ -247,6 +254,8 @@ if(manager.userId){
     compileVideoListArray =[[NSMutableArray alloc]initWithCapacity:0];
     networkHelper = [[NetworkHelper alloc]init];
     
+    [self showLectures:nil];
+    
     self.uploadingVideoLabel.hidden=YES;
     self.uploadingVideoActivityIndicator.hidden=YES;
     self.movie_url_label.text=@"";
@@ -261,7 +270,7 @@ if(manager.userId){
     self.lectureAPI =[LectureAPI new];
     
     [self fetchedResultsController];
-    [self loadVideoWithURL:nil];
+   
 
     //PDF Notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PDFReceived:) name:PDFNotification object:nil];
@@ -297,13 +306,6 @@ if(manager.userId){
 }
 
 #pragma mark notifications and Loading video
-- (IBAction)showPreviousSlide:(id)sender {
-}
-
-- (IBAction)showNextSlide:(id)sender {
-}
-
-
 
 - (IBAction)deleteVideo:(id)sender {
     [tableView setEditing:YES animated:YES];
@@ -311,65 +313,11 @@ if(manager.userId){
     
 }
 
-#warning TO DO DELETE THE Load Video url and figure out why the notifications are here
--(void) loadVideoWithURL:(NSURL *) url{
-       //url = outputURL;
-    
-    NSString *videoHTML = [NSString stringWithFormat: @"<html><head><style></style></head><body><video id='video_with_controls' height='%f' width='%f' controls autobuffer autoplay='false'><source src='%@' title='' poster='icon2.png' type='video/mp4' durationHint='durationofvideo'/></video><ul></body></html>",webView.frame.size.height,webView.frame.size.width, url];
-    
-    webView.opaque = NO;
-    webView.backgroundColor = [UIColor clearColor];
-    [webView loadHTMLString:videoHTML baseURL:nil];
-}
-
-
-
--(void)doneButtonClick:(NSNotification*)aNotification{
-    
-}
-
-
-- (void)moviePlaybackChange:(NSNotification *)notification
-{
-
-}
-
-- (void)moviePlaybackComplete:(NSNotification *)notification
-{
-    MPMoviePlayerController *moviePlayerController = [notification object];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:MPMoviePlayerPlaybackDidFinishNotification
-                                                  object:moviePlayerController];
-    [moviePlayerController.view removeFromSuperview];
-
-
-}
-
 
 
 #pragma mark table view
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-   
-    if([[_fetchedResultsController objectAtIndexPath:indexPath] isKindOfClass:[Lecture class] ]){
-        Lecture *lecture =[_fetchedResultsController objectAtIndexPath:indexPath];
-        UILabel * titleLabel =  (UILabel *)[cell viewWithTag:10];
-        UILabel * durationLabel =  (UILabel *)[cell viewWithTag:20];
-        UILabel * fileSizeLabel =  (UILabel *)[cell viewWithTag:30];
-        titleLabel.text = lecture.name;
-        
-        durationLabel.text=[NSString stringWithFormat:@"Duration: %@",lecture.duration];
-        fileSizeLabel.text=[NSString stringWithFormat:@"%@",lecture.size];
-        
-        
-        CustomTableButton * ctb =  (CustomTableButton  *) [cell viewWithTag:80];
-        ctb.indexPath = indexPath;
-        [ctb addTarget:self action:@selector(uploadButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    else{
-    }
-    
-}
+
 
 -(void)uploadButtonPressed:(id)sender{
    
@@ -395,17 +343,21 @@ if(manager.userId){
    return NO;
 }
 
-
-
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell;
-    static NSString *MyIdentifier = @"prototype";
-        cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] ;
-     }
-  
-    [self configureCell:cell atIndexPath:indexPath];
+    AbstractCell *cell;
+    static NSString *LectureIdentifier = @"lectureCell";
+    static NSString *PDFIdentifier = @"pdfCell";
+    
+    id object  =[self.fetchedResultsController objectAtIndexPath:indexPath] ;
+    
+    if([object isKindOfClass:[PDF class]]){
+        cell = [tableView dequeueReusableCellWithIdentifier:PDFIdentifier];
+    }
+    else{
+        cell = [tableView dequeueReusableCellWithIdentifier:LectureIdentifier];
+    }
+    [cell configureCellWithObject:object atIndexPath:indexPath];
+
     return cell;
 }
 
@@ -423,8 +375,7 @@ if(manager.userId){
     if([_tableView isEqual:tableView]){
         return @"Recordings";
     }
-   
-        return @"";
+        return @"PDFs";
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -446,7 +397,6 @@ if(manager.userId){
             
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-           //  NSLog(@"Insert Rows");
            
             [tableView reloadData];
             break;
@@ -459,8 +409,12 @@ if(manager.userId){
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-            [tableView reloadData];
+            
+
+            [tableView reloadRowsAtIndexPaths:@[indexPath]withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+           
+
             break;
             
         case NSFetchedResultsChangeMove:
@@ -495,37 +449,29 @@ if(manager.userId){
 
 
 -(void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-
-    if([_tableView isEqual:tableView]){
-        // load the first slide
+// depending on object
+id object =[_fetchedResultsController objectAtIndexPath:indexPath];
+    if([object isKindOfClass:[Lecture class]]){
+        object = (Lecture *)object;
         Lecture * l =[_fetchedResultsController objectAtIndexPath:indexPath];
         if(l.slides.count>0){
             NSSortDescriptor * ns = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
-            //[request setSortDescriptors:@[ns]];
+          
             Slide * slide = [[[l.slides allObjects]sortedArrayUsingDescriptors:@[ns]]objectAtIndex:0];
-            //load slide
+           
             NSData * data = slide.video;
             if(data){
                 NSString * _videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], [IOHelper  getRandomFilePath]];
                 [data writeToFile:_videoPath atomically:YES];
                 NSURL* outputURL = [NSURL fileURLWithPath:_videoPath];
-                [self loadVideoWithURL:outputURL];
+                
             }
         }
-
-//    videoTitleLabel.text= v.title;
-//   [self loadVideoWithURL:outputURL];
-//    currentVideo=v;
-//    if(v.video_url.length>0){
-//        self.movie_url_label.text= v.video_url;
-//        self.copyURLButton.enabled=YES;
-//    }
-//    else{
-//        self.movie_url_label.text = @"Tap on the Upload Recording button to upload recording to the server.";
-//        self.copyURLButton.enabled=NO;
-//    }
     }
+    
+    
 
+    
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{

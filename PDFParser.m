@@ -41,8 +41,11 @@
     if([keyPath isEqualToString:@"operationCount"]){
         if([[change objectForKey:@"new"] isEqual:@0]){
             self.completed = YES;
-            self.completedBlock();
-            NSLog(@"Completed. ");
+            [[NSOperationQueue mainQueue]addOperationWithBlock:^{
+                self.completedBlock();
+                NSLog(@"Completed. ");
+            }];
+
             
         }
     }

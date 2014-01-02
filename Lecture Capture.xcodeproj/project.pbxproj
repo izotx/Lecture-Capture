@@ -137,19 +137,22 @@
 		4FD48E33154B22EE007880C2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E32154B22EE007880C2 /* CoreVideo.framework */; };
 		4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD724FD174D6E870005D782 /* NetworkHelper.m */; };
 		6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C37B7E03D6432B8FD7DF0A /* libPods.a */; };
+		823C989118759A5700A3F3A1 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C989018759A5700A3F3A1 /* Slide.m */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82A046611868D77200AFDF88 /* PDFImporterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046601868D77200AFDF88 /* PDFImporterViewController.m */; };
 		82A0466418690B9800AFDF88 /* PDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0466318690B9800AFDF88 /* PDFParser.m */; };
 		82A046731869281B00AFDF88 /* PDF.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046721869281B00AFDF88 /* PDF.m */; };
-		82A046791869449000AFDF88 /* PDFCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046781869449000AFDF88 /* PDFCell.m */; };
+		82A046791869449000AFDF88 /* PDFPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046781869449000AFDF88 /* PDFPageCell.m */; };
 		82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0467B1869493B00AFDF88 /* PDFPage.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
+		82DEE6BC1874726E0008C9F2 /* LectureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DEE6BB1874726E0008C9F2 /* LectureCell.m */; };
+		82DEE6BF187475600008C9F2 /* AbstractCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DEE6BE187475600008C9F2 /* AbstractCell.m */; };
+		82DEE6C2187481930008C9F2 /* PDFCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DEE6C1187481930008C9F2 /* PDFCell.m */; };
 		82EA442A185E8BC6007FBC6E /* LSCollectionViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */; };
 		82EA442B185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4422185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m */; };
 		82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4425185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m */; };
 		82EA442D185E8BC6007FBC6E /* UICollectionView+Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA4427185E8BC6007FBC6E /* UICollectionView+Draggable.m */; };
 		82EE2721164360F7008F99AE /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EE2720164360F7008F99AE /* VideoPreview.m */; };
-		82F215CA184D858100406EDC /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 82F215C9184D858100406EDC /* Slide.m */; };
 		B7AC82791835FC9300FAF74F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7AC82781835FC9300FAF74F /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
@@ -173,10 +176,10 @@
 		4F0FED16169B6FA700C04ADC /* Lecture Capture Test-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Lecture Capture Test-Prefix.pch"; sourceTree = "<group>"; };
 		4F0FED65169DB02200C04ADC /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		4F1D995315647BBA002D8F6C /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		4F4545491635F0EA0091F335 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		4F45454B1635F1040091F335 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		4F45454D1635F12B0091F335 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		4F45454E1635F12B0091F335 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		4F4545491635F0EA0091F335 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Recorder/AppDelegate.h; sourceTree = "<group>"; };
+		4F45454B1635F1040091F335 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Recorder/AppDelegate.m; sourceTree = "<group>"; };
+		4F45454D1635F12B0091F335 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = Recorder/ViewController.h; sourceTree = "<group>"; };
+		4F45454E1635F12B0091F335 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = Recorder/ViewController.m; sourceTree = "<group>"; };
 		4F4545501635F14D0091F335 /* RecorderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecorderViewController.h; sourceTree = "<group>"; };
 		4F4545511635F14D0091F335 /* RecorderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecorderViewController.m; sourceTree = "<group>"; };
 		4F4545521635F14D0091F335 /* ScreenCaptureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenCaptureView.h; sourceTree = "<group>"; };
@@ -214,14 +217,14 @@
 		4F864BDA183C094500C888B8 /* Slide+Operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Slide+Operations.m"; path = "Recorder/Slide+Operations.m"; sourceTree = "<group>"; };
 		4F864BE5183C1DFA00C888B8 /* ImagePhotoPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePhotoPicker.h; sourceTree = "<group>"; };
 		4F864BE6183C1DFA00C888B8 /* ImagePhotoPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePhotoPicker.m; sourceTree = "<group>"; };
-		4F864BFE183D73C100C888B8 /* SlideCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideCell.h; sourceTree = "<group>"; };
-		4F864BFF183D73C100C888B8 /* SlideCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideCell.m; sourceTree = "<group>"; };
+		4F864BFE183D73C100C888B8 /* SlideCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlideCell.h; path = Recorder/SlideCell.h; sourceTree = "<group>"; };
+		4F864BFF183D73C100C888B8 /* SlideCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlideCell.m; path = Recorder/SlideCell.m; sourceTree = "<group>"; };
 		4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NonRotatingImagePicker.h; path = Recorder/NonRotatingImagePicker.h; sourceTree = "<group>"; };
 		4F864C06183E62BB00C888B8 /* NonRotatingImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NonRotatingImagePicker.m; path = Recorder/NonRotatingImagePicker.m; sourceTree = "<group>"; };
 		4F98B32218368FA1006EBBC1 /* recorde76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorde76.png; path = Images/recorde76.png; sourceTree = "<group>"; };
 		4F98B32318368FA1006EBBC1 /* recorder156.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recorder156.png; path = Images/recorder156.png; sourceTree = "<group>"; };
-		4F9D58EA18205A8C000A004F /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
-		4F9D58EB18205A8C000A004F /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
+		4F9D58EA18205A8C000A004F /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InfoViewController.m; path = Recorder/InfoViewController.m; sourceTree = "<group>"; };
+		4F9D58EB18205A8C000A004F /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InfoViewController.h; path = Recorder/InfoViewController.h; sourceTree = "<group>"; };
 		4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = LectureCapturePDF.pdf; path = Recorder/LectureCapturePDF.pdf; sourceTree = "<group>"; };
 		4F9D58EF18205AA8000A004F /* cloud_download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cloud_download.png; path = Images/cloud_download.png; sourceTree = "<group>"; };
 		4F9D58F018205AA8000A004F /* cloud_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cloud_upload.png; path = Images/cloud_upload.png; sourceTree = "<group>"; };
@@ -327,6 +330,8 @@
 		4FD48E32154B22EE007880C2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		4FD724FC174D6E870005D782 /* NetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkHelper.h; path = Recorder/NetworkHelper.h; sourceTree = "<group>"; };
 		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkHelper.m; path = Recorder/NetworkHelper.m; sourceTree = "<group>"; };
+		823C988F18759A5700A3F3A1 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
+		823C989018759A5700A3F3A1 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
 		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomTableButton.h; path = Recorder/CustomTableButton.h; sourceTree = "<group>"; };
 		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomTableButton.m; path = Recorder/CustomTableButton.m; sourceTree = "<group>"; };
 		82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFImporterViewController.h; path = Recorder/PDFImporterViewController.h; sourceTree = "<group>"; };
@@ -335,11 +340,17 @@
 		82A0466318690B9800AFDF88 /* PDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFParser.m; sourceTree = "<group>"; };
 		82A046711869281B00AFDF88 /* PDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDF.h; sourceTree = "<group>"; };
 		82A046721869281B00AFDF88 /* PDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDF.m; sourceTree = "<group>"; };
-		82A046771869449000AFDF88 /* PDFCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFCell.h; sourceTree = "<group>"; };
-		82A046781869449000AFDF88 /* PDFCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFCell.m; sourceTree = "<group>"; };
+		82A046771869449000AFDF88 /* PDFPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFPageCell.h; path = Recorder/PDFPageCell.h; sourceTree = "<group>"; };
+		82A046781869449000AFDF88 /* PDFPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFPageCell.m; path = Recorder/PDFPageCell.m; sourceTree = "<group>"; };
 		82A0467A1869493B00AFDF88 /* PDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPage.h; sourceTree = "<group>"; };
 		82A0467B1869493B00AFDF88 /* PDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage.m; sourceTree = "<group>"; };
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		82DEE6BA1874726E0008C9F2 /* LectureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LectureCell.h; sourceTree = "<group>"; };
+		82DEE6BB1874726E0008C9F2 /* LectureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LectureCell.m; sourceTree = "<group>"; };
+		82DEE6BD187475600008C9F2 /* AbstractCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractCell.h; sourceTree = "<group>"; };
+		82DEE6BE187475600008C9F2 /* AbstractCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractCell.m; sourceTree = "<group>"; };
+		82DEE6C0187481930008C9F2 /* PDFCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFCell.h; sourceTree = "<group>"; };
+		82DEE6C1187481930008C9F2 /* PDFCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFCell.m; sourceTree = "<group>"; };
 		82EA441F185E8BC6007FBC6E /* LSCollectionViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewHelper.h; sourceTree = "<group>"; };
 		82EA4420185E8BC6007FBC6E /* LSCollectionViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSCollectionViewHelper.m; sourceTree = "<group>"; };
 		82EA4421185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewLayoutHelper.h; sourceTree = "<group>"; };
@@ -352,8 +363,6 @@
 		82EA4429185E8BC6007FBC6E /* UICollectionViewLayout_Warpable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewLayout_Warpable.h; sourceTree = "<group>"; };
 		82EE271F164360F7008F99AE /* VideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoPreview.h; path = Recorder/VideoPreview.h; sourceTree = "<group>"; };
 		82EE2720164360F7008F99AE /* VideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoPreview.m; path = Recorder/VideoPreview.m; sourceTree = "<group>"; };
-		82F215C8184D858100406EDC /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
-		82F215C9184D858100406EDC /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
 		A562FF8AB3444BAAB852EED7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		B7AC82781835FC9300FAF74F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D8C37B7E03D6432B8FD7DF0A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -454,6 +463,14 @@
 		4F9D58E9182037A3000A004F /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				4F864BCC183BFFCA00C888B8 /* LectureAPI.h */,
+				4F864BCD183BFFCA00C888B8 /* LectureAPI.m */,
+				4F864BD6183C08CC00C888B8 /* Lecture+Operations.h */,
+				4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */,
+				4F864BD9183C094500C888B8 /* Slide+Operations.h */,
+				4F864BDA183C094500C888B8 /* Slide+Operations.m */,
+				4F65E1D7183FCB60004C5607 /* SlideAPI.h */,
+				4F65E1D8183FCB60004C5607 /* SlideAPI.m */,
 				4F65E1CB183E71AB004C5607 /* TJLFetchedResultsSource.h */,
 				4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */,
 				4F65E1FF18400B23004C5607 /* VideoFile.h */,
@@ -461,12 +478,12 @@
 				4F65E1F918400B22004C5607 /* AudioFile.h */,
 				4F65E1FA18400B22004C5607 /* AudioFile.m */,
 				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
+				823C988F18759A5700A3F3A1 /* Slide.h */,
+				823C989018759A5700A3F3A1 /* Slide.m */,
 				82A0467A1869493B00AFDF88 /* PDFPage.h */,
 				82A0467B1869493B00AFDF88 /* PDFPage.m */,
 				82A046711869281B00AFDF88 /* PDF.h */,
 				82A046721869281B00AFDF88 /* PDF.m */,
-				82F215C8184D858100406EDC /* Slide.h */,
-				82F215C9184D858100406EDC /* Slide.m */,
 				4F65E1DA18400A1B004C5607 /* Lecture.h */,
 				4F65E1DB18400A1B004C5607 /* Lecture.m */,
 			);
@@ -499,22 +516,20 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
-				82A0466218690B9800AFDF88 /* PDFParser.h */,
-				82A0466318690B9800AFDF88 /* PDFParser.m */,
-				82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */,
-				82A046601868D77200AFDF88 /* PDFImporterViewController.m */,
+				4F45454D1635F12B0091F335 /* ViewController.h */,
+				4F45454E1635F12B0091F335 /* ViewController.m */,
 				4F65E1D4183FB58F004C5607 /* WebVideoView.h */,
 				4F65E1D5183FB58F004C5607 /* WebVideoView.m */,
 				4F864C05183E62BB00C888B8 /* NonRotatingImagePicker.h */,
 				4F864C06183E62BB00C888B8 /* NonRotatingImagePicker.m */,
-				4F864BCC183BFFCA00C888B8 /* LectureAPI.h */,
-				4F864BCD183BFFCA00C888B8 /* LectureAPI.m */,
-				4F864BD6183C08CC00C888B8 /* Lecture+Operations.h */,
-				4F864BD7183C08CC00C888B8 /* Lecture+Operations.m */,
-				4F864BD9183C094500C888B8 /* Slide+Operations.h */,
-				4F864BDA183C094500C888B8 /* Slide+Operations.m */,
-				4F65E1D7183FCB60004C5607 /* SlideAPI.h */,
-				4F65E1D8183FCB60004C5607 /* SlideAPI.m */,
+				4F9D58EA18205A8C000A004F /* InfoViewController.m */,
+				4F9D58EB18205A8C000A004F /* InfoViewController.h */,
+				4F4545491635F0EA0091F335 /* AppDelegate.h */,
+				4F45454B1635F1040091F335 /* AppDelegate.m */,
+				4F4545651635F2580091F335 /* MainStoryboard.storyboard */,
+				823C98921875AF6000A3F3A1 /* PDF */,
+				4FD48DA8154AC95D007880C2 /* Supporting Files */,
+				82DEE6B91874720B0008C9F2 /* Cells */,
 				82EA441D185E8BC6007FBC6E /* DraggableCollectionView */,
 				4F9D58EC18205A8C000A004F /* LectureCapturePDF.pdf */,
 				4F9D58E818203765000A004F /* Recording */,
@@ -522,7 +537,6 @@
 				82536123176A50E7000D8F92 /* Images */,
 				4FA727D61563EC4F002A2F1D /* Login Management */,
 				4FD48DC8154ACC7A007880C2 /* Utilities */,
-				4FD48DA7154AC95D007880C2 /* Recorder */,
 				4F0FED0D169B6FA700C04ADC /* Lecture Capture Test */,
 				4FD48DA0154AC95D007880C2 /* Frameworks */,
 				4FD48D9E154AC95D007880C2 /* Products */,
@@ -565,25 +579,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4FD48DA7154AC95D007880C2 /* Recorder */ = {
-			isa = PBXGroup;
-			children = (
-				4F9D58EA18205A8C000A004F /* InfoViewController.m */,
-				4F9D58EB18205A8C000A004F /* InfoViewController.h */,
-				4F4545491635F0EA0091F335 /* AppDelegate.h */,
-				4F45454B1635F1040091F335 /* AppDelegate.m */,
-				4F4545651635F2580091F335 /* MainStoryboard.storyboard */,
-				4F45454D1635F12B0091F335 /* ViewController.h */,
-				4F45454E1635F12B0091F335 /* ViewController.m */,
-				4FD48DA8154AC95D007880C2 /* Supporting Files */,
-				4F864BFE183D73C100C888B8 /* SlideCell.h */,
-				82A046771869449000AFDF88 /* PDFCell.h */,
-				82A046781869449000AFDF88 /* PDFCell.m */,
-				4F864BFF183D73C100C888B8 /* SlideCell.m */,
-			);
-			path = Recorder;
-			sourceTree = "<group>";
-		};
 		4FD48DA8154AC95D007880C2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -593,6 +588,7 @@
 				4FD48DAF154AC95D007880C2 /* Lecture Capture-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			path = Recorder;
 			sourceTree = "<group>";
 		};
 		4FD48DC8154ACC7A007880C2 /* Utilities */ = {
@@ -644,6 +640,17 @@
 				4F9D596518205B91000A004F /* UIColor+GetHSB.m */,
 			);
 			name = "Color Picker";
+			sourceTree = "<group>";
+		};
+		823C98921875AF6000A3F3A1 /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				82A0466218690B9800AFDF88 /* PDFParser.h */,
+				82A0466318690B9800AFDF88 /* PDFParser.m */,
+				82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */,
+				82A046601868D77200AFDF88 /* PDFImporterViewController.m */,
+			);
+			name = PDF;
 			sourceTree = "<group>";
 		};
 		82536123176A50E7000D8F92 /* Images */ = {
@@ -711,6 +718,23 @@
 				4F9D594F18205B72000A004F /* UIImageView+AFNetworking.m */,
 			);
 			name = AFNetworking;
+			sourceTree = "<group>";
+		};
+		82DEE6B91874720B0008C9F2 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				4F864BFE183D73C100C888B8 /* SlideCell.h */,
+				4F864BFF183D73C100C888B8 /* SlideCell.m */,
+				82DEE6C0187481930008C9F2 /* PDFCell.h */,
+				82DEE6C1187481930008C9F2 /* PDFCell.m */,
+				82A046771869449000AFDF88 /* PDFPageCell.h */,
+				82A046781869449000AFDF88 /* PDFPageCell.m */,
+				82DEE6BA1874726E0008C9F2 /* LectureCell.h */,
+				82DEE6BB1874726E0008C9F2 /* LectureCell.m */,
+				82DEE6BD187475600008C9F2 /* AbstractCell.h */,
+				82DEE6BE187475600008C9F2 /* AbstractCell.m */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 		82EA441D185E8BC6007FBC6E /* DraggableCollectionView */ = {
@@ -945,6 +969,7 @@
 				4F9D595618205B72000A004F /* AFURLConnectionOperation.m in Sources */,
 				4F65E20118400B23004C5607 /* VideoFile.m in Sources */,
 				4F9D595718205B72000A004F /* AFXMLRequestOperation.m in Sources */,
+				82DEE6BC1874726E0008C9F2 /* LectureCell.m in Sources */,
 				4F9D595118205B72000A004F /* AFHTTPRequestOperation.m in Sources */,
 				82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */,
 				4F9D593A18205AFB000A004F /* Video.m in Sources */,
@@ -953,8 +978,10 @@
 				4FD48DAE154AC95D007880C2 /* main.m in Sources */,
 				4F9D596918205B91000A004F /* ILColorPickerView.m in Sources */,
 				4F65E1D9183FCB60004C5607 /* SlideAPI.m in Sources */,
+				823C989118759A5700A3F3A1 /* Slide.m in Sources */,
 				4F864C07183E62BB00C888B8 /* NonRotatingImagePicker.m in Sources */,
 				4F9D597818205C17000A004F /* UIImage+Resize.m in Sources */,
+				82DEE6C2187481930008C9F2 /* PDFCell.m in Sources */,
 				4F9D596A18205B91000A004F /* ILHuePickerView.m in Sources */,
 				4F9D58ED18205A8C000A004F /* InfoViewController.m in Sources */,
 				4F9D596718205B91000A004F /* ILColorPickerDualExampleController.m in Sources */,
@@ -970,12 +997,13 @@
 				4F9D597618205C17000A004F /* UIImage+Alpha.m in Sources */,
 				4F65E1FB18400B22004C5607 /* AudioFile.m in Sources */,
 				4F4545571635F14D0091F335 /* ScreenCaptureView.m in Sources */,
+				82DEE6BF187475600008C9F2 /* AbstractCell.m in Sources */,
 				4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */,
 				82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */,
 				4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */,
 				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
 				82A046731869281B00AFDF88 /* PDF.m in Sources */,
-				82A046791869449000AFDF88 /* PDFCell.m in Sources */,
+				82A046791869449000AFDF88 /* PDFPageCell.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,
 				4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */,
 				4F9D598018205C43000A004F /* AVCaptureHelper.m in Sources */,
@@ -1003,7 +1031,6 @@
 				4F9D593818205AFB000A004F /* IOHelper.m in Sources */,
 				4F9D595518205B72000A004F /* AFPropertyListRequestOperation.m in Sources */,
 				4F9D595018205B72000A004F /* AFHTTPClient.m in Sources */,
-				82F215CA184D858100406EDC /* Slide.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1040,6 +1067,7 @@
 				4F4545661635F2580091F335 /* en */,
 			);
 			name = MainStoryboard.storyboard;
+			path = Recorder;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

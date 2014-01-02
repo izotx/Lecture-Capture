@@ -25,7 +25,6 @@
     return UIInterfaceOrientationMaskLandscape| UIInterfaceOrientationMaskPortrait;
 }
 
-
 @end
 
 @interface ImagePhotoPicker()
@@ -34,10 +33,6 @@
 @property (nonatomic,strong) UIPopoverController * cameraPopover;
 @property (nonatomic,strong) UIBarButtonItem * cameraBarButton;
 @end
-
-
-
-
 
 @implementation ImagePhotoPicker
 
