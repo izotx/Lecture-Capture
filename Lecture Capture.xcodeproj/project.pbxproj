@@ -48,7 +48,6 @@
 		4F65E1CD183E71AB004C5607 /* TJLFetchedResultsSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1CC183E71AB004C5607 /* TJLFetchedResultsSource.m */; };
 		4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D5183FB58F004C5607 /* WebVideoView.m */; };
 		4F65E1D9183FCB60004C5607 /* SlideAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1D8183FCB60004C5607 /* SlideAPI.m */; };
-		4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1DB18400A1B004C5607 /* Lecture.m */; };
 		4F65E1FB18400B22004C5607 /* AudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E1FA18400B22004C5607 /* AudioFile.m */; };
 		4F65E20118400B23004C5607 /* VideoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F65E20018400B23004C5607 /* VideoFile.m */; };
 		4F864BC7183BFA6200C888B8 /* controlsButtonRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */; };
@@ -95,7 +94,6 @@
 		4F9D592C18205AA8000A004F /* cancel_24.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F9D590D18205AA8000A004F /* cancel_24.png */; };
 		4F9D593818205AFB000A004F /* IOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D592D18205AFB000A004F /* IOHelper.m */; };
 		4F9D593918205AFB000A004F /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D592E18205AFB000A004F /* Utilities.m */; };
-		4F9D593A18205AFB000A004F /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D593218205AFB000A004F /* Video.m */; };
 		4F9D593B18205AFB000A004F /* Manager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D593418205AFB000A004F /* Manager.m */; };
 		4F9D593C18205AFB000A004F /* NewModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */; };
 		4F9D595018205B72000A004F /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9D593E18205B72000A004F /* AFHTTPClient.m */; };
@@ -138,6 +136,8 @@
 		4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD724FD174D6E870005D782 /* NetworkHelper.m */; };
 		6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C37B7E03D6432B8FD7DF0A /* libPods.a */; };
 		823C989118759A5700A3F3A1 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C989018759A5700A3F3A1 /* Slide.m */; };
+		823C98951875C38C00A3F3A1 /* RecordingOperationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C98941875C38C00A3F3A1 /* RecordingOperationsViewController.m */; };
+		823C98981875CFEF00A3F3A1 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C98971875CFEF00A3F3A1 /* Lecture.m */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82A046611868D77200AFDF88 /* PDFImporterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046601868D77200AFDF88 /* PDFImporterViewController.m */; };
 		82A0466418690B9800AFDF88 /* PDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0466318690B9800AFDF88 /* PDFParser.m */; };
@@ -200,8 +200,6 @@
 		4F65E1D5183FB58F004C5607 /* WebVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebVideoView.m; path = WebVideoView/WebVideoView.m; sourceTree = "<group>"; };
 		4F65E1D7183FCB60004C5607 /* SlideAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideAPI.h; sourceTree = "<group>"; };
 		4F65E1D8183FCB60004C5607 /* SlideAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideAPI.m; sourceTree = "<group>"; };
-		4F65E1DA18400A1B004C5607 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
-		4F65E1DB18400A1B004C5607 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
 		4F65E1F918400B22004C5607 /* AudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFile.h; sourceTree = "<group>"; };
 		4F65E1FA18400B22004C5607 /* AudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFile.m; sourceTree = "<group>"; };
 		4F65E1FF18400B23004C5607 /* VideoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFile.h; sourceTree = "<group>"; };
@@ -259,8 +257,6 @@
 		4F9D592E18205AFB000A004F /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Utilities.m; path = Model_Utilities/Utilities.m; sourceTree = "<group>"; };
 		4F9D592F18205AFB000A004F /* IOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOHelper.h; path = Model_Utilities/IOHelper.h; sourceTree = "<group>"; };
 		4F9D593018205AFB000A004F /* Manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Manager.h; path = Model_Utilities/Manager.h; sourceTree = "<group>"; };
-		4F9D593118205AFB000A004F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Video.h; path = Model_Utilities/Video.h; sourceTree = "<group>"; };
-		4F9D593218205AFB000A004F /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Video.m; path = Model_Utilities/Video.m; sourceTree = "<group>"; };
 		4F9D593318205AFB000A004F /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utilities.h; path = Model_Utilities/Utilities.h; sourceTree = "<group>"; };
 		4F9D593418205AFB000A004F /* Manager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Manager.m; path = Model_Utilities/Manager.m; sourceTree = "<group>"; };
 		4F9D593618205AFB000A004F /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -332,6 +328,10 @@
 		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkHelper.m; path = Recorder/NetworkHelper.m; sourceTree = "<group>"; };
 		823C988F18759A5700A3F3A1 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
 		823C989018759A5700A3F3A1 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
+		823C98931875C38C00A3F3A1 /* RecordingOperationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingOperationsViewController.h; sourceTree = "<group>"; };
+		823C98941875C38C00A3F3A1 /* RecordingOperationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingOperationsViewController.m; sourceTree = "<group>"; };
+		823C98961875CFEF00A3F3A1 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
+		823C98971875CFEF00A3F3A1 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
 		8282D683176673BB00F82722 /* CustomTableButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomTableButton.h; path = Recorder/CustomTableButton.h; sourceTree = "<group>"; };
 		8282D684176673BB00F82722 /* CustomTableButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomTableButton.m; path = Recorder/CustomTableButton.m; sourceTree = "<group>"; };
 		82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFImporterViewController.h; path = Recorder/PDFImporterViewController.h; sourceTree = "<group>"; };
@@ -478,14 +478,14 @@
 				4F65E1F918400B22004C5607 /* AudioFile.h */,
 				4F65E1FA18400B22004C5607 /* AudioFile.m */,
 				4F9D593518205AFB000A004F /* NewModel.xcdatamodeld */,
+				823C98961875CFEF00A3F3A1 /* Lecture.h */,
+				823C98971875CFEF00A3F3A1 /* Lecture.m */,
 				823C988F18759A5700A3F3A1 /* Slide.h */,
 				823C989018759A5700A3F3A1 /* Slide.m */,
 				82A0467A1869493B00AFDF88 /* PDFPage.h */,
 				82A0467B1869493B00AFDF88 /* PDFPage.m */,
 				82A046711869281B00AFDF88 /* PDF.h */,
 				82A046721869281B00AFDF88 /* PDF.m */,
-				4F65E1DA18400A1B004C5607 /* Lecture.h */,
-				4F65E1DB18400A1B004C5607 /* Lecture.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -527,6 +527,8 @@
 				4F4545491635F0EA0091F335 /* AppDelegate.h */,
 				4F45454B1635F1040091F335 /* AppDelegate.m */,
 				4F4545651635F2580091F335 /* MainStoryboard.storyboard */,
+				823C98931875C38C00A3F3A1 /* RecordingOperationsViewController.h */,
+				823C98941875C38C00A3F3A1 /* RecordingOperationsViewController.m */,
 				823C98921875AF6000A3F3A1 /* PDF */,
 				4FD48DA8154AC95D007880C2 /* Supporting Files */,
 				82DEE6B91874720B0008C9F2 /* Cells */,
@@ -608,15 +610,13 @@
 				4F9D592E18205AFB000A004F /* Utilities.m */,
 				4F9D592D18205AFB000A004F /* IOHelper.m */,
 				4F9D592F18205AFB000A004F /* IOHelper.h */,
-				4F9D593118205AFB000A004F /* Video.h */,
-				4F9D593218205AFB000A004F /* Video.m */,
 				4F9D593018205AFB000A004F /* Manager.h */,
 				4F9D593418205AFB000A004F /* Manager.m */,
 				8282D683176673BB00F82722 /* CustomTableButton.h */,
 				8282D684176673BB00F82722 /* CustomTableButton.m */,
-				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
 				4FD724FC174D6E870005D782 /* NetworkHelper.h */,
 				4FD724FD174D6E870005D782 /* NetworkHelper.m */,
+				4FDAC3D315A1FF96003D1B16 /* Color Picker */,
 				82BB17D01772AA6F0039F287 /* AFNetworking */,
 			);
 			name = Utilities;
@@ -972,11 +972,10 @@
 				82DEE6BC1874726E0008C9F2 /* LectureCell.m in Sources */,
 				4F9D595118205B72000A004F /* AFHTTPRequestOperation.m in Sources */,
 				82EA442C185E8BC6007FBC6E /* DraggableCollectionViewFlowLayout.m in Sources */,
-				4F9D593A18205AFB000A004F /* Video.m in Sources */,
-				4F65E1DC18400A1B004C5607 /* Lecture.m in Sources */,
 				4F9D595818205B72000A004F /* UIImageView+AFNetworking.m in Sources */,
 				4FD48DAE154AC95D007880C2 /* main.m in Sources */,
 				4F9D596918205B91000A004F /* ILColorPickerView.m in Sources */,
+				823C98981875CFEF00A3F3A1 /* Lecture.m in Sources */,
 				4F65E1D9183FCB60004C5607 /* SlideAPI.m in Sources */,
 				823C989118759A5700A3F3A1 /* Slide.m in Sources */,
 				4F864C07183E62BB00C888B8 /* NonRotatingImagePicker.m in Sources */,
@@ -1014,6 +1013,7 @@
 				4F9D598118205C43000A004F /* CaptureSessionManager.m in Sources */,
 				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,
 				4F9D596B18205B91000A004F /* ILSaturationBrightnessPickerView.m in Sources */,
+				823C98951875C38C00A3F3A1 /* RecordingOperationsViewController.m in Sources */,
 				4F9D595418205B72000A004F /* AFNetworkActivityIndicatorManager.m in Sources */,
 				82EA442B185E8BC6007FBC6E /* LSCollectionViewLayoutHelper.m in Sources */,
 				8282D685176673BB00F82722 /* CustomTableButton.m in Sources */,

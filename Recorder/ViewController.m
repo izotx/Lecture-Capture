@@ -23,16 +23,9 @@
 {
    NSMutableArray * compileVideoListArray;
     __weak IBOutlet UITableView *tableView;
-    __weak IBOutlet UIImageView *videoScreenshotImageView;
-    __weak IBOutlet UILabel *videoTitleLabel;
-    __weak IBOutlet UITextView *videoDescriptionTextView;
-    __weak IBOutlet UITextView *editDescriptionTextView;
- 
+  
     
-    CGRect recordingViewFrame;
-    NSString* videoPath;
-    NSString* titleText;
-    Video * currentVideo;
+    
     UIAlertView * uploadAlert;
     UIAlertView * createNewAlert;
     UIAlertView * uploadLogin;
@@ -41,12 +34,7 @@
     Manager *manager;
 
 }
-- (IBAction)saveToLibrary:(id)sender;
-- (IBAction)deleteVideo:(id)sender;
 - (IBAction)contactSupport:(id)sender;
-
-- (void)postMovie:(NSString * )filePath;
-
 - (IBAction)showLectures:(id)sender;
 - (IBAction)showPDF:(id)sender;
 
@@ -92,49 +80,14 @@
           
         }
         else{
-            [self postMovie:videoPath];
+            //[self postMovie:videoPath];
         }
     }
 }
 
 #pragma mark files operations
 
--(void)postMovie:(NSString * )filePath{
-if(manager.userId){
-    if(filePath.length==0)
-    {
-        UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to select the video first." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [a show];
-    }
-    else{
-        NSLog(@"Video Size %f",[currentVideo.video_size floatValue]);
-        if([currentVideo.video_size floatValue] > 100 )
-        {
-            UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"Unfortunately, the selected recording is too large to uplaod it to the server. Currently the file size limit it 100 MB." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [a show];
-        }
-        else{
-        // upload video here
-            __block UIButton * button = _copyURLButton;
-            [networkHelper setCompletionBlocks:^(){
-            button.enabled = YES;
-              
-                
-            } andError:^(
-             
-             ){
-            
-            }];
-            NSLog(@"Trying to upload it");
-            [networkHelper uploadVideo:currentVideo andManager:manager andVideoPath:filePath];
-        }
-    }
-}
-    else{
-        uploadLogin = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to log in in order to upload recordings to the server. Would you like to do it now?" delegate:self cancelButtonTitle:@"Yes, please!" otherButtonTitles:@"No, thanks", nil];
-        [uploadLogin show];
-    }
-}
+
 
 - (IBAction)showLectures:(id)sender {
   self.fetchedResultsController =  [self prepareLectureFetchedResultsController];
@@ -256,21 +209,10 @@ if(manager.userId){
     
     [self showLectures:nil];
     
-    self.uploadingVideoLabel.hidden=YES;
-    self.uploadingVideoActivityIndicator.hidden=YES;
-    self.movie_url_label.text=@"";
-    self.copyURLButton.enabled=NO;
-
     manager= [Manager sharedInstance];
     manager.logoutDelegate =self;
-    videoTitleLabel.text=@"";
-
-    recordingViewFrame =  CGRectMake(0  , 0 , 1024, 748);
-    
     self.lectureAPI =[LectureAPI new];
-    
-    [self fetchedResultsController];
-   
+    [self showLectures:nil];
 
     //PDF Notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PDFReceived:) name:PDFNotification object:nil];
@@ -316,21 +258,6 @@ if(manager.userId){
 
 
 #pragma mark table view
-
-
-
--(void)uploadButtonPressed:(id)sender{
-   
-    CustomTableButton *cb =   (CustomTableButton *)sender;
-     NSLog(@"Upload %@ ",cb);
-
-    NSIndexPath *indexPath = [(CustomTableButton *) sender indexPath];
-    Video *info = [_fetchedResultsController objectAtIndexPath:indexPath];
-    videoPath = info.video_path;
-    [self postMovie:videoPath];
-}
-
-
 
 //reordering the table
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
@@ -486,16 +413,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 {
     
-    if([aTableView isEqual:tableView]){
     if (editingStyle == UITableViewCellEditingStyleDelete)
         
     {
-        Video * v = [_fetchedResultsController objectAtIndexPath:indexPath];
+       NSManagedObject *object = [_fetchedResultsController objectAtIndexPath:indexPath];
         NSManagedObjectContext *context = [_fetchedResultsController managedObjectContext];
     
         if(context)
         {
-            [context deleteObject:v];
+            [context deleteObject:object];
         }
         else{
             NSLog(@"Context doesn't exist on delete???");
@@ -515,7 +441,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [tableView reloadData];
        
     }
-   }
+   
 }
 
 - (IBAction)editTable:(id)sender {
@@ -531,11 +457,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 
 
-- (IBAction)saveToLibrary:(id)sender {
-   
-    [_iohelper saveToLibraryFileAtPath:videoPath];
-}
-
 
 
 
@@ -544,17 +465,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [uploadAlert show];
 }
 
-
-- (IBAction)copyURL:(id)sender {
-      
-    //tableView.selectedRow;
-    
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = self.movie_url_label.text;
-    UIAlertView * a =[[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"The url of your recording was copied to a clipboard." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-    [a show];
-
-}
 
 
 

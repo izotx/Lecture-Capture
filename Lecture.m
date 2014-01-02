@@ -2,7 +2,7 @@
 //  Lecture.m
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 11/22/13.
+//  Created by sadmin on 1/2/14.
 //
 //
 
@@ -17,6 +17,7 @@
 @dynamic name;
 @dynamic size;
 @dynamic video;
+@dynamic filepath;
 @dynamic slides;
 
 @end

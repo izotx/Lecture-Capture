@@ -16,6 +16,8 @@
 + (id)saveLecture:(Lecture*)lecture;
 + (id)compile;
 + (Slide *)addNewSlideToLecture:(Lecture *)lecture afterSlide:(Slide*)slide;
++(void)saveLecturetoLibrary: (Lecture *)lecture;
++(void)uploadLecture: (Lecture *)lecture;
 
 
 @end

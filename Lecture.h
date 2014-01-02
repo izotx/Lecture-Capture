@@ -2,7 +2,7 @@
 //  Lecture.h
 //  Lecture Capture
 //
-//  Created by Janusz Chudzynski on 11/22/13.
+//  Created by sadmin on 1/2/14.
 //
 //
 
@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * size;
 @property (nonatomic, retain) NSData * video;
+@property (nonatomic, retain) NSString * filepath;
 @property (nonatomic, retain) NSSet *slides;
 @end
 

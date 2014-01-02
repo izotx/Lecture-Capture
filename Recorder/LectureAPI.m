@@ -10,7 +10,25 @@
 #import "Lecture.h"
 #import "AppDelegate.h"
 #import "Slide.h"
+#import  "IOHelper.h"
+#import "NetworkHelper.h"
+#import  "Manager.h"
+
 @implementation LectureAPI
+
+#warning UPLOADING LECTURE
++(void)uploadLecture: (Lecture *)lecture;{
+    NetworkHelper * nh = [[NetworkHelper alloc]init];
+    [nh uploadVideo:lecture andManager:[Manager sharedInstance]];
+
+}
+
++(void)saveLecturetoLibrary: (Lecture *)lecture;{
+    IOHelper * h = [[IOHelper alloc]init];
+    //check if file exist
+    [h saveToLibraryFileAtPath:lecture.filepath];
+}
+
 + (Slide *)addNewSlideToLecture:(Lecture *)lecture afterSlide:(Slide*)previousSlide{
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];

@@ -7,16 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Video.h"
-#import "Manager.h"
-
-
+@class Lecture;
+@class  Manager;
 @interface NetworkHelper : NSObject
 typedef void (^ BlockTest)();
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
--(void)uploadVideo:(Video *)currentVideo andManager:(Manager *)manager andVideoPath:(NSString *)videoPath;
+-(void)uploadVideo:(Lecture *)lecture andManager:(Manager *)manager;
 
 -(void)setCompletionBlocks:(BlockTest) successBlock andError:
 (BlockTest) errorBlock;
