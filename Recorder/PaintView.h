@@ -10,6 +10,7 @@
 
 @interface PaintView : UIImageView <UIGestureRecognizerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
 
+//@property (nonatomic, strong) UIImage * backgroundScreen;
 @property (nonatomic, strong) UIImage * backgroundImage;
 @property (nonatomic,strong)  UIImage * startImage;
 
@@ -17,11 +18,13 @@
 @property(nonatomic,strong)  UIColor * strokeColor;
 @property(nonatomic, assign) int brushSize;
 @property(nonatomic,assign)  BOOL eraseMode;
+
 @property(nonatomic,strong)  UIBezierPath * myPath;
 
 //Gestures
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer * pinchGesture;
+
 
 //Methods
 -(void) setBrushStrokeColor:(UIColor *)strokeColor;

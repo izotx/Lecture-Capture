@@ -40,7 +40,7 @@
 -(void) loadVideoWithURL:(NSURL *) url{
     //url = outputURL;
     _mp = [[MPMoviePlayerController alloc]initWithContentURL:url];
-    //_mp.controlStyle = MPMovieControlStyleFullscreen;
+    _mp.controlStyle = MPMovieControlStyleFullscreen;
     _mp.shouldAutoplay = NO;
     [_mp prepareToPlay];
     [_mp.view setFrame: self.bounds];  // player's frame must match parent's
@@ -64,9 +64,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:MPMoviePlayerPlaybackDidFinishNotification
                                                   object:moviePlayerController];
-    
-    //That should be an option, not default
-    //[moviePlayerController.view removeFromSuperview];
+    [moviePlayerController.view removeFromSuperview];
 
 
     NSNumber *reason = [notification.userInfo objectForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey];

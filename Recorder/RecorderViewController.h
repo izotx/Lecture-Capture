@@ -10,6 +10,7 @@
 #import "ScreenCaptureView.h"
 #import "PaintView.h"
 #import "AudioRecorder.h"
+#import "ScreenView.h"
 #import "ILColorPickerDualExampleController.h"
 #import "TJLFetchedResultsSource.h"
 
@@ -17,23 +18,24 @@
 @class Lecture;
 @class Slide;
 
-@interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate, UITextFieldDelegate>
+@interface RecorderViewController : UIViewController <ScreenCaptureViewDelegate,ScreenShotDelegate,ColorDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIActionSheetDelegate, UITextFieldDelegate>
 {
     IBOutlet UIImageView *backgroundView;
-    __weak IBOutlet UIActivityIndicatorView *activityIndicator;
+__weak IBOutlet UIScrollView *scrollView;
+__weak IBOutlet UIActivityIndicatorView *activityIndicator;
     UIPopoverController * colorPopover;
     UIActionSheet * photoAction;
     IBOutlet UIImageView * testImageView;
     IBOutlet UIBarButtonItem *cameraBarButton;
 }
 
-@property (strong, nonatomic) IBOutlet ScreenCaptureView *recordingScreenView;
 @property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *colorBarButton;
+@property (strong, nonatomic) Lecture * lecture;
+@property (strong, nonatomic) IBOutlet ScreenCaptureView *recordingScreenView;
+@property BOOL eraseMode;
 @property (strong, nonatomic) IBOutlet UITextField *lectureNameTextField;
 
-@property (strong, nonatomic) Lecture * lecture;
-@property BOOL eraseMode;
 
 - (IBAction)changeBrushSize:(id)sender;
 - (IBAction)pickColorFor:(id)sender;

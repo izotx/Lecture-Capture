@@ -2,7 +2,7 @@
 //  VideoFile.h
 //  Lecture Capture
 //
-//  Created by sadmin on 1/3/14.
+//  Created by Janusz Chudzynski on 11/22/13.
 //
 //
 
@@ -14,7 +14,6 @@
 @interface VideoFile : NSManagedObject
 
 @property (nonatomic, retain) NSString * path;
-@property (nonatomic, retain) NSDate * date;
 @property (nonatomic, retain) Slide *slide;
 
 @end

@@ -28,12 +28,20 @@
     }
     [_importer parsePDF:url];
     
-   
+    UINavigationController * nav =(UINavigationController *)[ st instantiateInitialViewController ];
      UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
     
     [navigationController pushViewController:_importer animated:YES];
+//    
+//    [self.window makeKeyAndVisible];
+//    
+//    nav performSelectorOnMainThread:@selector(pushViewController:animated:) withObject:<#(id)#> waitUntilDone:<#(BOOL)#>
+//[nav.topViewController presentViewController:_importer animated:YES completion:^{
+//    
+//}];
     NSLog(@"openURL");
 
+//    [self performSelectorOnMainThread:@selector(pushMyViewController:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:_importer,@"viewController", [NSNumber numberWithBool:NO], @"animated", nil] waitUntilDone:NO];
  
     return YES;
 }

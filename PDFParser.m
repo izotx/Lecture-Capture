@@ -167,7 +167,6 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGContextSetRenderingIntent(context, kCGRenderingIntentDefault);
     
     CGContextTranslateCTM(context, 0.0, pageSize.height);
     CGContextScaleCTM(context, 1.0, -1.0);
@@ -175,6 +174,7 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
     
     CGAffineTransform pdfTransform = CGPDFPageGetDrawingTransform(page, kCGPDFArtBox, CGRectMake(0, 0, pageSize.width, pageSize.height), 0, true);
     CGContextConcatCTM(context, pdfTransform);
+    
     CGContextDrawPDFPage(context, page);
     CGContextRestoreGState(context);
     
@@ -197,18 +197,7 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
         [bl addExecutionBlock:^{
             if(!weakOperation.isCancelled)
             {
-                CGSize size;
-                //check if it is retina screen
-                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
-                    ([UIScreen mainScreen].scale == 2.0)) {
-                    size = CGSizeMake(800, 600);
-                    // Retina display
-                } else {
-                    // non-Retina display
-                    size = CGSizeMake(1600, 1200);
-                }
-                
-                im = [self imageForPage:i sized:size];
+                im = [self imageForPage:i sized:CGSizeMake(800, 600)];
                 thumb = [self imageWithImage:im scaledToSize:CGSizeMake(200, 200)];
                          
                 

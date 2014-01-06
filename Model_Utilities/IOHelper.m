@@ -17,11 +17,12 @@
 -(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block forSlide:(Slide *)slide saveAtPath:(NSString *)path
 {
     AVMutableComposition *mixComposition = [AVMutableComposition composition];
-    AVMutableCompositionTrack *videoCompositionTrack;
-    AVMutableCompositionTrack *audioCompositionTrack;
+    AVMutableCompositionTrack *videoCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
+    AVMutableCompositionTrack *audioCompositionTrack;// =[[AVMutableCompositionTrack alloc]init];
     videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    
+                              
+   // NSLog(@"Put Together Video just got called ");
                               
     NSError * error;
     for(int i=0;i<videoPieces.count;i++)
@@ -189,91 +190,6 @@ else{
     UIAlertView * al = [[UIAlertView alloc]initWithTitle:@"Message" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [al show];
     
-}
-
--(void)combineLectureVideos: (NSArray *)videos withCompletionBlock:(LectureCompletionBlock)completionBlock{
-   
-    AVMutableComposition *mixComposition = [AVMutableComposition composition];
-    AVMutableCompositionTrack *videoCompositionTrack;
-    AVMutableCompositionTrack *audioCompositionTrack;
-    videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    
-    NSError * error;
-    for(int i=0;i<videos.count;i++)
-    {
-        NSFileManager * fm = [NSFileManager defaultManager];
-        NSString * movieFilePath;
-        NSString * audioFilePath;
-        movieFilePath =  [videos objectAtIndex:i];
-        audioFilePath =movieFilePath;
-        
-        if(![fm fileExistsAtPath:movieFilePath]){
-            NSLog(@"Movie doesn't exist %@ ",movieFilePath);
-        }
-        
-        if(![fm fileExistsAtPath:audioFilePath]){
-            NSLog(@"Audio doesn't exist %@ ",audioFilePath);
-        }
-        
-        NSURL *videoUrl = [NSURL fileURLWithPath:movieFilePath];
-        NSURL *audioUrl = [NSURL fileURLWithPath:audioFilePath];
-        
-        
-        AVURLAsset *videoasset = [[AVURLAsset alloc]initWithURL:videoUrl options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey]];
-        AVAssetTrack *videoAssetTrack= [[videoasset tracksWithMediaType:AVMediaTypeVideo] lastObject];
-        
-        AVURLAsset *audioasset = [[AVURLAsset alloc]initWithURL:audioUrl options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey]];
-        AVAssetTrack *audioAssetTrack= [[audioasset tracksWithMediaType:AVMediaTypeAudio] lastObject];
-        
-        CMTime tempDuration = mixComposition.duration;
-        
-        [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioasset.duration) ofTrack:audioAssetTrack atTime:tempDuration error:&error];
-        
-        [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoasset.duration) ofTrack:videoAssetTrack atTime:tempDuration error:&error];
-        
-        if(error)
-        {
-            NSLog(@"Ups. Something went wrong! %@ video %f audio %f ", [error debugDescription], CMTimeGetSeconds(videoasset.duration), CMTimeGetSeconds(audioasset.duration));
-        }
-    }
-
-    NSString * path = [IOHelper getRandomFilePath];
-    NSURL * movieURL = [NSURL fileURLWithPath: path];
-    
-    AVAssetExportSession *exporter =[[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetPassthrough];
-    
-    exporter.outputFileType=AVFileTypeQuickTimeMovie;
-    exporter.outputURL=movieURL;
-    exporter.shouldOptimizeForNetworkUse=YES;
-    
-    CMTimeValue val = mixComposition.duration.value;
-    NSLog(@"Seconds %f",CMTimeGetSeconds(mixComposition.duration));
-    
-    CMTime start=CMTimeMake(0, 600);
-    CMTime duration=CMTimeMake(val, 600);
-    CMTimeRange range=CMTimeRangeMake(start, duration);
-    exporter.timeRange=range;
-    
-    [exporter exportAsynchronouslyWithCompletionHandler:^{
-        switch ([exporter status]) {
-            case AVAssetExportSessionStatusFailed:{
-                NSLog(@"Export failed: %@ %@", [[exporter error] localizedDescription],[[exporter error]debugDescription]);
-              
-                break;
-            }
-            case AVAssetExportSessionStatusCancelled:{ NSLog(@"Export canceled");
-               
-                break;
-            }
-            case AVAssetExportSessionStatusCompleted:
-            {
-                completionBlock(YES,duration,path);
-                NSLog(@"Seconds %f",CMTimeGetSeconds(duration));
-            }
-        }}];
-
-
 }
 
 
