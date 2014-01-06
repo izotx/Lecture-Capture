@@ -100,13 +100,8 @@
 }
 
 - (void) stopRecording{
-    
     [_recorder stop];
-    
-  
 }
-
-
 
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag

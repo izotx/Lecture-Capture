@@ -13,7 +13,9 @@
 @property (nonatomic, strong) NSMutableArray * audioPieces;
 @property (nonatomic, strong) NSMutableArray * moviePieces;
 @property (nonatomic, strong) Slide * slide;
+
 +(void)save;
++(void)resetSlide:(Slide *)slide;
 
 
 

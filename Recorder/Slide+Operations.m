@@ -29,7 +29,7 @@
     VideoFile * video= [NSEntityDescription insertNewObjectForEntityForName:@"VideoFile" inManagedObjectContext:delegate.managedObjectContext];
     [self addVideoFilesObject:video];
     video.path = file;
-    
+    video.date = [NSDate new];
     NSError *error;
     [delegate.managedObjectContext save:&error];
     if(error){
@@ -44,6 +44,8 @@
     AudioFile * audio= [NSEntityDescription insertNewObjectForEntityForName:@"AudioFile" inManagedObjectContext:delegate.managedObjectContext];
     [self addAudioFilesObject:audio];
     audio.path = file;
+    audio.date = [NSDate new];
+    
     NSError *error;
     [delegate.managedObjectContext save:&error];
     if(error){

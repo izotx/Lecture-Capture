@@ -2,7 +2,7 @@
 //  Slide.m
 //  Lecture Capture
 //
-//  Created by sadmin on 1/2/14.
+//  Created by sadmin on 1/6/14.
 //
 //
 
@@ -16,13 +16,14 @@
 
 @dynamic audio;
 @dynamic duration;
+@dynamic pdfimage;
 @dynamic order;
 @dynamic selected;
 @dynamic size;
 @dynamic thumbnail;
 @dynamic url;
 @dynamic video;
-@dynamic image;
+@dynamic modifiedimage;
 @dynamic audioFiles;
 @dynamic lecture;
 @dynamic videoFiles;

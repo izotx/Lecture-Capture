@@ -19,5 +19,6 @@
 @dynamic video;
 @dynamic filepath;
 @dynamic slides;
+@dynamic url;
 
 @end

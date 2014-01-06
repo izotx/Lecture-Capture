@@ -63,7 +63,8 @@
                 [a show];
             }
             else{
-                currentVideo.video_url=newStr;
+                lecture.url = newStr;
+               
                 
                 NSError * error=nil;
                 [self.managedObjectContext save:&error];

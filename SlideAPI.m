@@ -8,6 +8,8 @@
 
 #import "SlideAPI.h"
 #import "AppDelegate.h"
+#import "Slide.h"
+
 @interface SlideAPI()
 
 @end
@@ -30,8 +32,17 @@
         NSLog(@"Error %@",error.debugDescription);
         
     }
-
 }
 
++(void)resetSlide:(Slide *)slide;{
+    [slide removeAudioFiles:slide.audioFiles];
+    [slide removeVideoFiles:slide.videoFiles];
+    slide.audio = nil;
+    slide.video = nil;
+    slide.duration =@0;
+    slide.size=@0;
+    slide.thumbnail = nil;
+    slide.modifiedimage = nil;
+}
 
 @end

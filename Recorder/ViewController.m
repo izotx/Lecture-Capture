@@ -11,37 +11,31 @@
 #import "CustomTableButton.h"
 #import "Lecture.h"
 #import "PDF.h"
+
 #import "LectureAPI.h"
-#import "IOHelper.h"
-#import "WebVideoView.h"
 #import "AppDelegate.h"
 #import "Slide.h"
 #import "PDFImporterViewController.h"
+#import "RecordingOperationsViewController.h"
 #import "AbstractCell.h"
 
 @interface ViewController ()
 {
-   NSMutableArray * compileVideoListArray;
     __weak IBOutlet UITableView *tableView;
-  
-    
-    
-    UIAlertView * uploadAlert;
     UIAlertView * createNewAlert;
     UIAlertView * uploadLogin;
-    
-    NetworkHelper * networkHelper;
     Manager *manager;
-
 }
+
 - (IBAction)contactSupport:(id)sender;
 - (IBAction)showLectures:(id)sender;
 - (IBAction)showPDF:(id)sender;
 
+
+@property (strong, nonatomic) IBOutlet UIView *container;
 @property(nonatomic, strong) LectureAPI *lectureAPI;
-@property(nonatomic,strong) IOHelper * iohelper;
-@property(nonatomic,strong) WebVideoView *webVideoView;
 @property(nonatomic,strong) PDFImporterViewController * importer;
+@property (nonatomic,strong) RecordingOperationsViewController * recordingOperations;
 
 @end
 
@@ -54,9 +48,7 @@
     }
     else{
         [self showPDF:nil];
-        
     }
-    
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -70,20 +62,8 @@
         else{
             
         }
-        
     }
-     if(alertView==uploadAlert)
-    {
-        if(buttonIndex==0)
-        {
-            //NO?
-          
-        }
-        else{
-            //[self postMovie:videoPath];
-        }
-    }
-}
+  }
 
 #pragma mark files operations
 
@@ -109,13 +89,10 @@
     
     if ([segue.identifier isEqualToString:@"Create"]) {
         RecorderViewController *r = [segue destinationViewController];
-       
         
         Lecture * lecture = [LectureAPI createLectureWithName:@"Untitled"];
         r.lecture = lecture;
-        
-        
-      
+
     }
      if ([segue.identifier isEqualToString:@"Popover"]) {
          LoginRegisterViewController * r =[segue destinationViewController];
@@ -203,37 +180,11 @@
 {
     [super viewDidLoad];
 
-    //Array that is storing vidoes
-    compileVideoListArray =[[NSMutableArray alloc]initWithCapacity:0];
-    networkHelper = [[NetworkHelper alloc]init];
-    
     [self showLectures:nil];
-    
     manager= [Manager sharedInstance];
     manager.logoutDelegate =self;
     self.lectureAPI =[LectureAPI new];
     [self showLectures:nil];
-
-    //PDF Notification
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PDFReceived:) name:PDFNotification object:nil];
-}
-
--(void)PDFReceived:(NSNotification *)n{
-    NSURL *url = [n object];
-  
-    UIStoryboard *st =    [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    if(!_importer){
-        
-        _importer = [st instantiateViewControllerWithIdentifier:@"PDFImporterViewController"];
-    }
-    [_importer parsePDF:url];
-    
-        UINavigationController * nav =(UINavigationController *)[ st instantiateInitialViewController ];
-    [nav pushViewController:_importer animated:YES];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PDFNotification object:url]];
-
-    
 }
 
 
@@ -244,15 +195,12 @@
     //see if they are assigned to projects.
     
     //
-
 }
 
 #pragma mark notifications and Loading video
 
 - (IBAction)deleteVideo:(id)sender {
     [tableView setEditing:YES animated:YES];
-    
-    
 }
 
 
@@ -261,7 +209,7 @@
 
 //reordering the table
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
-    NSLog(@"Object Moved ");
+   
 
 }
 
@@ -381,25 +329,39 @@ id object =[_fetchedResultsController objectAtIndexPath:indexPath];
     if([object isKindOfClass:[Lecture class]]){
         object = (Lecture *)object;
         Lecture * l =[_fetchedResultsController objectAtIndexPath:indexPath];
-        if(l.slides.count>0){
-            NSSortDescriptor * ns = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
-          
-            Slide * slide = [[[l.slides allObjects]sortedArrayUsingDescriptors:@[ns]]objectAtIndex:0];
-           
-            NSData * data = slide.video;
-            if(data){
-                NSString * _videoPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], [IOHelper  getRandomFilePath]];
-                [data writeToFile:_videoPath atomically:YES];
-                NSURL* outputURL = [NSURL fileURLWithPath:_videoPath];
-                
-            }
-        }
+       
+     //   if(!_recordingOperations){
+            self.recordingOperations = [self.storyboard instantiateViewControllerWithIdentifier:@"RecordingOperationsViewController"];
+       // }
+        [_recordingOperations removeFromParentViewController];
+        
+        _recordingOperations.lecture = l;
+     [self displayContentController:_recordingOperations];
     }
-    
-    
+    if([object isKindOfClass:[PDF class]]){
+//        if(!_importer){
+            self.importer=[self.storyboard instantiateViewControllerWithIdentifier:@"PDFImporterViewController"];
+  //      }
+         _importer.pdf =object;
+        [self displayContentController:_importer];
+    }
+}
 
+- (void) displayContentController: (UIViewController*) content;
+
+{
+    
+    
+    [self addChildViewController:content];                 // 1
+    [content view];
+    content.view.frame = self.container.frame; // 2
+    
+    [self.view addSubview:content.view];
+    
+    [content didMoveToParentViewController:self];          // 3
     
 }
+
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
@@ -457,96 +419,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 
 
-
-
-
-- (IBAction)shareMovie:(id)sender {
-    uploadAlert =[[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"You are about to upload video to the remote server in order to obtain a link that you can share with other people. It might be time consuming operation. It's recommended to perform the operation whenever your device is connected to WiFi network. Are you sure that you want to continue?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    [uploadAlert show];
-}
-
-
-
-
-- (IBAction)shareURL:(id)sender {
-    NSLog(@"Share URL");
-NSString * url= [[UIPasteboard generalPasteboard]string];
-if([url length]==0)
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message" 
-                                                    message:@"Select a recording and tap on Copy To ClipBoard first!" 
-                                                   delegate:nil 
-                                          cancelButtonTitle:@"OK" 
-                                          otherButtonTitles: nil];
-    [alert show];
-   
-   
-}
-else if([MFMailComposeViewController canSendMail])
-{
- 
-    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
-    
-    mailer.mailComposeDelegate = self;
-    [mailer setSubject:@"Look at this!"];
-    url=[NSString stringWithFormat:@"<a href=\%@\">%@</a><br>\n",url,url];
-   
-    
-    NSMutableString *body = [NSMutableString string];
-    // add HTML before the link here with line breaks (\n)
-    [body appendString:@"<h5>Check this out!</h5>\n"];
-    [body appendString:@"Watch a recording using URL given below:<br>\n"];
-    [body appendString:url];
-    [body appendString:@"Thanks much! <br> \n"];
-    [body appendString:@"<a href=\"http://itunes.apple.com/us/app/lecture-capture/id552262316?ls=1&mt=8\">Download a Lecture Capture App</a>\n"];    
-    [mailer setMessageBody:body isHTML:YES];
-
-    // only for iPad
-     mailer.modalPresentationStyle = UIModalPresentationPageSheet;
-    [self presentViewController:mailer animated:YES completion:nil];
-
- }
-else
-{
-       NSLog(@"Share URL 3");
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message"
-                                                    message:@"Your device doesn't support the composer sheet" 
-                                                   delegate:nil 
-                                          cancelButtonTitle:@"OK" 
-                                          otherButtonTitles: nil];
-    [alert show];
-    }
-}
-
 - (IBAction)contactSupport:(id)sender {
-    if([MFMailComposeViewController canSendMail])
-    {
-        
-        MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
-        
-        mailer.mailComposeDelegate = self;
-        [mailer setSubject:@"Lecture Capture Support"];
-        
-        NSMutableString *body = [NSMutableString string];
-        // add HTML before the link here with line breaks (\n)
-        [body appendString:@"<p>Please decribe a problem that you are having with the app. Do you have any suggestions? We will be happy to assist!.</p>\n"];
-        [mailer setMessageBody:body isHTML:YES];
-        
-        // only for iPad
-        mailer.modalPresentationStyle = UIModalPresentationPageSheet;
-        [self presentViewController:mailer animated:YES completion:nil];
-        
-    }
-    else
-    {
-        NSLog(@"Share URL 3");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message"
-                                                        message:@"Your device doesn't support the composer sheet"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles: nil];
-        [alert show];
-    }
+#warning implement
+
 }
 
 
@@ -636,11 +511,6 @@ else
     [super didReceiveMemoryWarning];
     NSLog(@"Memory Management s");
 
-}
-
-
-- (IBAction)editRecording:(id)sender {
-    
 }
 
 

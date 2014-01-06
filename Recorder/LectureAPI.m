@@ -33,7 +33,10 @@
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     Slide * slide= [NSEntityDescription insertNewObjectForEntityForName:@"Slide" inManagedObjectContext:delegate.managedObjectContext];
     [lecture addSlidesObject:slide];
-    slide.order = [NSNumber numberWithInt:previousSlide.order.intValue + 1];
+    if(previousSlide){
+        slide.order = [NSNumber numberWithInt:previousSlide.order.intValue + 1];
+    }
+
     slide.selected = @1;
     slide.lecture = lecture;
     NSError *error;
