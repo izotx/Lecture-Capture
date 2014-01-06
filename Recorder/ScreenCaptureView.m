@@ -7,8 +7,8 @@
 @interface ScreenCaptureView()
 @property BOOL paused;
 @property CMTime currentCMTime;
-@property CGLayerRef destLayer;
-@property CGContextRef destContext;
+//@property CGLayerRef destLayer;
+//@property CGContextRef destContext;
 @property BOOL layerReady;
 @property NSTimer *captureTimer;
 
@@ -55,11 +55,11 @@
     
     
     //Preparing for drawing in background
-    CGFloat contentScale = [[UIScreen mainScreen]scale];
-    CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
-    _destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
-    _destContext = CGLayerGetContext(_destLayer);
-    CGContextScaleCTM(_destContext, contentScale, contentScale);
+//    CGFloat contentScale = [[UIScreen mainScreen]scale];
+ //   CGSize layerSize = CGSizeMake(self.bounds.size.width * contentScale,self.bounds.size.height * contentScale);
+  //  _destLayer = CGLayerCreateWithContext([self createBitmapContextOfSize:self.bounds.size], layerSize, NULL);
+  //  _destContext = CGLayerGetContext(_destLayer);
+  //  CGContextScaleCTM(_destContext, contentScale, contentScale);
 
     _layerReady = NO;
     _ready = YES;
@@ -159,82 +159,90 @@
 - (void)captureFrame:(NSTimer *)captureTimer
 {
 
-    
-    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
-    CGContextConcatCTM(_destContext, flipVertical);
-	
 	[paintView prepareForImageCapture];
-    UIImage* background =   paintView.image;
-    
-    self.currentScreen = background;
-    if([csm.captureSession isRunning]){
-        
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 1);
-        
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        [background drawInRect:self.frame];
-        
-        CGRect tframe;
-        CGRect videoPreviewBackgroundFrame;
-        if(fullScreen){
-            tframe = self.frame;
-        }
-        else{
-            tframe = videoPreviewFrame;
-        }
-        
-        
-        float h = videoPreviewFrame.size.height;
-        float w = videoPreviewFrame.size.width;
-        
-        float ow = self.frame.size.width;
-        float oh = self.frame.size.height;
-        float dx,dy;
-        if(fullScreen){
-            dx = (ow - w)/2.0;
-            dy = (oh - h)/2.0;
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Background work
+        UIImage* background =   paintView.image;
+        self.currentScreen = background;
+        if([csm.captureSession isRunning]){
             
+            UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 1);
+            
+            CGContextRef ctx = UIGraphicsGetCurrentContext();
+            [background drawInRect:self.frame];
+            
+            CGRect tframe;
+            CGRect videoPreviewBackgroundFrame;
+            if(fullScreen){
+                tframe = self.frame;
+            }
+            else{
+                tframe = videoPreviewFrame;
+            }
+            
+            float h = videoPreviewFrame.size.height;
+            float w = videoPreviewFrame.size.width;
+            
+            float ow = self.frame.size.width;
+            float oh = self.frame.size.height;
+            float dx,dy;
+            if(fullScreen){
+                dx = (ow - w)/2.0;
+                dy = (oh - h)/2.0;
+                
+            }
+            else{
+                dx= videoPreviewFrame.origin.x;
+                dy= videoPreviewFrame.origin.y;
+            }
+            
+            CGRect tempRect = CGRectMake(dx, dy, w, h);
+            //  CGRect fullTempRect = CGRectMake(dx, dy+11, w, h);
+            
+            float x = tempRect.origin.x;
+            float y = tempRect.origin.y;
+            
+            x = x-(0.1*w)/2.0;
+            y = y-(0.1*h)/2.0;
+            w = 1.1 * w;
+            h = 1.1 * h;
+            
+            videoPreviewBackgroundFrame = CGRectMake(x,y,w,h);
+            
+            CGContextSetFillColorWithColor(ctx, [[UIColor grayColor]CGColor]);
+            CGContextFillRect(ctx, tframe);
+            
+            CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
+            CGContextFillRect(ctx, videoPreviewBackgroundFrame);
+            [background drawInRect:self.bounds];
+            if(!fullScreen){
+                [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
+            }
+            else{
+                [vi drawInRect:videoPreviewBackgroundFrame blendMode:kCGBlendModeNormal alpha:1];
+            }
+            UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+            self.currentScreen = newImage;
+            UIGraphicsEndImageContext();
         }
-        else{
-            dx= videoPreviewFrame.origin.x;
-            dy= videoPreviewFrame.origin.y;
+        
+        
+        if (_recording) {
+            float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+            [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
         }
         
-        CGRect tempRect = CGRectMake(dx, dy, w, h);
-        //  CGRect fullTempRect = CGRectMake(dx, dy+11, w, h);
-        
-        float x = tempRect.origin.x;
-        float y = tempRect.origin.y;
-        
-        x = x-(0.1*w)/2.0;
-        y = y-(0.1*h)/2.0;
-        w = 1.1 * w;
-        h = 1.1 * h;
-        
-        videoPreviewBackgroundFrame = CGRectMake(x,y,w,h);
-        
-        CGContextSetFillColorWithColor(ctx, [[UIColor grayColor]CGColor]);
-        CGContextFillRect(ctx, tframe);
-        
-        CGContextSetFillColorWithColor(ctx, [[UIColor whiteColor]CGColor]);
-        CGContextFillRect(ctx, videoPreviewBackgroundFrame);
-        [background drawInRect:self.bounds];
-        if(!fullScreen){
-            [vi drawInRect:videoPreviewFrame blendMode:kCGBlendModeNormal alpha:1];
-        }
-        else{
-            [vi drawInRect:videoPreviewBackgroundFrame blendMode:kCGBlendModeNormal alpha:1];
-        }
-        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-        self.currentScreen = newImage;
-		UIGraphicsEndImageContext();
-    }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Update UI
+            
+           
+        });
+    });
+    
+
     
     
-    if (_recording) {
-        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-        [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-    }
 	
 }
 
@@ -281,8 +289,7 @@
 }
 
 -(BOOL) setUpWriter {
-  //  NSLog(@"Set Up Writer");
-	NSError* error = nil;
+  	NSError* error = nil;
 	self.videoWriter = [[AVAssetWriter alloc] initWithURL:[self tempFileURL] fileType:AVFileTypeQuickTimeMovie error:&error];
 	NSParameterAssert(_videoWriter);
     
