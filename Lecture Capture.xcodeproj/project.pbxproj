@@ -14,6 +14,7 @@
 		4F0FED15169B6FA700C04ADC /* Lecture_Capture_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F0FED14169B6FA700C04ADC /* Lecture_Capture_Test.m */; };
 		4F0FED1B169B6FBC00C04ADC /* RecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545511635F14D0091F335 /* RecorderViewController.m */; };
 		4F0FED1C169B6FC000C04ADC /* ScreenCaptureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545531635F14D0091F335 /* ScreenCaptureView.m */; };
+		4F0FED1D169B6FC300C04ADC /* ScreenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545551635F14D0091F335 /* ScreenView.m */; };
 		4F0FED1E169B6FC700C04ADC /* PaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45455A1635F16D0091F335 /* PaintView.m */; };
 		4F0FED1F169B700D00C04ADC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48DA5154AC95D007880C2 /* CoreGraphics.framework */; };
 		4F0FED20169B701300C04ADC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD48E2A154B2228007880C2 /* MobileCoreServices.framework */; };
@@ -38,6 +39,7 @@
 		4F45454F1635F12B0091F335 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45454E1635F12B0091F335 /* ViewController.m */; };
 		4F4545561635F14D0091F335 /* RecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545511635F14D0091F335 /* RecorderViewController.m */; };
 		4F4545571635F14D0091F335 /* ScreenCaptureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545531635F14D0091F335 /* ScreenCaptureView.m */; };
+		4F4545581635F14D0091F335 /* ScreenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545551635F14D0091F335 /* ScreenView.m */; };
 		4F45455B1635F16D0091F335 /* PaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45455A1635F16D0091F335 /* PaintView.m */; };
 		4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F45455D1635F1790091F335 /* AudioRecorder.m */; };
 		4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4545601635F1890091F335 /* LoginRegisterViewController.m */; };
@@ -183,6 +185,8 @@
 		4F4545511635F14D0091F335 /* RecorderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecorderViewController.m; sourceTree = "<group>"; };
 		4F4545521635F14D0091F335 /* ScreenCaptureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenCaptureView.h; sourceTree = "<group>"; };
 		4F4545531635F14D0091F335 /* ScreenCaptureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenCaptureView.m; sourceTree = "<group>"; };
+		4F4545541635F14D0091F335 /* ScreenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenView.h; sourceTree = "<group>"; };
+		4F4545551635F14D0091F335 /* ScreenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenView.m; sourceTree = "<group>"; };
 		4F4545591635F16D0091F335 /* PaintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintView.h; sourceTree = "<group>"; };
 		4F45455A1635F16D0091F335 /* PaintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaintView.m; sourceTree = "<group>"; };
 		4F45455C1635F1790091F335 /* AudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioRecorder.h; sourceTree = "<group>"; };
@@ -446,6 +450,8 @@
 				4F4545511635F14D0091F335 /* RecorderViewController.m */,
 				4F4545521635F14D0091F335 /* ScreenCaptureView.h */,
 				4F4545531635F14D0091F335 /* ScreenCaptureView.m */,
+				4F4545541635F14D0091F335 /* ScreenView.h */,
+				4F4545551635F14D0091F335 /* ScreenView.m */,
 				4F4545591635F16D0091F335 /* PaintView.h */,
 				4F45455A1635F16D0091F335 /* PaintView.m */,
 				4F45455C1635F1790091F335 /* AudioRecorder.h */,
@@ -951,6 +957,7 @@
 				4F0FED15169B6FA700C04ADC /* Lecture_Capture_Test.m in Sources */,
 				4F0FED1B169B6FBC00C04ADC /* RecorderViewController.m in Sources */,
 				4F0FED1C169B6FC000C04ADC /* ScreenCaptureView.m in Sources */,
+				4F0FED1D169B6FC300C04ADC /* ScreenView.m in Sources */,
 				4F0FED1E169B6FC700C04ADC /* PaintView.m in Sources */,
 				4F0FED2B169B70F300C04ADC /* AudioRecorder.m in Sources */,
 				4F0FED2C169B70F500C04ADC /* ViewController.m in Sources */,
@@ -997,6 +1004,7 @@
 				4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */,
 				82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */,
 				4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */,
+				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
 				82A046731869281B00AFDF88 /* PDF.m in Sources */,
 				82A046791869449000AFDF88 /* PDFPageCell.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,

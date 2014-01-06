@@ -460,8 +460,8 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
     }
     
     self.backgroundImage = image;
-    [self drawImageAndLines];
-    [self drawCurrentPath];
+   [self drawImageAndLines];
+//    [self drawCurrentPath];
 }
 
 
