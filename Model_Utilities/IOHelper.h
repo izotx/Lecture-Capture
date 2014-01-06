@@ -12,11 +12,17 @@
 @interface IOHelper : NSObject
 typedef void (^ CompletionBlock)(BOOL success, CMTime duration, Slide *slide, NSString * path);
 
+typedef void (^ LectureCompletionBlock)(BOOL success, CMTime duration,  NSString * path);
+
+
+
 -(void)putTogetherVideo:(NSArray *)videoPieces andAudioPieces:(NSArray *)audioPieces andCompletionBlock:(CompletionBlock)block forSlide:(Slide *)slide saveAtPath:(NSString *)path;
 
 +(NSString*)getRandomFilePath; 
 -(void)deletePath:(NSString *)path;
 -(void)saveToLibraryFileAtPath:(NSString*)path;
 -(void)cleanFiles:(NSArray *)files;
+-(void)combineLectureVideos: (NSArray *)videos withCompletionBlock:(LectureCompletionBlock)completionBlock;
+
 
 @end

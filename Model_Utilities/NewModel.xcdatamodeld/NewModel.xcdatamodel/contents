@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A598" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13B42" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AudioFile" representedClassName="AudioFile" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="slide" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slide" inverseName="audioFiles" inverseEntity="Slide" syncable="YES"/>
     </entity>
@@ -10,6 +11,7 @@
         <attribute name="lecture_description" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="video" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="slides" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Slide" inverseName="lecture" inverseEntity="Slide" syncable="YES"/>
     </entity>
@@ -26,8 +28,9 @@
     <entity name="Slide" representedClassName="Slide" syncable="YES">
         <attribute name="audio" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="duration" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="modifiedimage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pdfimage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="selected" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
@@ -38,6 +41,7 @@
         <relationship name="videoFiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="VideoFile" inverseName="slide" inverseEntity="VideoFile" syncable="YES"/>
     </entity>
     <entity name="VideoFile" representedClassName="VideoFile" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="slide" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slide" inverseName="videoFiles" inverseEntity="Slide" syncable="YES"/>
     </entity>

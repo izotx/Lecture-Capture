@@ -18,6 +18,7 @@
 	
 	UIBezierPath * eraserPath;
 	float scale;
+    float imageScale;
 	CGPoint translation;
 	
 	NSMutableDictionary * redo;
@@ -26,6 +27,8 @@
 	BOOL layerReady;
     
     UIImageView *currentPathImageView;
+    UIImageView *currentBackgroundImageView;
+    
 }
 @synthesize colorOfBackground,strokeColor;
 @synthesize brushSize;
@@ -111,6 +114,15 @@
 		currentPathImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
         [self addSubview:currentPathImageView];
         
+        currentPathImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+		currentPathImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+        currentBackgroundImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+		currentBackgroundImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+        [self addSubview:currentBackgroundImageView];
+        [self addSubview:currentPathImageView];
+
+        
+        
     }
     return self;
 }
@@ -180,17 +192,32 @@
     if(self.backgroundImage)
     {
         CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
-        CGContextScaleCTM(context, scale, -scale);
-        CGRect frame = [self calculateFrameForImage:backgroundImage];
+        UIImage * image = self.backgroundImage;
+        CGRect imageRect = CGRectMake(0, 0, image.size.width, image.size.height);
+
+        CGRect cropBox = CGRectMake(0, 0, image.size.width, image.size.height);
+        CGRect targetRect = self.bounds;
         
-        CGContextDrawImage(context, frame, self.backgroundImage.CGImage);
-       
+        CGFloat xScale = targetRect.size.width / cropBox.size.width;
+        CGFloat yScale = targetRect.size.height / cropBox.size.height;
+        CGFloat scaleToApply = xScale < yScale ? xScale : yScale;
+    
+        CGContextTranslateCTM(context, 0, self.bounds.size.height);
+        CGContextScaleCTM(context, 1.0, -1.0);
+        CGContextConcatCTM(context, CGAffineTransformMakeScale(scaleToApply, scaleToApply));
+        
+        //center - width * scaleToApply/2.0
+        float x = CGRectGetMidX(self.bounds) -  (image.size.width * scaleToApply)/2.0;
+     ///   NSLog(@"%f %f",self.center.x, CGRectGetMidX(self.bounds));
+        imageRect =  CGRectOffset(imageRect, x, 0);
+        
+        CGContextDrawImage(context, imageRect, image.CGImage);
+        
         CGContextStrokePath(context);
         CGContextRestoreGState(context);
     }
     int i=0;
-    
+  
     for(UIBezierPath * p in paths)
     {
         [[colors objectAtIndex:i] setStroke];
@@ -198,7 +225,7 @@
         
         i++;
     }
-	
+    
     if (myPath) {
         [strokeColor setStroke];
         myPath.lineWidth = brushSize;
@@ -245,13 +272,64 @@
 {
    float imageWidth = image.size.width;
    float imageHeight = image.size.height;
-        
-   float selfFrameWidth = self.frame.size.width;
-
-   CGRect frame = CGRectMake(((selfFrameWidth - imageWidth)/2.0 + translation.x ) / scale, 0-translation.y/ scale, imageWidth, imageHeight);
+//        
+    NSLog(@"%f %f",imageWidth,imageHeight);
+    NSLog(@"%f %f",imageWidth,imageHeight);
+//
+//    
+//    float dx =CGRectGetWidth(self.bounds)- imageWidth;
+//    float dy = CGRectGetHeight(self.bounds) - imageHeight;
+//    
+//    float x,y;
+//    
+//    if(dx>0)
+//    {
+//        x = dx/2.0;
+//    }
+//    else{
+//        x = -dx/2.0;
+//    }
+//    if(dy>0)
+//    {
+//        y = dy/2.0;
+//    }
+//    else{
+//        y = -dy/2.0;
+//    }
+//    CGRect frame = CGRectMake(x, y, imageWidth, imageHeight);
+//    
+//    NSLog(@"%f %f ",dx, dy);
+//        
+//    
+//   CGRect frame = CGRectMake((dx+ translation.x ) / imageScale, dy-translation.y/ imageScale, imageWidth, imageHeight);
+//
     
-    return frame;
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
+        ([UIScreen mainScreen].scale == 2.0)) {
+        imageWidth = imageWidth/2.0;
+        imageHeight = imageHeight/2.0;
+        // Retina display
+    }
+    
+    
+    
+    return MEDRectCenterInRect(CGRectMake(0,0,imageWidth,imageHeight), self.bounds);
 }
+
+
+
+CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
+{
+    CGPoint origin = {
+        .x = CGRectGetMidX(outer) - CGRectGetWidth(inner) / 2,
+        .y = CGRectGetMidY(outer) - CGRectGetHeight(inner) / 2
+ 
+    };
+    
+    return (CGRect){ .origin = origin, .size = inner.size };
+}
+
+
 
 -(void)eraseContext{
     
@@ -303,7 +381,7 @@
 
     myPath.lineCapStyle=kCGLineCapRound;
     myPath.lineJoinStyle=kCGLineJoinRound;
-   // myPath.miterLimit=15;
+    myPath.miterLimit=5;
     myPath.lineWidth=brushSize;
     [myPath moveToPoint:[mytouch locationInView:self]];
     [eraserPath moveToPoint:[mytouch locationInView:self]];
@@ -373,8 +451,17 @@
 -(void) setBackgroundPhotoImage:(UIImage *)image{
     translation =CGPointZero;
     scale =1;
+    // calculate scale
+    if(image.size.height>image.size.width){
+        imageScale  = self.bounds.size.height/image.size.height;
+    }
+    else{
+        imageScale  = self.bounds.size.width/image.size.width;
+    }
+    
     self.backgroundImage = image;
-    [self drawImageAndLines];
+   [self drawImageAndLines];
+//    [self drawCurrentPath];
 }
 
 
@@ -402,12 +489,12 @@
                 [paths removeObject:p];
                 [colors removeObjectAtIndex:counter];
                 [sizes removeObjectAtIndex:counter];
-                NSLog(@"1");
+                
                 break;
             }
             else if(CGRectIntersectsRect(r, r1))
             {
-                NSLog(@"2");
+
                 [paths removeObject:p];
                 [colors removeObjectAtIndex:counter];
                 [sizes removeObjectAtIndex:counter];

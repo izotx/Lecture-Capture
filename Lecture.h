@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSString * lecture_description;
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) NSNumber * size;
 @property (nonatomic, retain) NSData * video;
 @property (nonatomic, retain) NSString * filepath;

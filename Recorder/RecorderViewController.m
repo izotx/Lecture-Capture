@@ -31,19 +31,11 @@
 {
     CMTime frameDuration;
     CMTime nextPresentationTimeStamp;
-    NSString *moviepath;
-    
-    NSMutableArray * imagesNames;
-    NSString *documentsDirectory;
-    NSTimer * durationTimer;
-    UIImageView * preview;
 
+    NSTimer * durationTimer;
     BOOL interrupted;
-  
     int frameCounter;
     __weak IBOutlet UILabel *durationLabel;
-    NSMutableArray * scrollViewScreenshots;
-    
     ILColorPickerDualExampleController * cp;
     VideoPreview * vp;
     IOHelper * ioHelper;
@@ -76,7 +68,7 @@
 
 - (IBAction)eraseRecording:(id)sender;
 - (IBAction)clearBoard:(id)sender;
-- (IBAction)makeScreenShot:(id)sender;
+
 - (IBAction)finishRecording:(id)sender;
 - (IBAction)addVideoPreview:(id)sender;
 - (IBAction)addNewSlide:(id)sender;
@@ -115,10 +107,11 @@
 
 - (IBAction)dismiss:(id)sender {
     [self finishRecording:self];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self compileLecture];
     
+    
+    [self.navigationController popViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:^{
-        
     }];
     
 }
@@ -126,22 +119,7 @@
 #pragma mark Lecture APIs
 //adds new slide
 - (IBAction)addNewSlide:(id)sender {
-    //mark previous slide as unselected
-//    dispatch_queue_t mySerialDispatchQueue = dispatch_queue_create("com.example.gcd.MySerialDispatchQueue", NULL);
-//    dispatch_async(mySerialDispatchQueue, ^{
-//        Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture afterSlide:self.currentSlide];
-//        for(int i=0; i<self.lecture.slides.count;i++){
-//            [(Slide *) self.lecture.slides.allObjects[i] setSelected: @0];
-//            [SlideAPI save];
-//            
-//        }
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self loadSlide:slide];
-//            
-//        });
-//        
-//    });
-//    
+  
     Slide * slide = [LectureAPI addNewSlideToLecture:self.lecture afterSlide:self.currentSlide];
     for(int i=0; i<self.lecture.slides.count;i++){
         [(Slide *) self.lecture.slides.allObjects[i] setSelected: @0];
@@ -166,8 +144,6 @@
 }
 
 
-
-
 -(void)loadSlide:(Slide *)slide{
    //if slide contains video, display it
     _currentSlide.selected = @0;
@@ -176,7 +152,25 @@
     [SlideAPI save];
 
     [self.datasource updateContent];
+
+//if slide contains image, display it
+
+    UIImage * image = (slide.modifiedimage.length >0)?[UIImage imageWithData:slide.modifiedimage]:[UIImage imageWithData:slide.pdfimage];
+//    UIImage * pdfImage = [UIImage imageWithData: slide.pdfimage];
+//    UIImage * modifiedImage = [UIImage imageWithData: slide.modifiedimage];
+//    UIImage * thumb = [UIImage imageWithData: slide.thumbnail];
     
+//    [recordingScreenView.paintView setBackgroundPhotoImage: thumb];
+    
+     
+    
+    
+    [recordingScreenView.paintView performSelectorOnMainThread:@selector(setBackgroundPhotoImage:) withObject:image waitUntilDone:NO];
+
+    //    [recordingScreenView.paintView setBackgroundPhotoImage:[UIImage imageNamed:@"linepaper"]];
+    
+    
+
     if(slide.video.length>0){
         [self.view addSubview:self.webVideoView];
         self.webVideoView.frame = self.recordingScreenView.frame;
@@ -189,11 +183,47 @@
         [self.webVideoView removeFromSuperview];
         [self clearBoard:nil];
     }
-
-    
 }
 
 
+
+-(void)compileLecture{
+    NSSortDescriptor *lectureSort = [NSSortDescriptor sortDescriptorWithKey:@"order" ascending:YES];
+
+#warning notify user about long running operation
+
+    NSArray * sortedSlides = [self.lecture.slides sortedArrayUsingDescriptors:@[lectureSort]];
+    NSMutableArray * video =[NSMutableArray new];
+    
+    for(Slide * slide in sortedSlides)
+        if(slide.video.length>0){
+            //check if it is on the disk
+            if(![[NSFileManager defaultManager]fileExistsAtPath:slide.url]){
+                //save to disk
+                [slide.video writeToFile:slide.url atomically:YES];
+                
+            }
+            [video addObject:slide.url];
+        }
+    
+    //now we have all videos and it's time to combine them
+    if(video.count>0){
+        [ioHelper combineLectureVideos:video withCompletionBlock:^(BOOL success, CMTime duration, NSString *path) {
+            if (success) {
+                self.lecture.filepath = path;
+                self.lecture.duration=[NSNumber numberWithFloat:CMTimeGetSeconds(duration)];
+                NSData *data= [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:path]];
+                self.lecture.video = data;
+                
+                [LectureAPI saveLecture:self.lecture];
+                
+                
+            }
+        }];
+    }
+}
+
+/*This is for finishing slide */
 -(void)finishAndPutTogether{
     
     NSString * path = [IOHelper getRandomFilePath];
@@ -316,16 +346,8 @@
         }
         else{
             //remove the video and audio objects from the current slide
-            [self.currentSlide removeAudioFiles:self.currentSlide.audioFiles];
-            [self.currentSlide removeVideoFiles:self.currentSlide.videoFiles];
-            self.currentSlide.audio = nil;
-            self.currentSlide.video = nil;
-            self.currentSlide.duration =@0;
-            self.currentSlide.size=@0;
-            self.currentSlide.thumbnail = nil;
-            
+            [SlideAPI resetSlide:self.currentSlide];
             [self.webVideoView removeFromSuperview];
-
             [SlideAPI save];
             [self record];
         
@@ -340,19 +362,16 @@
 
     
 }
+
+//I think we will skip it for now.
 - (IBAction)changeLayout:(id)sender {
-   
-    
-    
     if(CGRectEqualToRect(self.collectionView.frame,defaultRect)){
         self.collectionView.frame = self.recordingScreenView.frame;
     }
     else{
         self.collectionView.frame = defaultRect;
     }
-    
       [self.view addSubview: self.sideControls];
-    
 }
 
 -(IBAction)pauseRecording:(id)sender
@@ -382,56 +401,10 @@
 - (IBAction)clearBoard:(id)sender {
     [recordingScreenView.paintView removeBackgroundPhoto];
     [recordingScreenView.paintView eraseContext];
-}
-
-- (IBAction)makeScreenShot:(id)sender {
-
-    int count =  scrollViewScreenshots.count;
-
-    float lastx=0;
-    float lastWidth=0;
-    float totalWidth=0;
-    for( int i=0; i<count; i++)
-    {
-        
-        ScreenView  *tempIMGView =[scrollViewScreenshots objectAtIndex:i];
-        float tempWidth= tempIMGView.frame.size.width;
-        totalWidth+=tempWidth;
-        lastWidth= tempWidth;
-        lastx = tempIMGView.frame.origin.x;
+    if(self.currentSlide.pdfimage.length>0){
+        [recordingScreenView.paintView setBackgroundImage:[UIImage imageWithData:self.currentSlide.pdfimage]];
     }
-    
-    totalWidth=lastx +lastWidth + 5;
-
-    //Calculate new width
-    float scrollHeight = scrollView.frame.size.height-10;
-    float screenHeight = recordingScreenView.frame.size.height;
-    float screenWidth= recordingScreenView.frame.size.width;
-    float newWidth = screenWidth *scrollHeight/screenHeight;
-    
-    CGRect newFrame = CGRectMake(totalWidth, 5, newWidth,scrollHeight);
-    
-    UIImage * image=recordingScreenView.paintView.image;
-    UIImageView * imageView =[[UIImageView alloc]initWithImage:image];
-    imageView.frame =CGRectMake(3, 3, newWidth-6, scrollHeight-6);
-  
-    ScreenView * s = [[ScreenView alloc]initWithFrame:newFrame];
-    [s addSubview:imageView];
-    s.image=image;
-    s.delegate=self;
-    s.backgroundColor=[UIColor whiteColor];
-    [scrollView addSubview:s];
-    
-    totalWidth +=newWidth +25; 
-    if(totalWidth > scrollView.contentSize.width)
-    {
-        scrollView.contentSize = CGSizeMake(totalWidth, scrollHeight);
-    }
-  
-    testImageView.image=recordingScreenView.currentScreen;
-    [scrollViewScreenshots addObject:s];
 }
-
 
 
 -(void)dismissMe:(NSString *) message{
@@ -452,10 +425,7 @@
 }
 
 #pragma mark screen shot delegate
-- (void) screenshotTapTwice:(UIImage *)im{
-    [recordingScreenView.paintView eraseContext];
-    [recordingScreenView.paintView setBackgroundPhotoImage:im];
-}
+
             
 - (IBAction)changeBrushSize:(id)sender {
     float val = [(UISlider *)sender value];
@@ -520,28 +490,27 @@
     [recordingScreenView.paintView setBackgroundPhotoImage:im];
 }
 
-
-
-
 - (IBAction)changeBackground:(id)sender {
-#warning they can't do it if video is on.
+
+    //only if not pdf nor video
+//    if(self.currentSlide.video.length >0 || self.currentSlide.pdfimage.length>0){
+//        UIAlertView * alertV = [[UIAlertView alloc]initWithTitle:@"Lecture Capture" message:@"You can't change the background of this slide." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//        [alertV show];
+//    }
+//    else{
+        photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"Photo Background", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
+        [photoAction showInView:self.view];
+//    }
     
-    
-    photoAction=[[UIActionSheet alloc]initWithTitle:@"Set Background" delegate:self cancelButtonTitle:nil   destructiveButtonTitle:@"Cancel"  otherButtonTitles:@"Photo Background", @"Background Color",@"Line Paper",@"Graph Paper", @"Clear Background", nil];
-    [photoAction showInView:self.view];
 }
 
 - (IBAction)eraserOnOff:(id)sender {
   
     _eraseMode = !recordingScreenView.paintView.eraseMode;
     recordingScreenView.paintView.eraseMode = _eraseMode;
-//Very Error Prone. Change the Bar Button Item based on it's index.
-
-    //Record Flex Erase
-    //
+    //Very Error Prone. Change the Bar Button Item based on it's index.
     
     NSMutableArray * buttons =[[NSMutableArray alloc]initWithArray:_toolbar.items ];
-   
     UIBarButtonItem * stopErasing =  [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"delete_24.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(eraserOnOff:)];
      UIBarButtonItem * erase =  [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"delete_24.png"] style:UIBarButtonItemStylePlain target:self action:@selector(eraserOnOff:)];
    
@@ -549,7 +518,6 @@
     [buttons removeObjectAtIndex:index];
     if(_eraseMode){
        [buttons insertObject:stopErasing atIndex:index];
-        
     }
     else{
         [buttons insertObject:erase atIndex:index];
@@ -686,7 +654,6 @@
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     //show slide on the screen
-   // Slide * s = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @0;
     self.currentSlide = [_fetchedController objectAtIndexPath:indexPath];
     self.currentSlide.selected = @1;
@@ -764,10 +731,7 @@ RAC(self, puttingTogether) =[RACSignal
                        combineLatest:@[RACObserve(recordingScreenView, videoWriter.status),RACObserve(_ar, completed)]
                        reduce:^(NSNumber *mp, NSNumber *ar){
                            @strongify(self);
-                           
-                         //  NSLog(@" MP is %@",mp);
-                         // NSLog(@" AR is %@",ar);
-                           BOOL k = ar.boolValue==true && mp.integerValue==AVAssetWriterStatusCompleted;
+                            BOOL k = ar.boolValue==true && mp.integerValue==AVAssetWriterStatusCompleted;
                            
                            if(self.finishRecording && k){
                            //    NSLog(@"Calling finish and put together %@ %@",_ar,recordingScreenView);
@@ -824,43 +788,24 @@ RAC(self,recording) =[RACSignal
     
     _photoPicker = [[ImagePhotoPicker alloc]init];
     frameCounter =0;
-    documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    scrollViewScreenshots =[[NSMutableArray alloc]initWithCapacity:0];
     recordingScreenView.delegate=self;
    
-    
-    [scrollView setContentSize:scrollView.frame.size];
-   
-    
     vp = [[VideoPreview alloc]initWithFrame:CGRectZero];
     cp=[[ILColorPickerDualExampleController alloc]initWithNibName:@"ILColorPickerDualExampleController" bundle:nil];
     cp.delegate = self;
-    
     _webVideoView = [[WebVideoView alloc]initWithFrame:recordingScreenView.frame];
-    
-    
     [self configureFetchedController];
-    
     _ready = YES;
-
-    
-    
-    
-    
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
+    [super viewDidDisappear:animated];
     recordingScreenView = nil;
     durationLabel = nil;
-    recordingScreenView = nil;
-    scrollView = nil;
     activityIndicator = nil;
-    backgroundView = nil;
     [self setToolbar:nil];
     [self setColorBarButton:nil];
-    [super viewDidDisappear:animated];
-    // Release any retained subviews of the main view.
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -875,8 +820,6 @@ RAC(self,recording) =[RACSignal
     // popover needs to support only landscape
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
-
-
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
     [self manageOrientationChanges];

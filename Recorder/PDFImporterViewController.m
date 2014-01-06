@@ -22,7 +22,7 @@
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) NSFetchedResultsController * fetchedController;
 @property (strong, nonatomic)TJLFetchedResultsSource * datasource;
-@property (strong,nonatomic) PDF * pdf;
+
 @property (strong, nonatomic) PDFParser * parser;
 @end
 
@@ -40,9 +40,9 @@
     [_parser getPagesWithGeneratedPageHandler:^(UIImage *img, UIImage * thumb, int pageNr, float progress) {
         //Create page
         PDFPage *page = [self createNewPDFPage];
-        page.image = UIImageJPEGRepresentation(img, 0.5);
+        page.image = UIImageJPEGRepresentation(img, 0.9);
         page.thumb =UIImageJPEGRepresentation(thumb, 0.5);
-
+        page.pagenr = [NSNumber numberWithInteger:pageNr];
         [self.pdf addPageObject:page];
     
         
@@ -56,7 +56,6 @@
 - (IBAction)voiceOver:(id)sender {
   
     Lecture * lapi = [LectureAPI createLectureWithName:self.pdf.filename];
-    #warning finish it
     //create new lecture
     NSSortDescriptor * sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pagenr" ascending:YES];
     // Order
@@ -66,7 +65,7 @@
         Slide * slide = [LectureAPI addNewSlideToLecture:lapi afterSlide:nil];
         PDFPage * page = orderedPages[i];
         slide.order = [NSNumber numberWithInt:i+1];
-        slide.image= page.image;
+        slide.pdfimage= page.image;
         slide.thumbnail =page.thumb;
     }
     UINavigationController * nav = self.navigationController;
@@ -74,10 +73,7 @@
     
     RecorderViewController *r=     [self.storyboard instantiateViewControllerWithIdentifier:@"RecorderViewController"];
     r.lecture = lapi;
-    
     [nav pushViewController:r animated:YES];
-    
-    
 }
 
 
@@ -115,10 +111,9 @@
 
 -(void)setup{
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
-    [frequest setFetchBatchSize:20];
-    [frequest setEntity: [NSEntityDescription entityForName:  @"PDFPage" inManagedObjectContext:appDelegate.managedObjectContext ]];
     
+    //if pdf doesn' exist create a new one
+    if(!self.pdf){
     //initialize pdf
     PDF * pdf =[NSEntityDescription insertNewObjectForEntityForName:@"PDF" inManagedObjectContext:appDelegate.managedObjectContext];
     [appDelegate.managedObjectContext insertObject:pdf];
@@ -130,7 +125,13 @@
     }
     
     self.pdf = pdf;
+    }
+
+    NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
+    [frequest setFetchBatchSize:20];
+    [frequest setEntity: [NSEntityDescription entityForName:  @"PDFPage" inManagedObjectContext:appDelegate.managedObjectContext ]];
     
+
     [frequest setPredicate: [NSPredicate predicateWithFormat: @"pdf == %@", self.pdf]];
     
     NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"pagenr" ascending:YES];

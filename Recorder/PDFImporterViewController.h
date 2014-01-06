@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class PDF;
 @interface PDFImporterViewController : UIViewController
 
 -(void)parsePDF:(NSURL *)pdf;
+@property (strong,nonatomic) PDF * pdf;
 @end
