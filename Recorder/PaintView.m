@@ -8,6 +8,11 @@
 //#import "AVCaptureHelper.h"
 #import <QuartzCore/QuartzCore.h>
 #import "PaintView.h"
+#import "PDFParser.h"
+#import  "PDFPageRenderer.h"
+@interface PaintView()
+    @property CGPDFPageRef pdfpage;
+@end
 
 @implementation PaintView {
 	NSMutableArray * paths;
@@ -18,16 +23,16 @@
 	
 	UIBezierPath * eraserPath;
 	float scale;
-    float imageScale;
 	CGPoint translation;
 	
 	NSMutableDictionary * redo;
 	CGLayerRef destLayer;
 	CGContextRef destContext;
 	BOOL layerReady;
-    
+    PDFParser * parser;
     UIImageView *currentPathImageView;
-    UIImageView *currentBackgroundImageView;
+    CGPDFDocumentRef document;
+   
     
 }
 @synthesize colorOfBackground,strokeColor;
@@ -36,9 +41,8 @@
 @synthesize myPath;
 
 @synthesize panGesture;
-@synthesize pinchGesture; 
+@synthesize pinchGesture;
 //@synthesize backgroundScreen;
-
 @synthesize eraseMode;
 
 
@@ -50,7 +54,13 @@
         // Initialization code
         
         translation = CGPointZero;
-        
+        NSString * filepath =[NSString pathWithComponents:@[DOCUMENTS_FOLDER,@"Inbox",@"canon.pdf"]];
+        NSLog(@"%@",filepath);
+
+        if(!parser){
+            parser = [[PDFParser alloc]initWithFilePath:filepath];
+        }
+        document = [parser CreatePDFDocumentRef:filepath];
         
         NSMutableArray * p = [NSMutableArray new];
         NSMutableArray * c = [NSMutableArray new];
@@ -61,13 +71,13 @@
         [redo setValue:p forKey:@"paths"];
         [redo setValue:c forKey:@"colors"];
         [redo setValue:s forKey:@"sizes"];
-
-         UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+        
+        UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
         
         self.image = UIGraphicsGetImageFromCurrentImageContext();
         startImage =self.image;
         UIGraphicsEndImageContext();
-
+        
         self.backgroundColor=[UIColor whiteColor];
         self.userInteractionEnabled=YES;
         
@@ -76,7 +86,7 @@
         eraserPath = [UIBezierPath bezierPath];
         
         self.myPath = path;
-    
+        
         myPath.lineCapStyle=kCGLineCapRound;
         myPath.miterLimit=0;
         myPath.lineWidth=brushSize;
@@ -85,14 +95,14 @@
         colors= [[NSMutableArray alloc]initWithCapacity:0];
         paths= [[NSMutableArray alloc]initWithCapacity:0];
         sizes = [[NSMutableArray alloc]initWithCapacity:0];
-       backgroundColors = [[NSMutableArray alloc]initWithCapacity:0];
-       backgroundImages = [[NSMutableArray alloc]initWithCapacity:0];
-      
+        backgroundColors = [[NSMutableArray alloc]initWithCapacity:0];
+        backgroundImages = [[NSMutableArray alloc]initWithCapacity:0];
+        
         // Gestures
         pinchGesture = [[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(pinchMethod:)];
         [pinchGesture setDelegate:self];
         [self addGestureRecognizer:pinchGesture];
-
+        
         panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panMethod:)];
         panGesture.minimumNumberOfTouches=2;
         panGesture.maximumNumberOfTouches=2;
@@ -114,26 +124,33 @@
 		currentPathImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
         [self addSubview:currentPathImageView];
         
-        currentPathImageView = [[UIImageView alloc] initWithFrame:self.bounds];
-		currentPathImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
-        currentBackgroundImageView = [[UIImageView alloc] initWithFrame:self.bounds];
-		currentBackgroundImageView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
-        [self addSubview:currentBackgroundImageView];
-        [self addSubview:currentPathImageView];
-
-        
-        
     }
     return self;
 }
 
 -(void)panMethod:(UIPanGestureRecognizer * )gesture{
     translation = [gesture translationInView:self] ;
+    NSLog(@"%f %f",translation.x,translation.y);
+    
     [self drawImageAndLines];
 }
 
--(void)pinchMethod:(UIPinchGestureRecognizer * )pr{
-    scale = pr.scale;
+-(void)pinchMethod:(UIPinchGestureRecognizer * )gesture{
+    
+// [self adjustAnchorPointForGestureRecognizer:gesture];
+//    if ([gesture state] == UIGestureRecognizerStateBegan || [gesture state] == UIGestureRecognizerStateChanged) {
+//       // [gestureRecognizer view].transform = CGAffineTransformScale([[gestureRecognizer view] transform], [gestureRecognizer scale], [gestureRecognizer scale]);
+//       // scale += gesture.scale;
+//        
+//       // [gesture setScale:1];
+//    }
+//    scale +=0.01;
+//    NSLog(@"%f",scale);
+    if(scale<2 &&scale>0.3){
+        scale =gesture.scale;
+    }
+    
+    
     [self drawImageAndLines];
 }
 
@@ -153,7 +170,7 @@
     [redo setValue:p forKey:@"paths"];
     [redo setValue:c forKey:@"colors"];
     [redo setValue:s forKey:@"sizes"];
-        
+    
     [self drawImageAndLines];
 }
 
@@ -176,11 +193,12 @@
 
 
 -(void)drawImageAndLines {
-
+   
+    
     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, 1);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-   
+    
     if(self.colorOfBackground)
     {
         CGContextSaveGState(context);
@@ -188,36 +206,27 @@
         CGContextFillRect(context, self.bounds);
         CGContextRestoreGState(context);
     }
-
+    
     if(self.backgroundImage)
     {
         CGContextSaveGState(context);
-        UIImage * image = self.backgroundImage;
-        CGRect imageRect = CGRectMake(0, 0, image.size.width, image.size.height);
+        //CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
+        //CGContextScaleCTM(context, scale, -scale);
+       // CGContextScaleCTM(context, 0.6, 0.6);
+        CGRect r = [self calculateFrameForImage:backgroundImage];
+        [backgroundImage drawInRect:r];
+        
+        //CGContextDrawImage(context, r, self.backgroundImage.CGImage);
 
-        CGRect cropBox = CGRectMake(0, 0, image.size.width, image.size.height);
-        CGRect targetRect = self.bounds;
-        
-        CGFloat xScale = targetRect.size.width / cropBox.size.width;
-        CGFloat yScale = targetRect.size.height / cropBox.size.height;
-        CGFloat scaleToApply = xScale < yScale ? xScale : yScale;
-    
-        CGContextTranslateCTM(context, 0, self.bounds.size.height);
-        CGContextScaleCTM(context, 1.0, -1.0);
-        CGContextConcatCTM(context, CGAffineTransformMakeScale(scaleToApply, scaleToApply));
-        
-        //center - width * scaleToApply/2.0
-        float x = CGRectGetMidX(self.bounds) -  (image.size.width * scaleToApply)/2.0;
-     ///   NSLog(@"%f %f",self.center.x, CGRectGetMidX(self.bounds));
-        imageRect =  CGRectOffset(imageRect, x, 0);
-        
-        CGContextDrawImage(context, imageRect, image.CGImage);
-        
         CGContextStrokePath(context);
         CGContextRestoreGState(context);
+    
+      //  self.pdfpage =   [parser getPage:6 inDocument:document];
+      //  [PDFPageRenderer renderPage:self.pdfpage inContext:context];
+    
     }
     int i=0;
-  
+    
     for(UIBezierPath * p in paths)
     {
         [[colors objectAtIndex:i] setStroke];
@@ -225,7 +234,7 @@
         
         i++;
     }
-    
+	
     if (myPath) {
         [strokeColor setStroke];
         myPath.lineWidth = brushSize;
@@ -248,7 +257,7 @@
     
     UIImage *currentPathImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
+    
     currentPathImageView.image = currentPathImage;
 }
 
@@ -270,76 +279,31 @@
 
 -(CGRect ) calculateFrameForImage:(UIImage *)image
 {
-   float imageWidth = image.size.width;
-   float imageHeight = image.size.height;
-//        
-    NSLog(@"%f %f",imageWidth,imageHeight);
-    NSLog(@"%f %f",imageWidth,imageHeight);
-//
-//    
-//    float dx =CGRectGetWidth(self.bounds)- imageWidth;
-//    float dy = CGRectGetHeight(self.bounds) - imageHeight;
-//    
-//    float x,y;
-//    
-//    if(dx>0)
-//    {
-//        x = dx/2.0;
-//    }
-//    else{
-//        x = -dx/2.0;
-//    }
-//    if(dy>0)
-//    {
-//        y = dy/2.0;
-//    }
-//    else{
-//        y = -dy/2.0;
-//    }
-//    CGRect frame = CGRectMake(x, y, imageWidth, imageHeight);
-//    
-//    NSLog(@"%f %f ",dx, dy);
-//        
-//    
-//   CGRect frame = CGRectMake((dx+ translation.x ) / imageScale, dy-translation.y/ imageScale, imageWidth, imageHeight);
-//
+    float imageWidth = image.size.width * scale ;
+    float imageHeight = image.size.height* scale;
     
-    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
-        ([UIScreen mainScreen].scale == 2.0)) {
-        imageWidth = imageWidth/2.0;
-        imageHeight = imageHeight/2.0;
-        // Retina display
-    }
+   // float selfFrameWidth = self.frame.size.width;
     
+//    CGRect frame = CGRectMake(((selfFrameWidth - imageWidth)/2.0 + translation.x ) / scale, 0-translation.y/ scale, imageWidth, imageHeight);
     
+    //center
+    float x = CGRectGetMidX(self.bounds)-imageWidth/2.0 + translation.x;
+    float y = CGRectGetMidY(self.bounds)-imageHeight/2.0 + translation.y;
     
-    return MEDRectCenterInRect(CGRectMake(0,0,imageWidth,imageHeight), self.bounds);
+    CGRect frame =(CGRect){x, y,imageWidth,imageHeight};
+    
+    return frame;
 }
-
-
-
-CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
-{
-    CGPoint origin = {
-        .x = CGRectGetMidX(outer) - CGRectGetWidth(inner) / 2,
-        .y = CGRectGetMidY(outer) - CGRectGetHeight(inner) / 2
- 
-    };
-    
-    return (CGRect){ .origin = origin, .size = inner.size };
-}
-
-
 
 -(void)eraseContext{
     
-     UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
+    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, YES);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     [paths removeAllObjects];
     [colors removeAllObjects];
     [sizes removeAllObjects];
-
+    
     CGContextClearRect(context, self.frame);
     if(self.colorOfBackground)
     {
@@ -351,13 +315,15 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
     
     if(self.backgroundImage){
         CGContextSaveGState(context);
-      
+        
         CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
-        
-        CGContextDrawImage(context, [self calculateFrameForImage:backgroundImage], self.backgroundImage.CGImage);
+        CGRect r = [self calculateFrameForImage:backgroundImage];
+        //CGContextScaleCTM(context, 0.25, 0.25);
+
+        CGContextDrawImage(context, r, self.backgroundImage.CGImage);
         CGContextRestoreGState(context);
-    
+        
     }
     else{
         self.image = self.startImage;
@@ -370,18 +336,18 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
 #pragma mark - Touch Methods
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-  //  int touchesCount=    [[event allTouches]count];
+    //  int touchesCount=    [[event allTouches]count];
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
-       
+    
     @autoreleasepool {
         UIBezierPath * path= [UIBezierPath bezierPath];
         self.myPath = path;
         eraserPath = [UIBezierPath bezierPath];
     }
-
+    
     myPath.lineCapStyle=kCGLineCapRound;
     myPath.lineJoinStyle=kCGLineJoinRound;
-    myPath.miterLimit=5;
+    // myPath.miterLimit=15;
     myPath.lineWidth=brushSize;
     [myPath moveToPoint:[mytouch locationInView:self]];
     [eraserPath moveToPoint:[mytouch locationInView:self]];
@@ -391,7 +357,7 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-       
+    
     int touchesCount=    [[event allTouches]count];
     UITouch *mytouch=[[touches allObjects] objectAtIndex:0];
 	
@@ -439,7 +405,7 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
 -(void) setColorOfBackground:(UIColor *)color{
     colorOfBackground = color;
     [self drawImageAndLines];
-
+    
 }
 
 -(void)setSizeOfBrush:(int)_brushSize{
@@ -451,17 +417,21 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
 -(void) setBackgroundPhotoImage:(UIImage *)image{
     translation =CGPointZero;
     scale =1;
-    // calculate scale
-    if(image.size.height>image.size.width){
-        imageScale  = self.bounds.size.height/image.size.height;
-    }
-    else{
-        imageScale  = self.bounds.size.width/image.size.width;
+    //calculate scale
+    
+//    float aspect = image.size.width/image.size.height;
+    
+    float sx = image.size.width/CGRectGetWidth(self.bounds);
+    float sy = image.size.height/CGRectGetHeight(self.bounds);
+    //take bigger one
+    float _scale = sx>sy?sx:sy;
+    if(_scale >1){
+        //scale the context down to fit
+        scale = 1/sy;
     }
     
     self.backgroundImage = image;
-   [self drawImageAndLines];
-//    [self drawCurrentPath];
+    [self drawImageAndLines];
 }
 
 
@@ -470,11 +440,11 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
     scale =1;
     self.backgroundImage = nil;
     [self drawImageAndLines];
-
+    
 }
 
 -(void)erasePathAtPoint:(CGPoint)point{
-
+    
     int counter =0;
     for(UIBezierPath * p in paths)
     {
@@ -489,27 +459,27 @@ CGRect MEDRectCenterInRect(CGRect inner, CGRect outer)
                 [paths removeObject:p];
                 [colors removeObjectAtIndex:counter];
                 [sizes removeObjectAtIndex:counter];
-                
+              
                 break;
             }
             else if(CGRectIntersectsRect(r, r1))
             {
-
+        
                 [paths removeObject:p];
                 [colors removeObjectAtIndex:counter];
                 [sizes removeObjectAtIndex:counter];
-
+                
                 break;
             }
             counter ++;
- 
+            
         }
         @catch (NSException *exception) {
             NSLog(@"Exception : %@ ",[exception debugDescription]);
         }
         @finally {
-             NSLog(@"Erase Finally" );
-           // break;
+            NSLog(@"Erase Finally" );
+            // break;
         }
     }
     [self drawImageAndLines];

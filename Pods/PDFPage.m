@@ -1,8 +1,8 @@
 //
 //  PDFPage.m
-//  Lecture Capture
+//  Pods
 //
-//  Created by sadmin on 12/23/13.
+//  Created by sadmin on 1/8/14.
 //
 //
 
@@ -15,6 +15,7 @@
 @dynamic image;
 @dynamic pagenr;
 @dynamic thumb;
+@dynamic pdfid;
 @dynamic pdf;
 
 @end

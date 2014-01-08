@@ -14,6 +14,7 @@
 @property(nonatomic,strong) IBOutlet UILabel * durationLabel;
 @property(nonatomic,strong) IBOutlet UILabel * fileSizeLabel;
 @property(nonatomic,strong) IBOutlet CustomTableButton * ctb;
+@property (strong, nonatomic) IBOutlet UILabel *slidesLabel;
 
 -(void)configureCellWithObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 

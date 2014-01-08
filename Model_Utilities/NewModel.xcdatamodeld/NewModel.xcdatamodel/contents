@@ -17,11 +17,13 @@
     </entity>
     <entity name="PDF" representedClassName="PDF" syncable="YES">
         <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pdfid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="page" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PDFPage" inverseName="pdf" inverseEntity="PDFPage" syncable="YES"/>
     </entity>
     <entity name="PDFPage" representedClassName="PDFPage" syncable="YES">
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="pagenr" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pdfid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumb" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="pdf" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PDF" inverseName="page" inverseEntity="PDF" syncable="YES"/>
     </entity>

@@ -226,14 +226,21 @@ If you have any questions about our policy or the security of Screen Capture app
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="20" contentMode="left" text="Duration:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Qwh-Ke-bNU">
-                                                    <rect key="frame" x="62" y="21" width="97" height="21"/>
+                                                    <rect key="frame" x="53" y="21" width="66" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="30" contentMode="left" text="Filesize:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="tSD-PV-2E5">
-                                                    <rect key="frame" x="161" y="20" width="109" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="30" contentMode="left" text="Slides:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="tSD-PV-2E5">
+                                                    <rect key="frame" x="125" y="21" width="74" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                                    <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="30" contentMode="left" text="Filesize:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="uch-Yg-ZIc">
+                                                    <rect key="frame" x="187" y="21" width="74" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -250,16 +257,14 @@ If you have any questions about our policy or the security of Screen Capture app
                                                     <state key="highlighted">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
-                                                    <connections>
-                                                        <action selector="shareMovie:" destination="2" eventType="touchUpInside" id="jOi-jf-4Uj"/>
-                                                    </connections>
                                                 </button>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="ctb" destination="nJ1-OW-Prx" id="71t-db-W4s"/>
                                             <outlet property="durationLabel" destination="Qwh-Ke-bNU" id="QDo-IP-egf"/>
-                                            <outlet property="fileSizeLabel" destination="tSD-PV-2E5" id="hYl-gg-yb3"/>
+                                            <outlet property="fileSizeLabel" destination="uch-Yg-ZIc" id="dgT-h1-EEy"/>
+                                            <outlet property="slidesLabel" destination="tSD-PV-2E5" id="UMp-8C-Psy"/>
                                             <outlet property="titleLabel" destination="Ddx-bz-az3" id="6LY-F1-eVQ"/>
                                         </connections>
                                     </tableViewCell>
@@ -378,8 +383,8 @@ If you have any questions about our policy or the security of Screen Capture app
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </containerView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select an item from the list or tap on create a new recoring" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dpY-KX-xUZ">
-                                <rect key="frame" x="432" y="373" width="449" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select an item from the list or tap on + New Recording button" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dpY-KX-xUZ">
+                                <rect key="frame" x="432" y="373" width="471" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -622,7 +627,7 @@ If you have any questions about our policy or the security of Screen Capture app
                                     <action selector="editRecording:" destination="F9i-Xg-mhB" eventType="touchUpInside" id="aj8-fV-U5q"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap on the Edit button to add more slides to the recording" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="R7g-Za-Dbx">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap on the Edit button to Edit your recording." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="R7g-Za-Dbx">
                                 <rect key="frame" x="163" y="272" width="443" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -680,17 +685,10 @@ If you have any questions about our policy or the security of Screen Capture app
                                 </subviews>
                                 <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                             </view>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Double tap on the slide to display it on the screen" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="AHv-mb-RH8">
-                                <rect key="frame" x="366" y="590" width="279" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Duration:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="usg-yV-9o4">
-                                <rect key="frame" x="406" y="374" width="212" height="21"/>
+                                <rect key="frame" x="8" y="585" width="159" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <color key="shadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -961,17 +959,6 @@ If you have any questions about our policy or the security of Screen Capture app
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="N4b-F1-ko6">
-                                <rect key="frame" x="881" y="578" width="123" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="First"/>
-                                    <segment title="Second"/>
-                                </segments>
-                                <connections>
-                                    <action selector="changeLayout:" destination="els-1i-Bum" eventType="valueChanged" id="eI2-7C-vRi"/>
-                                </connections>
-                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -982,7 +969,6 @@ If you have any questions about our policy or the security of Screen Capture app
                         <outlet property="activityIndicator" destination="wbX-Lp-bOu" id="4PC-DD-q0x"/>
                         <outlet property="cameraBarButton" destination="kGQ-T3-KO8" id="e5N-1T-WPN"/>
                         <outlet property="collectionView" destination="rRd-Ng-qZD" id="a09-hJ-L6G"/>
-                        <outlet property="collectionViewDisplayMode" destination="N4b-F1-ko6" id="cCy-I4-V74"/>
                         <outlet property="colorBarButton" destination="tg9-mG-cay" id="JFd-CW-cjY"/>
                         <outlet property="durationLabel" destination="usg-yV-9o4" id="icl-SQ-pbv"/>
                         <outlet property="informationLabel" destination="6le-Be-ZSf" id="ooD-U9-Ksx"/>

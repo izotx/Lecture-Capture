@@ -33,13 +33,18 @@
     self.opaque = YES;
     self.layer.shouldRasterize = YES;
     self.layer.rasterizationScale = [UIScreen mainScreen].scale;
-    
+    self.backgroundColor = [UIColor whiteColor];
+
+
     if([slide.selected  isEqual:@1]){
-        self.backgroundColor = [UIColor purpleColor];
+        
+        self.layer.borderColor = [[UIColor darkGrayColor]CGColor];
+        self.layer.borderWidth = 2.0;
     }
     else{
-        self.backgroundColor = [UIColor blueColor];
+         self.layer.borderWidth = 0.0;
     }
+    
    
 }
 

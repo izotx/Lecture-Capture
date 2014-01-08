@@ -134,17 +134,18 @@
 		4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD724FD174D6E870005D782 /* NetworkHelper.m */; };
 		6AB66A8110B84AF4AD337C54 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C37B7E03D6432B8FD7DF0A /* libPods.a */; };
 		8217A4C6187AF8EC004BDCB4 /* Slide.m in Sources */ = {isa = PBXBuildFile; fileRef = 8217A4C5187AF8EC004BDCB4 /* Slide.m */; };
+		8217A4C9187C7CBB004BDCB4 /* PDFPageRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8217A4C8187C7CBB004BDCB4 /* PDFPageRenderer.m */; };
 		823C98951875C38C00A3F3A1 /* RecordingOperationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C98941875C38C00A3F3A1 /* RecordingOperationsViewController.m */; };
 		823C98981875CFEF00A3F3A1 /* Lecture.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C98971875CFEF00A3F3A1 /* Lecture.m */; };
 		823C989B1875D5BF00A3F3A1 /* MailHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C989A1875D5BF00A3F3A1 /* MailHelper.m */; };
+		823CC883187DB0130015BA34 /* PDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 823CC882187DB0130015BA34 /* PDFPage.m */; };
+		823CC886187DD61D0015BA34 /* PDF.m in Sources */ = {isa = PBXBuildFile; fileRef = 823CC885187DD61D0015BA34 /* PDF.m */; };
 		82446B3C187731F400B4BCF9 /* AudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 82446B3B187731F400B4BCF9 /* AudioFile.m */; };
 		82446B3F187731F500B4BCF9 /* VideoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 82446B3E187731F500B4BCF9 /* VideoFile.m */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
 		82A046611868D77200AFDF88 /* PDFImporterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046601868D77200AFDF88 /* PDFImporterViewController.m */; };
 		82A0466418690B9800AFDF88 /* PDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0466318690B9800AFDF88 /* PDFParser.m */; };
-		82A046731869281B00AFDF88 /* PDF.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046721869281B00AFDF88 /* PDF.m */; };
 		82A046791869449000AFDF88 /* PDFPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A046781869449000AFDF88 /* PDFPageCell.m */; };
-		82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0467B1869493B00AFDF88 /* PDFPage.m */; };
 		82BD7A59155FBB3400C38637 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BD7A58155FBB3400C38637 /* MessageUI.framework */; };
 		82DEE6BC1874726E0008C9F2 /* LectureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DEE6BB1874726E0008C9F2 /* LectureCell.m */; };
 		82DEE6BF187475600008C9F2 /* AbstractCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DEE6BE187475600008C9F2 /* AbstractCell.m */; };
@@ -325,12 +326,18 @@
 		4FD724FD174D6E870005D782 /* NetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkHelper.m; path = Recorder/NetworkHelper.m; sourceTree = "<group>"; };
 		8217A4C4187AF8EC004BDCB4 /* Slide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slide.h; sourceTree = "<group>"; };
 		8217A4C5187AF8EC004BDCB4 /* Slide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slide.m; sourceTree = "<group>"; };
+		8217A4C7187C7CBB004BDCB4 /* PDFPageRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPageRenderer.h; sourceTree = "<group>"; };
+		8217A4C8187C7CBB004BDCB4 /* PDFPageRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPageRenderer.m; sourceTree = "<group>"; };
 		823C98931875C38C00A3F3A1 /* RecordingOperationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingOperationsViewController.h; sourceTree = "<group>"; };
 		823C98941875C38C00A3F3A1 /* RecordingOperationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingOperationsViewController.m; sourceTree = "<group>"; };
 		823C98961875CFEF00A3F3A1 /* Lecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lecture.h; sourceTree = "<group>"; };
 		823C98971875CFEF00A3F3A1 /* Lecture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lecture.m; sourceTree = "<group>"; };
 		823C98991875D5BF00A3F3A1 /* MailHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailHelper.h; sourceTree = "<group>"; };
 		823C989A1875D5BF00A3F3A1 /* MailHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailHelper.m; sourceTree = "<group>"; };
+		823CC881187DB0130015BA34 /* PDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFPage.h; path = Pods/PDFPage.h; sourceTree = "<group>"; };
+		823CC882187DB0130015BA34 /* PDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFPage.m; path = Pods/PDFPage.m; sourceTree = "<group>"; };
+		823CC884187DD61C0015BA34 /* PDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDF.h; sourceTree = "<group>"; };
+		823CC885187DD61D0015BA34 /* PDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDF.m; sourceTree = "<group>"; };
 		82446B3A187731F400B4BCF9 /* AudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFile.h; sourceTree = "<group>"; };
 		82446B3B187731F400B4BCF9 /* AudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFile.m; sourceTree = "<group>"; };
 		82446B3D187731F500B4BCF9 /* VideoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFile.h; sourceTree = "<group>"; };
@@ -341,12 +348,8 @@
 		82A046601868D77200AFDF88 /* PDFImporterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFImporterViewController.m; path = Recorder/PDFImporterViewController.m; sourceTree = "<group>"; };
 		82A0466218690B9800AFDF88 /* PDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFParser.h; sourceTree = "<group>"; };
 		82A0466318690B9800AFDF88 /* PDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFParser.m; sourceTree = "<group>"; };
-		82A046711869281B00AFDF88 /* PDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDF.h; sourceTree = "<group>"; };
-		82A046721869281B00AFDF88 /* PDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDF.m; sourceTree = "<group>"; };
 		82A046771869449000AFDF88 /* PDFPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFPageCell.h; path = Recorder/PDFPageCell.h; sourceTree = "<group>"; };
 		82A046781869449000AFDF88 /* PDFPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFPageCell.m; path = Recorder/PDFPageCell.m; sourceTree = "<group>"; };
-		82A0467A1869493B00AFDF88 /* PDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPage.h; sourceTree = "<group>"; };
-		82A0467B1869493B00AFDF88 /* PDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage.m; sourceTree = "<group>"; };
 		82BD7A58155FBB3400C38637 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		82DEE6BA1874726E0008C9F2 /* LectureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LectureCell.h; sourceTree = "<group>"; };
 		82DEE6BB1874726E0008C9F2 /* LectureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LectureCell.m; sourceTree = "<group>"; };
@@ -485,10 +488,8 @@
 				82446B3B187731F400B4BCF9 /* AudioFile.m */,
 				823C98961875CFEF00A3F3A1 /* Lecture.h */,
 				823C98971875CFEF00A3F3A1 /* Lecture.m */,
-				82A0467A1869493B00AFDF88 /* PDFPage.h */,
-				82A0467B1869493B00AFDF88 /* PDFPage.m */,
-				82A046711869281B00AFDF88 /* PDF.h */,
-				82A046721869281B00AFDF88 /* PDF.m */,
+				823CC881187DB0130015BA34 /* PDFPage.h */,
+				823CC882187DB0130015BA34 /* PDFPage.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -519,6 +520,8 @@
 		4FD48D92154AC95D007880C2 = {
 			isa = PBXGroup;
 			children = (
+				823CC884187DD61C0015BA34 /* PDF.h */,
+				823CC885187DD61D0015BA34 /* PDF.m */,
 				4F45454D1635F12B0091F335 /* ViewController.h */,
 				4F45454E1635F12B0091F335 /* ViewController.m */,
 				4F65E1D4183FB58F004C5607 /* WebVideoView.h */,
@@ -650,6 +653,8 @@
 		823C98921875AF6000A3F3A1 /* PDF */ = {
 			isa = PBXGroup;
 			children = (
+				8217A4C7187C7CBB004BDCB4 /* PDFPageRenderer.h */,
+				8217A4C8187C7CBB004BDCB4 /* PDFPageRenderer.m */,
 				82A0466218690B9800AFDF88 /* PDFParser.h */,
 				82A0466318690B9800AFDF88 /* PDFParser.m */,
 				82A0465F1868D77200AFDF88 /* PDFImporterViewController.h */,
@@ -1002,17 +1007,18 @@
 				4F4545571635F14D0091F335 /* ScreenCaptureView.m in Sources */,
 				82DEE6BF187475600008C9F2 /* AbstractCell.m in Sources */,
 				4F65E1D6183FB58F004C5607 /* WebVideoView.m in Sources */,
-				82A0467C1869493B00AFDF88 /* PDFPage.m in Sources */,
 				4F864BD8183C08CC00C888B8 /* Lecture+Operations.m in Sources */,
 				4F4545581635F14D0091F335 /* ScreenView.m in Sources */,
-				82A046731869281B00AFDF88 /* PDF.m in Sources */,
 				82A046791869449000AFDF88 /* PDFPageCell.m in Sources */,
+				8217A4C9187C7CBB004BDCB4 /* PDFPageRenderer.m in Sources */,
 				4F45455B1635F16D0091F335 /* PaintView.m in Sources */,
 				4F45455E1635F1790091F335 /* AudioRecorder.m in Sources */,
 				4F9D598018205C43000A004F /* AVCaptureHelper.m in Sources */,
 				4F864BCE183BFFCA00C888B8 /* LectureAPI.m in Sources */,
 				82A0466418690B9800AFDF88 /* PDFParser.m in Sources */,
 				4F4545611635F1890091F335 /* LoginRegisterViewController.m in Sources */,
+				823CC886187DD61D0015BA34 /* PDF.m in Sources */,
+				823CC883187DB0130015BA34 /* PDFPage.m in Sources */,
 				82EE2721164360F7008F99AE /* VideoPreview.m in Sources */,
 				4F9D598118205C43000A004F /* CaptureSessionManager.m in Sources */,
 				4FD724FE174D6E870005D782 /* NetworkHelper.m in Sources */,

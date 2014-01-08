@@ -199,7 +199,8 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = ("/tmp/injection_sadmin_$(CURRENT_ARCH).o", "-undefined",
+				OTHER_LDFLAGS = (
+					"-undefined",
 					dynamic_lookup,
 				);
 				SDKROOT = iphoneos;
@@ -231,7 +232,8 @@
 					$SDKROOT/usr/include/libxml2,
 				);
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = ("/tmp/injection_sadmin_$(CURRENT_ARCH).o", "-undefined",
+				OTHER_LDFLAGS = (
+					"-undefined",
 					dynamic_lookup,
 				);
 				SDKROOT = iphoneos;

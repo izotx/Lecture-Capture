@@ -1,6 +1,5 @@
 //
 //  PaintView.h
-//  CoreImageisFun
 //
 //  Created by DJMobile INC on 8/6/12.
 //  Copyright (c) 2012 DJMobile INC. All rights reserved.

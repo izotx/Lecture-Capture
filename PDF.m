@@ -2,7 +2,7 @@
 //  PDF.m
 //  Lecture Capture
 //
-//  Created by sadmin on 12/23/13.
+//  Created by sadmin on 1/8/14.
 //
 //
 
@@ -13,6 +13,7 @@
 @implementation PDF
 
 @dynamic filename;
+@dynamic pdfid;
 @dynamic page;
 
 @end

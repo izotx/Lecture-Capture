@@ -4,7 +4,6 @@
 //
 //  Created by sadmin on 6/23/13.
 //  Copyright (c) 2013 DJMobileInc. All rights reserved.
-//
 
 #import "PDFParser.h"
 
@@ -42,8 +41,9 @@
         if([[change objectForKey:@"new"] isEqual:@0]){
             self.completed = YES;
             [[NSOperationQueue mainQueue]addOperationWithBlock:^{
-                self.completedBlock();
-                NSLog(@"Completed. ");
+               NSLog(@"Completed. ");
+               self.completedBlock();
+            
             }];
 
             
@@ -60,7 +60,7 @@
         filePath = filename;
         blockOperation = [[NSOperation alloc]init];
         _queue = [[NSOperationQueue alloc]init];
-        [_queue setMaxConcurrentOperationCount:3];
+     
         [self.queue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionNew context:nil];
        
     }
@@ -106,21 +106,7 @@
 }
 
 
-CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
-    CGFloat originalAspectRatio = size.width / size.height;
-    CGFloat maxAspectRatio = maxSize.width / maxSize.height;
-    CGSize newSize = maxSize;
-    // The largest dimension will be the `maxSize`, and then we need to scale
-    // the other dimension down relative to it, while maintaining the aspect
-    // ratio.
-    if (originalAspectRatio > maxAspectRatio) {
-        newSize.height = maxSize.width / originalAspectRatio;
-    } else {
-        newSize.width = maxSize.height * originalAspectRatio;
-    }
-    
-    return newSize;
-}
+
 
 -(UIImage*)imageWithImage: (UIImage*) sourceImage scaledToWidth: (float) i_width
 {
@@ -150,6 +136,11 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
     return newImage;
 }
 
+-(CGPDFPageRef )getPage:(int) pageNumber inDocument: (CGPDFDocumentRef)_document
+{
+    CGPDFPageRef page = CGPDFDocumentGetPage (_document, pageNumber);
+    return page;
+}
 
 
 -(UIImage *)imageForPage:(int)pageNumber sized:(CGSize)size{
@@ -158,22 +149,26 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
     CGPDFPageRef page = CGPDFDocumentGetPage (_document, pageNumber);
     
     
-    CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFArtBox);
+    CGRect pageRect = CGPDFPageGetBoxRect(page,kCGPDFTrimBox);
     CGSize pageSize = pageRect.size;
-    CGSize thumbSize = size;
-    pageSize = MEDSizeScaleAspectFit(pageSize, thumbSize);
-        
+    pageSize = MEDSizeScaleAspectFit(pageSize, size);
+    
     UIGraphicsBeginImageContextWithOptions(pageSize, NO, 0.0);
     
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGContextSetRenderingIntent(context, kCGRenderingIntentDefault);
+//    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+//    CGContextSetRenderingIntent(context, kCGRenderingInt
+    
+    CGContextFillRect(context, pageRect);
     
     CGContextTranslateCTM(context, 0.0, pageSize.height);
     CGContextScaleCTM(context, 1.0, -1.0);
     CGContextSaveGState(context);
+    CGContextSetFillColorWithColor(context, [[UIColor whiteColor]CGColor]);
     
-    CGAffineTransform pdfTransform = CGPDFPageGetDrawingTransform(page, kCGPDFArtBox, CGRectMake(0, 0, pageSize.width, pageSize.height), 0, true);
+    CGContextFillRect(context, pageRect);
+    
+    CGAffineTransform pdfTransform = CGPDFPageGetDrawingTransform(page, kCGPDFTrimBox, CGRectMake(0, 0, pageSize.width, pageSize.height), 0, true);
     CGContextConcatCTM(context, pdfTransform);
     CGContextDrawPDFPage(context, page);
     CGContextRestoreGState(context);
@@ -184,11 +179,33 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
     return resultingImage;
 }
 
+
+CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
+    CGFloat originalAspectRatio = size.width / size.height;
+    CGFloat maxAspectRatio = maxSize.width / maxSize.height;
+    CGSize newSize = maxSize;
+    // The largest dimension will be the `maxSize`, and then we need to scale
+    // the other dimension down relative to it, while maintaining the aspect
+    // ratio.
+    if (originalAspectRatio > maxAspectRatio) {
+        newSize.height = maxSize.width / originalAspectRatio;
+    } else {
+        newSize.width = maxSize.height * originalAspectRatio;
+    }
+    
+    return newSize;
+}
+
 -(void)extractPages{
    
     int totalCount = [self getNumberOfPages];
     __block int processed = 0;
-    
+    if(totalCount <100){
+        self.queue.maxConcurrentOperationCount = -1;
+    }
+    else{
+        self.queue.maxConcurrentOperationCount = 1;
+    }
     for(int i =1; i<totalCount;i++){
         NSBlockOperation * bl = [[NSBlockOperation alloc]init];
         __weak NSBlockOperation * weakOperation = bl;
@@ -207,10 +224,15 @@ CGSize MEDSizeScaleAspectFit(CGSize size, CGSize maxSize) {
                     // non-Retina display
                     size = CGSizeMake(1600, 1200);
                 }
+                 size = CGSizeMake(1024, 580);
                 
                 im = [self imageForPage:i sized:size];
                 thumb = [self imageWithImage:im scaledToSize:CGSizeMake(200, 200)];
-                         
+               
+                //NSData * png = UIImagePNGRepresentation(im);
+                //NSString * fname = [NSString stringWithFormat:@"%@,%d.png",DOCUMENTS_FOLDER,i];
+                
+                //[png writeToFile:fname atomically:YES];
                 
             }
             else{

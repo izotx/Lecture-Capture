@@ -1,8 +1,8 @@
 //
 //  PDFPage.h
-//  Lecture Capture
+//  Pods
 //
-//  Created by sadmin on 12/23/13.
+//  Created by sadmin on 1/8/14.
 //
 //
 
@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSNumber * pagenr;
 @property (nonatomic, retain) NSData * thumb;
+@property (nonatomic, retain) NSString * pdfid;
 @property (nonatomic, retain) PDF *pdf;
 
 @end

@@ -26,7 +26,14 @@
 #endif
 #define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 #ifdef DEBUG
-#define NSLog( s, ... ) NSLog( @"<%p %@:%d (%@)> %@", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__,  NSStringFromSelector(_cmd), [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+//#define NSLog( s, ... ) NSLog( @"<%p %@:%d (%@)> %@", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__,  NSStringFromSelector(_cmd), [NSString stringWithFormat:(s), ##__VA_ARGS__] )
 #else
 #define NSLog( s, ... ) 
+#endif
+
+// From here to end of file added by Injection Plugin //
+
+#ifdef DEBUG
+#define INJECTION_ENABLED
+#import "/Applications/Injection Plugin.app/Contents/Resources/BundleInterface.h"
 #endif

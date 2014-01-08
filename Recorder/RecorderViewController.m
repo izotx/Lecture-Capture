@@ -97,12 +97,10 @@
     _fetchedController = nil;
     _fetchedController = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
     _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self andCellID:@"cell"];
-    
 
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;
     _slideAPI = [[SlideAPI alloc]init];
-
 }
 
 - (IBAction)dismiss:(id)sender {
@@ -135,11 +133,16 @@
     //probably we will need a collection view
   //  http://stackoverflow.com/questions/4199879/iphone-read-uiimage-frames-from-video-with-avfoundation
     _lecture = lecture;
+    
+    for(Slide *s in lecture.slides){
+        s.selected =@0;
+    }
+    [LectureAPI saveLecture:lecture];
+    
+    NSLog(@"Loading Lecture");
+    
     if(lecture.slides.count == 0){
         [self addNewSlide:nil];
-    }
-    else{
-        [self loadSlide:lecture.slides.allObjects.firstObject];
     }
 }
 
@@ -150,26 +153,16 @@
     slide.selected= @1;
     _currentSlide = slide;
     [SlideAPI save];
-
-    [self.datasource updateContent];
-
+    if(![NSThread isMainThread]){
+    
+        NSLog(@"Not a main thread! ");
+    }
 //if slide contains image, display it
 
     UIImage * image = (slide.modifiedimage.length >0)?[UIImage imageWithData:slide.modifiedimage]:[UIImage imageWithData:slide.pdfimage];
-//    UIImage * pdfImage = [UIImage imageWithData: slide.pdfimage];
-//    UIImage * modifiedImage = [UIImage imageWithData: slide.modifiedimage];
-//    UIImage * thumb = [UIImage imageWithData: slide.thumbnail];
-    
-//    [recordingScreenView.paintView setBackgroundPhotoImage: thumb];
-    
-     
-    
-    
-    [recordingScreenView.paintView performSelectorOnMainThread:@selector(setBackgroundPhotoImage:) withObject:image waitUntilDone:NO];
 
-    //    [recordingScreenView.paintView setBackgroundPhotoImage:[UIImage imageNamed:@"linepaper"]];
-    
-    
+    [recordingScreenView.paintView performSelectorOnMainThread:@selector(setBackgroundPhotoImage:) withObject:image waitUntilDone:NO];
+ 
 
     if(slide.video.length>0){
         [self.view addSubview:self.webVideoView];
@@ -183,6 +176,7 @@
         [self.webVideoView removeFromSuperview];
         [self clearBoard:nil];
     }
+        [self.datasource updateContent];
 }
 
 
@@ -771,8 +765,11 @@ RAC(self,recording) =[RACSignal
     [RACObserve(self, self.recording)subscribeNext:^(NSNumber * x) {
         @strongify(self);
         self.informationLabel.backgroundColor = [UIColor redColor];
+        self.informationLabel.alpha= 0.9;
         self.informationLabel.textColor = [UIColor whiteColor];
-      
+ self.informationLabel.frame = CGRectMake(CGRectGetMaxX(durationLabel.frame)+10,582, CGRectGetWidth(self.view.bounds)- CGRectGetMaxX(durationLabel.frame)-10,30);
+        
+       
         if (x.boolValue) {
             self.informationLabel.text = @"";
             [self.informationLabel removeFromSuperview];
@@ -781,8 +778,8 @@ RAC(self,recording) =[RACSignal
             self.informationLabel.text = @"Press on the Record button to start recording.";
             [self.view addSubview:self.informationLabel];
         }
-        self.informationLabel.frame = CGRectMake(0,0,CGRectGetWidth(self.view.frame),30);
        
+
     }];
 
     
@@ -795,6 +792,8 @@ RAC(self,recording) =[RACSignal
     cp.delegate = self;
     _webVideoView = [[WebVideoView alloc]initWithFrame:recordingScreenView.frame];
     [self configureFetchedController];
+    [self loadSlide:  [[self.lecture.slides.allObjects sortedArrayUsingDescriptors:@[[NSSortDescriptor  sortDescriptorWithKey:@"order" ascending:YES]]]firstObject]];
+    
     _ready = YES;
 }
 

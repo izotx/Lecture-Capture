@@ -231,7 +231,10 @@
     else{
         cell = [tableView dequeueReusableCellWithIdentifier:LectureIdentifier];
     }
-    [cell configureCellWithObject:object atIndexPath:indexPath];
+    
+    NSDictionary *ob = @{@"object":object,@"super":self};
+    
+    [cell configureCellWithObject:ob atIndexPath:indexPath];
 
     return cell;
 }

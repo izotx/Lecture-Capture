@@ -1,0 +1,2 @@
+/Users/sadmin/Library/Developer/Xcode/DerivedData/Lecture_Capture-gcopwuruvswcffbktsxlbsrllivh/Build/Products/Debug-iphoneos/Lecture Capture.app
+iPhone Developer

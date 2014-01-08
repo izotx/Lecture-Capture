@@ -18,6 +18,9 @@ typedef void (^pageGenerated)(UIImage * img, UIImage * thumb, int pageNr, float 
 -(size_t)getNumberOfPages;
 -(UIImage *)imageForPage:(int)pageNumber sized:(CGSize)size;
 -(void)getPagesWithGeneratedPageHandler:(pageGenerated )pageGeneratorBlock completed:(completedBlock )completed error:(errorBlock)errorBlock;
+-(CGPDFDocumentRef) CreatePDFDocumentRef: (NSString *) fileName;
+-(CGPDFPageRef )getPage:(int) pageNumber inDocument: (CGPDFDocumentRef)_document;
+
 
 
 @end

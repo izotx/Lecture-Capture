@@ -2,7 +2,7 @@
 //  PDF.h
 //  Lecture Capture
 //
-//  Created by sadmin on 12/23/13.
+//  Created by sadmin on 1/8/14.
 //
 //
 
@@ -14,6 +14,7 @@
 @interface PDF : NSManagedObject
 
 @property (nonatomic, retain) NSString * filename;
+@property (nonatomic, retain) NSString * pdfid;
 @property (nonatomic, retain) NSSet *page;
 @end
 
