@@ -140,6 +140,7 @@
 		823C989B1875D5BF00A3F3A1 /* MailHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 823C989A1875D5BF00A3F3A1 /* MailHelper.m */; };
 		823CC883187DB0130015BA34 /* PDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 823CC882187DB0130015BA34 /* PDFPage.m */; };
 		823CC886187DD61D0015BA34 /* PDF.m in Sources */ = {isa = PBXBuildFile; fileRef = 823CC885187DD61D0015BA34 /* PDF.m */; };
+		823CC888187E4DA90015BA34 /* sound.png in Resources */ = {isa = PBXBuildFile; fileRef = 823CC887187E4DA90015BA34 /* sound.png */; };
 		82446B3C187731F400B4BCF9 /* AudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 82446B3B187731F400B4BCF9 /* AudioFile.m */; };
 		82446B3F187731F500B4BCF9 /* VideoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 82446B3E187731F500B4BCF9 /* VideoFile.m */; };
 		8282D685176673BB00F82722 /* CustomTableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8282D684176673BB00F82722 /* CustomTableButton.m */; };
@@ -338,6 +339,7 @@
 		823CC882187DB0130015BA34 /* PDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFPage.m; path = Pods/PDFPage.m; sourceTree = "<group>"; };
 		823CC884187DD61C0015BA34 /* PDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDF.h; sourceTree = "<group>"; };
 		823CC885187DD61D0015BA34 /* PDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDF.m; sourceTree = "<group>"; };
+		823CC887187E4DA90015BA34 /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
 		82446B3A187731F400B4BCF9 /* AudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFile.h; sourceTree = "<group>"; };
 		82446B3B187731F400B4BCF9 /* AudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFile.m; sourceTree = "<group>"; };
 		82446B3D187731F500B4BCF9 /* VideoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFile.h; sourceTree = "<group>"; };
@@ -667,6 +669,7 @@
 			isa = PBXGroup;
 			children = (
 				4F864BC6183BFA6200C888B8 /* controlsButtonRight.png */,
+				823CC887187E4DA90015BA34 /* sound.png */,
 				4F98B32218368FA1006EBBC1 /* recorde76.png */,
 				4F98B32318368FA1006EBBC1 /* recorder156.png */,
 				4F9D58EF18205AA8000A004F /* cloud_download.png */,
@@ -881,6 +884,7 @@
 				4F864BCA183BFC8900C888B8 /* addButton.png in Resources */,
 				4F9D592818205AA8000A004F /* font_24.png in Resources */,
 				4F9D591B18205AA8000A004F /* buttonBackBlack.png in Resources */,
+				823CC888187E4DA90015BA34 /* sound.png in Resources */,
 				4F9D58EE18205A8C000A004F /* LectureCapturePDF.pdf in Resources */,
 				4F9D591718205AA8000A004F /* illus.png in Resources */,
 				4F9D591A18205AA8000A004F /* buttonBackRed.png in Resources */,

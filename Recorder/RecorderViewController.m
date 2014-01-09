@@ -133,14 +133,10 @@
     //probably we will need a collection view
   //  http://stackoverflow.com/questions/4199879/iphone-read-uiimage-frames-from-video-with-avfoundation
     _lecture = lecture;
-    
     for(Slide *s in lecture.slides){
         s.selected =@0;
     }
     [LectureAPI saveLecture:lecture];
-    
-    NSLog(@"Loading Lecture");
-    
     if(lecture.slides.count == 0){
         [self addNewSlide:nil];
     }
@@ -775,7 +771,7 @@ RAC(self,recording) =[RACSignal
             [self.informationLabel removeFromSuperview];
         }
         else{
-            self.informationLabel.text = @"Press on the Record button to start recording.";
+            self.informationLabel.text = @"Press the Record button to start recording.";
             [self.view addSubview:self.informationLabel];
         }
        
@@ -805,6 +801,9 @@ RAC(self,recording) =[RACSignal
     activityIndicator = nil;
     [self setToolbar:nil];
     [self setColorBarButton:nil];
+    self.collectionView = nil;
+    self.fetchedController = nil;
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated{

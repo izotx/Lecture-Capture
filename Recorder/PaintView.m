@@ -54,13 +54,13 @@
         // Initialization code
         
         translation = CGPointZero;
-        NSString * filepath =[NSString pathWithComponents:@[DOCUMENTS_FOLDER,@"Inbox",@"canon.pdf"]];
-        NSLog(@"%@",filepath);
+      //  NSString * filepath =[NSString pathWithComponents:@[DOCUMENTS_FOLDER,@"Inbox",@"canon.pdf"]];
+      //  NSLog(@"%@",filepath);
 
         if(!parser){
-            parser = [[PDFParser alloc]initWithFilePath:filepath];
+        //    parser = [[PDFParser alloc]initWithFilePath:filepath];
         }
-        document = [parser CreatePDFDocumentRef:filepath];
+        //document = [parser CreatePDFDocumentRef:filepath];
         
         NSMutableArray * p = [NSMutableArray new];
         NSMutableArray * c = [NSMutableArray new];

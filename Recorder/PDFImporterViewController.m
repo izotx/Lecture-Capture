@@ -199,13 +199,14 @@
     PDF * pdf =[NSEntityDescription insertNewObjectForEntityForName:@"PDF" inManagedObjectContext:self.temporaryContext];
     [_temporaryContext insertObject:pdf];
     NSError * e;
-    
     [_temporaryContext save:&e];
-    if(e){
+
+        if(e){
         NSLog(@"Error: %@",e.debugDescription);
     }
     
         self.pdf = pdf;
+        
     }
 }
 
@@ -217,22 +218,22 @@
     if(!self.pdf)
     {
         [self setup];
+        NSLog(@"NOT PDF ");
     }
-    
+    self.pdfid = self.pdf.pdfid;
     
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *frequest = [[NSFetchRequest alloc]init];
     [frequest setFetchBatchSize:20];
     [frequest setEntity: [NSEntityDescription entityForName:  @"PDFPage" inManagedObjectContext:appDelegate.managedObjectContext ]];
-
     [frequest setPredicate: [NSPredicate predicateWithFormat: @"pdfid == %@", self.pdfid]];
-     
     
     NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"pagenr" ascending:YES];
     [frequest setSortDescriptors:@[sd]];
     
     _fetchedController  = [[NSFetchedResultsController alloc]initWithFetchRequest:frequest managedObjectContext:appDelegate.managedObjectContext sectionNameKeyPath:Nil cacheName:nil];
     _datasource  = [[TJLFetchedResultsSource alloc]initWithFetchedResultsController:_fetchedController  delegate:self andCellID:@"pdfCell"];
+
     
     self.collectionView.dataSource = _datasource;
     self.collectionView.delegate = self;

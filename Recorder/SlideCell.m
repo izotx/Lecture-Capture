@@ -34,8 +34,14 @@
     self.layer.shouldRasterize = YES;
     self.layer.rasterizationScale = [UIScreen mainScreen].scale;
     self.backgroundColor = [UIColor whiteColor];
-
-
+    if(slide.video.length> 0){
+        self.soundImage.hidden = NO;
+    }
+    else{
+        self.soundImage.hidden = YES;
+    
+    }
+    
     if([slide.selected  isEqual:@1]){
         
         self.layer.borderColor = [[UIColor darkGrayColor]CGColor];

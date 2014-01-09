@@ -464,7 +464,7 @@ If you have any questions about our policy or the security of Screen Capture app
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="am6-5Y-LnO">
-                                <rect key="frame" x="-10" y="44" width="750" height="636"/>
+                                <rect key="frame" x="0.0" y="44" width="750" height="636"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rD6-fM-dym">
                                     <size key="itemSize" width="200" height="200"/>
@@ -772,19 +772,25 @@ If you have any questions about our policy or the security of Screen Capture app
                                                     <rect key="frame" x="10" y="4" width="87" height="76"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </imageView>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kdn-pA-qmF">
-                                                    <rect key="frame" x="21" y="79" width="66" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kdn-pA-qmF">
+                                                    <rect key="frame" x="37" y="78" width="66" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sound.png" id="dkl-je-1Xe">
+                                                    <rect key="frame" x="4" y="78" width="24" height="24"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="slideDurationLabel" destination="kdn-pA-qmF" id="tae-eT-p4L"/>
                                             <outlet property="slidePreviewImage" destination="48n-U3-1bC" id="7pB-cH-Gxb"/>
+                                            <outlet property="soundImage" destination="dkl-je-1Xe" id="bhy-Gg-RHI"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -1042,6 +1048,7 @@ If you have any questions about our policy or the security of Screen Capture app
         <image name="recordButton.png" width="110" height="109"/>
         <image name="removeButton.png" width="110" height="109"/>
         <image name="resizeBtn.png" width="28" height="28"/>
+        <image name="sound.png" width="106" height="100"/>
         <image name="video.png" width="64" height="64"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
