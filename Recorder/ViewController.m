@@ -31,8 +31,6 @@
     Video * currentVideo;
     UIAlertView * uploadAlert;
     UIAlertView * createNewAlert;
-    UIAlertView * uploadLogin;
-    
     NetworkHelper * networkHelper;
     Manager *manager;
     
@@ -63,8 +61,6 @@
 @synthesize uploadingVideoLabel = _uploadingVideoLabel;
 @synthesize bannerIsVisible;
 
-
-
 #pragma  mark iAD
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
@@ -91,19 +87,7 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if(alertView==uploadLogin)
-    {
-        if(buttonIndex==0)
-        {
-            [self logInOrOut:_loginBarButton];
-            
-        }
-        else{
-            
-        }
-        
-    }
-     if(alertView==uploadAlert)
+    if(alertView==uploadAlert)
     {
         if(buttonIndex==0)
         {
@@ -168,8 +152,8 @@ if(manager.userId){
     }
 }
     else{
-        uploadLogin = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to log in in order to upload recordings to the server. Would you like to do it now?" delegate:self cancelButtonTitle:@"Yes, please!" otherButtonTitles:@"No, thanks", nil];
-        [uploadLogin show];
+        UIAlertView * a = [[UIAlertView alloc]initWithTitle:@"Message" message:@"You need to log in in order to upload recordings to the server." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [a show];
     }
 }
 
@@ -772,12 +756,10 @@ else
     else{
         if( self.loginPopOver ==nil)
         {
-            NSLog(@"Nil ");
-            LoginRegisterViewController * c= [sb instantiateViewControllerWithIdentifier:@"LoginPopover"];
-            
+                            NSLog(@"Nil ");
+            LoginRegisterViewController * c=[sb instantiateViewControllerWithIdentifier:@"LoginPopover"];
             c.delegate=self;
             c.loginBarButton=self.loginBarButton;
-          //  c.preferredContentSize = c.view.frame.size;
             self.loginPopOver=[[UIPopoverController alloc]initWithContentViewController:c];
         
         }    
@@ -786,10 +768,7 @@ else
             [self.loginPopOver dismissPopoverAnimated:YES];
         }
         else{
-           
-            [self.loginPopOver presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        
-            
+            [self.loginPopOver presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
         }
     }
 }

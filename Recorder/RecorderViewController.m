@@ -352,13 +352,6 @@
       }
      else
         {
-          
-            [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
-            [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
-            recordingStarted = YES;
-            paused = NO;
-            ready = NO;
-            
            recordingStartView = [[UIView alloc]initWithFrame:self.view.bounds];
            recordingStartView.backgroundColor = [UIColor darkGrayColor];
             
@@ -366,20 +359,25 @@
 
            [label setFont:[UIFont systemFontOfSize:20]];
            [label setText:@"Setting up your recording."];
-           
            label.backgroundColor =  [UIColor darkGrayColor];
            label.textColor = [UIColor lightGrayColor];
            label.lineBreakMode = NSLineBreakByWordWrapping;
            label.numberOfLines = 2;
-           label.center = recordingStartView.center;
-           label.contentMode = UIViewContentModeCenter;
-            label.textAlignment = NSTextAlignmentCenter;
+ 
+            [recordingStartView addSubview:label];
+
             
-           [recordingStartView addSubview:label];
+            
            [self.view addSubview: recordingStartView];
            [recordingStartView addSubview:activityIndicator];
            [activityIndicator startAnimating];
-  
+            
+        [recordingScreenView performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];
+        [ar performSelector:@selector(startRecording) withObject:nil afterDelay:0.1];            
+        recordingStarted = YES;
+        paused = NO;
+        ready = NO;
+            
         }
      }
 }

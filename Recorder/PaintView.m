@@ -183,6 +183,7 @@
         CGContextTranslateCTM(context, 0.0f, self.backgroundImage.size.height);
         CGContextScaleCTM(context, scale, -scale);
         CGRect frame = [self calculateFrameForImage:backgroundImage];
+        NSLog(@" ");
         
         CGContextDrawImage(context, frame, self.backgroundImage.CGImage);
        

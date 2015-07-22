@@ -82,26 +82,21 @@
     for(UITextField * t in textFields)
     {
         t.delegate=self;
-        t.text= @"";
     }
     [registrationView removeFromSuperview];
-  
-
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-//    self.emailLoginTextField.text= nil;
-//    self.passwordLoginTextField.text = nil;
-//
-//    [self setEmailTextField:nil];
-//    [self setPasswordTextField:nil];
-//    [self setConfirmPasswordTextField:nil];
-//    [self setDisplayNameTextField:nil];
-//    [self setEmailLoginTextField:nil];
-//    [self setPasswordLoginTextField:nil];
-//    [self setRegistrationView:nil];
-//    [super viewDidDisappear:animated];
+    [self setEmailTextField:nil];
+    [self setPasswordTextField:nil];
+    [self setConfirmPasswordTextField:nil];
+    [self setDisplayNameTextField:nil];
+    [self setEmailLoginTextField:nil];
+    [self setPasswordLoginTextField:nil];
+    [self setRegistrationView:nil];
+    [super viewDidDisappear:animated];
     // Release any retained subviews of the main view.
 }
 //

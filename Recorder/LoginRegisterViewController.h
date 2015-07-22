@@ -20,16 +20,16 @@
     NSArray * textFields;
 }
 //Register
-@property (strong, nonatomic) IBOutlet UITextField *emailTextField;
-@property (strong, nonatomic) IBOutlet UITextField *passwordTextField;
-@property (strong, nonatomic) IBOutlet UITextField *confirmPasswordTextField;
-@property (strong, nonatomic) IBOutlet UITextField *displayNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *emailTextField;
+@property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
+@property (weak, nonatomic) IBOutlet UITextField *confirmPasswordTextField;
+@property (weak, nonatomic) IBOutlet UITextField *displayNameTextField;
 @property (strong, nonatomic) IBOutlet UIView *registrationView;
 
 //Login
-@property (strong, nonatomic) IBOutlet UITextField *emailLoginTextField;
-@property (strong, nonatomic) IBOutlet UITextField *passwordLoginTextField;
-@property (strong, nonatomic) UIBarButtonItem *loginBarButton;
+@property (weak, nonatomic) IBOutlet UITextField *emailLoginTextField;
+@property (weak, nonatomic) IBOutlet UITextField *passwordLoginTextField;
+@property (weak, nonatomic) UIBarButtonItem *loginBarButton;
 //delegate
 @property(weak,nonatomic) id <PopoverDismissDelegate> delegate;
 
